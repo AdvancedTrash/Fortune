@@ -1,0 +1,269 @@
+#amk 2
+
+#spc
+{
+	#title		"Bonetrousle"
+	#game		"UNDERTALE"
+	#author		"Toby Fox"
+	#comment	"NYEH HEH HEH!"
+}
+
+#path "bonetrousle"
+
+#samples
+{
+	#optimized
+	"ff6 kick.brr"
+	"ff6 closed hi-hat.brr"
+	"ff6 open hi-hat.brr"
+	"ff6 power snare.brr"
+	"12.5-12.brr"
+	"12.5+12.brr"
+	"25.brr"
+	"25+12.brr"
+	"triangle+40.brr"
+	"ff6 picked bass.brr"
+	"thg violin.brr"
+	"sai sax 24k.brr"
+}
+
+#instruments
+{
+	"ff6 kick.brr"		$FF $E0 $B8 $07 $A8	;@30 o4c
+	"ff6 power snare.brr"	$FF $E0 $B8 $07 $A8	;@31 o4c
+	"ff6 closed hi-hat.brr"	$FF $E0 $B8 $07 $A8	;@32 o4c
+	"ff6 open hi-hat.brr"	$FF $E0 $B8 $07 $A8	;@33 o4c
+	"12.5-12.brr"		$FF $E0 $B8 $04 $00	;@34 bass
+	"25.brr"		$FF $E0 $B8 $04 $00	;@35 4
+	"25+12.brr"		$FF $E0 $B8 $04 $00	;@36 5
+	"triangle+40.brr"	$FF $E0 $B8 $04 $00	;@37 5
+	"ff6 picked bass.brr"	$FF $EE $B8 $03 $01	;@38 bass real
+	"12.5+12.brr"		$FE $E0 $B8 $04 $00	;@39 5
+	"sai sax 24k.brr"	$FE $E0 $B8 $06 $00	;@40 sax
+	"thg violin.brr"	$9F $C6 $B8 $02 $FE	;@41 violin
+	"25+12.brr"		$FF $F1 $B8 $04 $00	;@42 release
+	
+	n16			$FE $FA $B8 $04 $00	;@43 n kick
+	n1A			$FE $F8 $B8 $04 $00	;@44 n snare
+	n1E			$FE $FC $B8 $04 $00	;@45 n closed hihat
+	n1E			$FE $F6 $B8 $04 $00	;@46 n open hihat
+}
+
+;===============================;
+; Channel #0			;
+;===============================;
+
+#0 t61 w255
+
+$F4 $02
+
+$EF $FF $20 $20
+$F1 $05 $33 $01
+; $F5 $60 $16 $04 $FA $FB $FE $FE $FE
+
+/
+
+v160 y10 o4
+(0)[@30 q7F c4 @31 q7C c4 @30 q7F c4 @31 q7C c4]19
+@30 q7F c4 @31 q7C c4 @30 q7F c2
+
+(0)12
+
+"K=@43 q1F"
+"S=@44 q6D"
+"C=@45 q1B"
+"O=@46 q7B"
+v90 y10 $F4 $03
+[K c8 C c8 S c8 O c8 K c8 C c8 S c16 K c16 c8]2
+K c8 C c8 S c8 C c8 S c4 K c4
+C c8 S c8 C c8 S c8 C c8 $F4 $03 r4.
+
+;===============================;
+; Channel #1			;
+;===============================;
+
+#1 v160 y10 o4
+(10)[@32 q78 c8 c8 c8 @33 q7C c8 @32 q79 c8 @33 q7C c8 @32 q79 c16 c16 @30 q7F c8]19
+@32 q78 c8 c8 c8 @33 q7B c4 c16 q76 c16 q7B c16 < a16 e16 q76 e16
+
+(10)12
+
+h-1 $EE $80 $F4 $03
+@39 v100 y10 o4 $DE $18 $0D $20
+q4E r8 f16 r16 g+16 r16 > c16 r16 q7E f8. f+32 g32 g+4
+q4E g16 r16 f16 r16 q7E d4 < b8. > c32 d32 d+8 q4E d16 r16
+q7E c8 < b8 > q5E c8 q7E d8 q5E d+8 r8 q7E c8 r8
+< q7E b8 > c8 d8 r8 c8 r8 @37 q7F c8 $F4 $03 $EE $00 r8 
+
+;===============================;
+; Channel #2			;
+;===============================;
+
+#2 h-1 $EE $80
+v110 y10 o4
+[@34 q7C c8 @35 q1A g8 @34 q7C c8 @35 q1A a8 @34 q7C c8 @35 q1A g8 @34 q7C c8 @35 q1A f+8]19
+@34 q7C c8 @35 q1A g8 @34 q7C c8 @35 q1A a8 @34 q7C c8 r4.
+
+(20)[@34 q7C f8 @36 q1A f8 @34 q7C c8 @36 q1A f8 @34 q7C f8 @36 q1A f8 @34 q7C c8 @36 q1A f+8
+@34 q7C g8 @36 q1A g8 @34 q7C d8 @36 q1A g8 @34 q7C g8 @36 q1A g8 @34 q7C d8 @36 q1A g8
+@34 q7C g+8 @36 q1A g+8 @34 q7C d+8 @36 q1A g+8 @34 q7C g+8 @36 q1A g+8 @34 q7C f8 @36 q1A g+8]
+(21)[@34 q7C d+8 @36 q1A d+8 < @34 q7C a+8 > @36 q1A d+8 @34 q7C c+8 @36 q1A d8 @34 q7C g8 @36 q1A g8]
+(20)
+@34 q7C f8 @36 q1A g8 @34 q7C c8 @36 q4A g16 r32 @34 q7C f+32 q6E g8 f8 d+8 d8
+(20)
+(21)
+
+$F4 $03
+@34 q7C f8 @36 q1A f8 @34 q7C c8 @36 q1A f8 @34 q7C f8 @36 q1A f8 @34 q7C c8 @36 q1A f+8
+@34 q7C g8 @36 q1A g8 @34 q7C d8 @36 q1A g8 @34 q7C g8 @36 q1A g8 @34 q7C d8 @36 q1A g8
+@34 q7C g+8 @36 q1A g+8 @34 q7C g+8 @36 q1A g+8 @34 q7C g+4 r4
+< g4 b4 > c8 $F4 $03 r4.
+
+;===============================;
+; Channel #3			;
+;===============================;
+
+#3 h-1 $EE $80
+@35 v110 y10 o4 q1A
+[r8 d+8 r8 f+8 r8 d+8 r8 d8]19
+r8 d+8 r8 f+8 r2
+
+v145
+(30)[@38 q7E f8 @36 q16 c8 @38 q7E c8 @36 q16 c8 @38 q7E f8 @36 q16 c8 @38 q7E c8 @36 q16 d8
+@38 q7E g8 @36 q16 d8 @38 q7E d8 @36 q16 d8 @38 q7E g8 @36 q16 d8 @38 q7E d8 @36 q16 d+8
+@38 q7E g+8 @36 q16 d+8 @38 q7E d+8 @36 q16 d+8 @38 q7E g+8 @36 q16 d+8 @38 q7E f8 @36 q16 d+8]
+(31)[@38 q7E d+8 < @36 q16 a+8 @38 q7E a+8 @36 q16 a+8 > @38 q7E c+8 < @36 q16 b8 > @38 q7E g8 @36 q16 d8]
+(30)
+@38 q7E f8 @36 q16 d8 @38 q7E c8 @36 q4A d16 r32 @38 q7E f+32 q6E g8 f8 d+8 d8
+(30)
+(31)
+
+@36 v110 q1A $F4 $03
+r8 c8 r8 c8 r8 c8 r8 d8
+r8 d8 r8 d8 r8 d8 r8 d+8
+r8 d+8 r8 d+8 r2
+$F4 $03 r1
+
+;===============================;
+; Channel #4			;
+;===============================;
+
+#4 h-1 $EE $80
+
+(69)[r2]8
+
+@36 v100 y10 $DE $18 $0E $28 o4
+q4E r8 c16 r16 g16 r16 > c16 r16 q7E d+4 c4
+< b8 > q4E c16 r16 q7E d4 q4E c16 r16 < g16 r16 d+16 r16 c16 r16
+q7E d8 q4E d+16 r16 q7E f+4 q4E g16 r16 d+16 r16 c16 r16 < a16 r16
+q7E b8 > q4E c16 r16 q7E d4 q4E c16 r16 < q4A g16 r4^16
+(40)[r8 > q4E c16 r16 g16 r16 > c16 r16 q7E d+8. g+32 a32 a+4
+q4E a16 r16 g16 r16 q7E a4 q4E a+16 r16 g16 r16 d+16 r16 c16 r16
+< b16 r16 > c16 r16 q7E d4 q4E d+16 r16 c16 r16 < g16 r16 d+16 r16
+q7E b8 q4E a16 r16 q7E $F4 $01 b32 > c32 < b32 > c32 < b16 $F4 $01 ^16 > q4E c16 r4..]
+
+v95 < r8 q4E c16 r16 g16 r16 > c16 r16 q7E d+4 c4
+< b8 > q4E c16 r16 q7E d4 q4E d+16 r16 c16 r16 < g16 r16 d+16 r16
+> q7E d8 q4E c16 r16 < q7E b4 > q4E c16 r16 d16 r16 d+16 r16 c16 r16
+< q7E b8 q4E a16 r16 q7E b4 > q4E c16 r4..
+v95 (40)
+
+@41 v145 y12 $DE $18 $0D $30 o4
+(41)[q6F r8 f16 r16 g+16 r16 > c16 r16 q7F f4 c4
+< b8 > q6F c16 r16 q7F $F4 $01 d32 d+32 d8 $F4 $01 ^16 < q6F b16 r16 g16 r16 b16 r16 > d16 r16
+q7F d+8^24 f24 d+24 q6F d16 r16 c16 r16] > q7F c4 < q6F a+16 r16 g+16 r16
+q7F g8^24  g+24 g24 q6F f16 r16 g+16 r16 q7F g4. r8
+(41)
+> q7F c8.. $F4 $01 c+32 d64 $F4 $01 ^64 r16. q6E d+16 r16
+d16 r16 c16 r16 < q6F b16 r16 g+16 r16 q7F $F4 $01 g32 g+32 g4 $F4 $01 ^8.
+(41)
+> q7F c4 < q6F a+16 r16 g+16 r16
+q7F g8^24  g+24 g24 q6F f16 r16 g+16 r16 q7F g4. r8
+
+(69)8
+
+;===============================;
+; Channel #5			;
+;===============================;
+
+#5 h-1 $EE $80
+
+(69)8
+
+@37 v100 y10 o3 $DF ;$DE $18 $0E $28
+q4E r8 c16 r16 g16 r16 > c16 r16 q7E d+4 c4
+< b8 > q4E c16 r16 q7E d4 q4E c16 r16 < g16 r16 d+16 r16 c16 r16
+q7E d8 q4E d+16 r16 q7E f+4 q4E g16 r16 d+16 r16 c16 r16 < a16 r16
+q7E b8 > q4E c16 r16 q7E d4 q4E c16 r16 < g16 r4^16
+(50)[r8 > q4E c16 r16 g16 r16 > c16 r16 q7E d+8. g+32 a32 a+4
+q4E a16 r16 g16 r16 q7E a4 q4E a+16 r16 g16 r16 d+16 r16 c16 r16
+< b16 r16 > c16 r16 q7E d4 q4E d+16 r16 c16 r16 < g16 r16 d+16 r16
+q7E b8 q4E a16 r16 q7E $F4 $01 b32 > c32 < b32 > c32 < b16 $F4 $01 ^16 > q4E c16 r4..]
+
+v120 r8 q4E d+16 r16 c16 r16 < g16 r16 q7E b4 > g+4
+g8 q4E f+16 r16 q7E g4 > q4E c16 r16 < g16 r16 d+16 r16 c16 r16
+< q7E b8 > q4E d+16 r16 q7E f4 q4E g16 r16 d+16 r16 c16 r16 < a16 r16
+q7E g8 q4E b16 r16 > q7E d4 q4E c16 r4..
+v95 (50)
+
+@40 v160 y9 o4 $DE $18 $0D $20 
+(51)[q4E r8 f16 r16 g+16 r16 > c16 r16 q7E f4 c4
+< b8 > q4E c16 r16 q7E d32 d+32 d8. < q4E b16 r16 g16 r16 b16 r16 > d16 r16
+q7E d+8^24 f24 d+24 q4E d16 r16 c16 r16] > q7E c4 < q4E a+16 r16 g+16 r16
+q7E g8^24  g+24 g24 q4E f16 r16 g+16 r16 q7E g4. r8
+(51)
+> q7E c8.. c+32 q4E d16 r16 d+16 r16
+d16 r16 c16 r16 < q4E b16 r16 g+16 r16 q7E  g32 g+32 g4..
+(51)
+> q7E c4 < q4E a+16 r16 g+16 r16
+q7E g8^24  g+24 g24 q4E f16 r16 g+16 r16 q7E g4. r8
+
+(69)8
+
+;===============================;
+; Channel #6 (SFX)		;
+;===============================;
+
+#6 h-1 $EE $80
+
+(69)33
+
+@36 v95 y10 $DE $18 $0E $28 o4
+q7E c8. d32 d+32 g4
+q4E f+16 r16 d16 r16 q7E f+4 q4E g16 r16 d+16 r16 c16 r16 < f+16 r16
+g16 r16 g+16 r16 q7E b4 > q4E c16 r16 < g16 r16 d+16 r16 c16 r16
+< q7E b8 > q4E c16 r16 $F4 $01 g32 g+32 g32 g+32 g16 $F4 $01 ^16 q4E c16 r4..
+
+@40 v165 y9 o3 $EE $90 $DF
+(60)[q4E r8 f16 r16 g+16 r16 > c16 r16 q7E f4 c4
+< b8 > q4E c16 r16 q7E d32 d+32 d8. < q4E b16 r16 g16 r16 b16 r16 > d16 r16
+q7E d+8^24 f24 d+24 q4E d16 r16 c16 r16] > q7E c4 < q4E a+16 r16 g+16 r16
+q7E g8^24  g+24 g24 q4E f16 r16 g+16 r16 q7E g4. r8
+(60)
+> q7E c8..  c+32 q4E d32  ^32 r16 d+16 r16
+d16 r16 c16 r16 < q4E b16 r16 g+16 r16 q7E g32 g+32 g4..
+(60)
+> q7E c4 < q4E a+16 r16 g+16 r16
+q7E g8^24  g+24 g24 q4E f16 r16 g+16 r16 q7E g4. r8
+
+(69)8
+
+;===============================;
+; Channel #7 (SFX)		;
+;===============================;
+
+#7 h-1 $EE $70
+
+(69)40
+
+@42 v80 y10 o4
+(70)[q4E r8 g+16 r16 > c16 r16 f16 r16 q7E g+4 f4
+d8 q4E d+16 r16 $F4 $01 f32 f+32 f8 $F4 $01 ^16 q4E d16 r16 < b16 r16 > c16 r16 f16 r16
+q7E c8^24 d24 c24 < q4E b16 r16 g+16 r16] > q7E g+4 q4E g16 r16 f16 r16
+q7E d+8^24 e24 d+24 q4E c+16 r16 e16 r16 d+2
+(70) q7E g+8.. a32 q4E b16 r16 > c16 r16
+< b16 r16 g+16 r16 g16 r16 f16 r16 < b32 > c32 < b4..
+(70) > q7E g+4 q4E g16 r16 f16 r16
+q7E d+8^24 e24 d+24 q4E c+16 r16 e16 r16 d+2
+
+(69)8

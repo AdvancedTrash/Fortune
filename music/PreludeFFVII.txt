@@ -1,0 +1,303 @@
+#amk 2
+;************************
+
+; SPC Generator Info
+#SPC
+{
+    #author  "Nobuo Uematsu"
+    #title   "Prelude"
+    #game    "Final Fantasy VII"
+    #comment "Ported by Ahrion"
+}
+
+#path "PreludeVII"
+
+#samples
+{
+	#optimized
+	"Bassoon.brr"
+	"Clarinet.brr"
+	"Flute.brr"
+	"Oboe.brr"
+	"Strings.brr"
+	"Trumpet1.brr"
+	"Tri.brr"
+}
+
+#instruments
+{     
+	"Bassoon.brr"	$F2 $E0 $00 $0A $80 ; @30
+	"Clarinet.brr"	$F4 $E0 $00 $03 $02 ; @31
+	"Flute.brr"	$F4 $E0 $00 $02 $00 ; @32
+	"Oboe.brr"	$F4 $E0 $00 $06 $00 ; @33
+	"Strings.brr"	$F4 $E0 $00 $03 $A8 ; @34
+	"Trumpet1.brr"	$F6 $E0 $00 $03 $C8 ; @35
+	"Tri.brr"	$FF $EC $00 $04 $00 ; @36
+}
+
+w170
+t32
+
+"Square1 = v180"
+"Square2 = y14 v80"
+"Square3 = y7 v80"
+
+"Flute = @32 y12 v160"
+"Flute2 = v145"
+"Oboe = @33 y13 v150"
+"Clarinet = @31 y9 v160"
+"Clarinet2 = v145"
+"Bassoon = @30 y8 v160"
+"Strings = @34 v175"
+"Strings2 = @34 v160"
+"Trumpet1 = y14 v155"
+"Trumpet2 = v145"
+"Trumpet3 = v165"
+"Trumpet4 = v140"
+
+"Atk1 = $ED $7F $EC"
+"Atk2 = $ED $7E $EC"
+"Atk3 = $ED $7D $EC"
+"Atk4 = $ED $7C $EC"
+
+"BassoonATK = $ED $78 $E0"
+
+"Atk = $ED $77 $E0"
+"Atk5 = $ED $7A $E0"
+"Atk6 = $ED $78 $E0"
+
+"Rel = $ED $7F $E9"
+
+"VIB = $DE $60 $15 $0C $EA $0C"
+
+; Echo
+$EF $FF $24 $24
+$F1 $05 $46 $01
+
+$F4 $02
+
+
+; +---------------------+
+; |     Channel #0	|
+; |     Square		|
+; |     Strings		|
+; +---------------------+
+
+#0
+o2
+
+Square1
+(11)[
+[[@36
+c16 d16 e16 g16 > Atk2 c16 d16 e16 g16 > Atk3 c16 d16 e16 g16 Atk4 > c16 d16 e16 g16 > c16 < g16 e16 d16 c16 < Atk3 g16 e16 d16 c16 < Atk2 g16 e16 d16 c16 < Atk1 g16 e16 d16
+< a16 b16 > c16 e16 Atk2 a16 b16 > c16 e16 Atk3 a16 b16 > c16 e16 Atk4 a16 b16 > c16 e16 a16 e16 c16 < b16 a16 Atk3 e16 c16 < b16 a16 Atk2 e16 c16 < b16 a16 Atk1 e16 c16 < b16 >
+]]2
+< a16 > c16 f16 g16 Atk2 a16 > c16 f16 g16 Atk3 a16 > c16 f16 g16 Atk4 a16 > c16 f16 g16 a16 g16 f16 c16 < a16 Atk3 g16 f16 c16 < a16 Atk2 g16 f16 c16 < a16 Atk1 g16 f16 c16
+< b16 > d16 g16 a16 Atk2 b16 > d16 g16 a16 Atk3 b16 > d16 g16 a16 Atk4 b16 > d16 g16 a16 b16 a16 g16 d16 < b16 Atk3 a16 g16 d16 < b16 Atk2 a16 g16 d16 < b16 Atk1 a16 g16 d16
+< g+16 > c16 d+16 g16 Atk2 g+16 > c16 d+16 g16 Atk3 g+16 > c16 d+16 g16 Atk4 g+16 > c16 d+16 g16 g+16 g16 d+16 c16 < g+16 Atk3 g16 d+16 c16 < g+16 Atk2 g16 d+16 c16 < g+16 Atk1 g16 d+16 c16
+< a+16 > d16 f16 a16 Atk2 a+16 > d16 f16 a16 Atk3 a+16 > d16 f16 a16 Atk4 a+16 > d16 f16 a16 a+16 a16 f16 d16 < a+16 Atk3 a16 f16 d16 < a+16 Atk2 a16 f16 d16 < ]
+
+a+16 Atk1 a16 f16 d16
+
+/
+
+y7
+[[Strings c1^1 Atk < a1. Rel ^2 > @34 c1^1 Atk < a1. Rel ^2 Atk f1^1 g1^1 g+1^1 a+1. Rel ^2 >]]2
+
+Atk c1^1 < f1 g2. Rel ^4 
+
+
+
+; +---------------------+
+; |     Channel #1	|
+; |     Square		|
+; |     Flute		|
+; +---------------------+
+
+#1
+o2
+
+r8^=8
+Square2
+(11)
+
+a+16 a=4
+
+/
+
+Flute VIB
+>> e1 Atk d2 f2 e1. Rel ^2 @32 e1 Atk d2 f2 $F4 $01 Atk5 f8 g16 $F4 $01 ^16 e1^4 Rel ^2 Atk c1 < b2 > c2 d2. e4 f2 d2 d4 $F4 $01 Atk5 c8 < a+16 $F4 $01 ^16 g+1. > d+4 $F4 $01 Atk5 d8 c16 $F4 $01 ^16 < a+1 Rel ^2 >
+
+Flute2
+@32 e1 Atk d2 f2 e1^1 e1 d2 f2 f8 g8 e1.. f1^1 g1^1 f1^1 g1^1 e1^1 
+$DF
+
+@36 Square2
+r8^=8
+(21)[
+<<< g+16 > c16 d16 f16 g+16 > c16 d16 f16 g+16 > c16 d16 f16 g+16 > c16 d16 f16 <<<< g16 > c16 d16 f16 g16 > c16 d16 f16 g16 > c16 d16 f16]
+g16 > c=4 
+
+
+
+; +---------------------+
+; |     Channel #2	|
+; |     Square		|
+; |     Clarinet	|
+; +---------------------+
+
+#2
+o2
+
+r8^16^=4
+Square3
+(11)
+a+=8
+
+/
+
+Clarinet VIB
+>> c1 Atk < b2 > d2 c1. Rel ^4. r8 @31 c1 Atk < b2 > d2 $F4 $01 Atk5 d8 e16 $F4 $01 ^16 c1^4 Rel ^4. r8 < @31 a1 Atk g2 a2 b2. > c4 d2 g2 f4 $F4 $01 Atk5 d+8 d16 $F4 $01 ^16 c1^4^8 r8 g4 $F4 $01 Atk5 f8 d+16 $F4 $01 ^16 d1 Rel ^2 <
+ 
+Clarinet2
+@31 g1^1 Atk a1.... r16 g1^1 a1^1 a1 g2 a2 b2. > c4d2 < b2 g+1^1 a+1^1 g1^1 >
+$DF
+
+@36 Square3
+r8^16^=4
+(21)
+g=8
+
+
+
+; +---------------------+
+; |     Channel #3	|
+; |     Strings		|
+; +---------------------+
+
+#3
+o4
+
+[[r2]]32
+
+/
+
+y14
+[[Strings2 e1 Atk d2 f2 e1. Rel ^2 @34 e1 Atk d2 f2 $F4 $01 Atk5 f8 g16 $F4 $01 ^16 e1^4 Rel ^2 Atk f1^1 g1^1 f1^1 g1. Rel ^2]]2
+
+Atk e1^1 f1 g2. Rel ^4  
+
+
+
+; +---------------------+
+; |     Channel #4	|
+; |     Oboe		|
+; |     Trumpet		|
+; +---------------------+
+
+#4
+o4
+
+[[r2]]32
+
+/
+
+r1^1
+
+Oboe VIB
+$ED $72 $E0 a1 Atk e2 c2 g1. Rel ^4. r1^8 Atk c4 d4 e4 g4 a1 g2 f2 g1... r1^8 c4 d4 d+4 f4 g4 $F4 $01 Atk5 f8 d+16 $F4 $01 ^16 d1 Rel ^2
+$DF
+
+@35 Trumpet1
+> c1 Atk6 < b2 > d2 c1... r8 @35 c1 Atk6 < b2 > d2 d8 e8 c1^2^8^16 r16
+
+Trumpet2
+< a1 g2 a2 b2. > c4 d4.. r16 g2
+
+Trumpet3
+f4 d+8 d8 c1^4^8^16 r16 g4 f8 d+8 d1
+
+Trumpet4
+< a+2 > @35 c1^1 <<
+
+Strings y8
+Atk c1 d2. Rel ^4 
+
+
+
+; +---------------------+
+; |     Channel #5	|
+; |     Strings		|
+; |     Trumpet		|
+; +---------------------+
+
+#5
+o3
+
+[[r2]]32
+
+/
+
+Strings y8
+c1 Atk < b2 > d2 c1. Rel ^2 @34 c1 Atk < b2 > d2 d8 e8 c1^4 Rel ^2 c1 < b2 > c2 d2. e4 f2 d2 c1^1 d1. Rel ^2 >>
+
+@35 Trumpet1
+e1 Atk6 d2 f2 e1... r8 @35 e1 Atk6 d2 f2 f8 g8 e1^2^8 r8
+
+Trumpet2
+c1 < b2 > c2 d2. e4 f4.. r16 d2
+
+Trumpet3
+d4 c8 < a+8 g+1^4^8^16 r16 > d+4 d8 c8 < a+1
+
+Trumpet4
+f2 @35 e1^1 <
+
+Strings y12
+Atk g+1 > c2. Rel ^4  
+
+
+
+; +---------------------+
+; |     Channel #6	|
+; |     Square		|
+; +---------------------+
+
+#6
+o2
+
+[[r2]]32
+
+/
+
+@36 Square1
+(11)
+a+16 Atk1 a16 f16 d16
+(11)
+a+16 Atk1 a16 f16 d16
+
+c16 d16 e16 g16 > Atk5 c16 d16 e16 g16 > Atk3 c16 d16 e16 g16 > Atk4 c16 d16 e16 g16 > c16 < g16 e16 d16 c16 < Atk3 g16 e16 d16 c16 < Atk5 g16 e16 d16 c16 < Atk1 g16 e16 d16 >>
+
+(21)
+
+g16 > c16 d16 g16 
+
+
+
+; +---------------------+
+; |     Channel #7	|
+; |     Bassoon		|
+; +---------------------+
+
+#7
+o5
+[[r2]]32
+
+/
+
+r1^1
+
+Bassoon VIB
+c1 < Atk b2 a2 > e1. Rel ^4. r1^8 < Atk a4 Atk b4 > c4 e4 f1 e2 d2 < b2. > c4 d2 < b2 r1 g+4 a+4 > c4 d4 d+4 $F4 $01 Atk5 d8 c16 $F4 $01 ^16 < a+1 Rel ^2
+
+Atk c1^1 < a1.... r16 > c1^1 < a1.... r16 f1^1 g1.... r16 g+1^1 a+1.... r16 > c1^1 r1^1 

@@ -1,0 +1,266 @@
+#path "SCD"
+
+#SPC
+{
+	#title "Stardust Speedway (PAST)"
+	#game "Sonic CD"
+	#author "Various Authors"
+}
+
+#samples
+{
+	#optimized
+	"Closed Hihat.brr"
+	"DJ Scratch 1.brr"
+	"DJ Scratch 2.brr"
+	"Guitar Chord 1.brr"
+	"Guitar Chord 2.brr"
+	"Kick.brr"
+	"Open Hihat.brr"
+	"Organ Chord 1.brr"
+	"Organ Chord 2.brr"
+	"Piano.brr"
+	"Sax.brr"
+	"Snare.brr"
+	"Synthbass.brr"
+	"Tom.brr"
+	"Voice 1.brr"
+	"Voice 2.brr"
+	"Vox Chord 1.brr"
+	"Vox Chord 2.brr"
+}
+
+#instruments
+{
+	"Closed Hihat.brr" $FF $E0 $B8 $03 $F4		;@30 chh
+	"DJ Scratch 1.brr" $FF $E0 $B8 $03 $F4		;@31 scratch 1
+	"DJ Scratch 2.brr" $FF $E0 $B8 $03 $F4		;@32 scratch 2
+	"Guitar Chord 1.brr" $FF $EF $B8 $03 $F4	;@33 gt chord 1
+	"Kick.brr" $FF $E0 $B8 $03 $F4			;@34 kick
+	"Open Hihat.brr" $FF $E0 $B8 $03 $F4		;@35 ohh
+	"Piano.brr" $FF $F0 $B8 $03 $F4			;@36 piano
+	"Sax.brr" $FF $E0 $B8 $03 $F4			;@37 sax
+	"Snare.brr" $FF $E0 $B8 $03 $F4			;@38 snare
+	"Synthbass.brr" $FF $E0 $B8 $03 $F4		;@39 synthbass
+	"Tom.brr" $FF $E0 $B8 $03 $F4			;@40 tom
+	"Voice 2.brr" $FF $E0 $B8 $03 $F4		;@41 huehuehey
+	"Voice 1.brr" $FF $E0 $B8 $03 $F4		;@42 scat
+	"Guitar Chord 2.brr" $FF $EF $B8 $03 $F4	;@43 gt chord 2
+	"Organ Chord 1.brr" $FF $E0 $B8 $03 $F4		;@44 organ chord 1
+	"Organ Chord 2.brr" $FF $E0 $B8 $03 $F4		;@45 organ chord 2
+	"Vox Chord 1.brr" $F4 $F4 $B8 $03 $F4		;@46 vox chord 1
+	"Vox Chord 2.brr" $F4 $F4 $B8 $03 $F4		;@47 vox chord 2
+}
+
+(!800)[$F4 $09]
+(!900)[$FA $01 $B8]
+
+#amk 2
+
+w255 t72
+
+#0
+
+$F4 $02
+
+@41 v140 y10
+
+o3[d2.r8d4.d4]4
+
+[r2.]7 ^4.
+
+@37 v110
+
+o3g16a16>c16d16e16g16
+
+
+/
+
+@37 v110 y10
+
+(!800, -1)
+(!900, 3)
+
+(000)[
+o4 q6F a8 q68 a16a8r16 q6F g8 q68 g16g8r16
+q6F e8 q68 e16e8r16 q6F e-8 q68 e-16e-8r16
+q6F d8c16d8c16 q68 c8 q24 c8r2
+o3 q6F g8a16g8a16>c8<a16g8a16 q68 a8 q24 a8r8
+]
+
+q7F o3
+
+(001)[
+@31 y14 g-8.g-8. @32 y6 g-4.
+@31 y14 b-16b-16b-16 b-16b-16b-16 @32 y6 g-4^16
+@31 y14 b-16g-8. q3F b-8 q7F b-16 @32 y6 g-4.
+]
+
+@37 y10 (000)(001)
+
+@42 y7 (!900, 0)
+
+(002)[
+o3e8>e16 q3F <a8 q7F b16 q3F e8 q7F >d16 q3F d8 q7F d16
+q3F g8d8r16<b-8r16 q7F a16 q3F g8 q7F e16
+o2a8>e16 q3F a8r16a8 q7F e16 q3F <a8 q7F >a16
+o2r8a16 q3F >>d-8 q7F e16 q3F g8 q7F a16b-16a16g16
+]4
+
+@36 v130 y10
+
+(003)[
+o4r4.d8.c8.<b-4^16a4f8.f8.g2.r2^16
+o4r4.d8.e-8.d4^16c4<b-8.a8.g2.r2^16
+]4
+
+[r1]127
+
+#1
+
+[r2.]4
+
+@39 v140 y10 q5F
+
+(!800, -1)
+(!900, 3)
+
+o4[e8.g8.r4^16g16e8.<b8.>d8.g8.a8.r4.g8.r8a16e8.g8.d8.]3
+
+/
+
+*8
+
+[[
+o4(100)[q4F c8.c8.c8.c8.]
+o4(101)[q4F d8.d8.d8.d8.]
+o4(102)[q4F e8.e8. q5F e8b16 q4F e8.]
+o4 q4F d8.d8. q5F d8a16d8d-16
+]]7
+(100)(101)(102)
+q5F e8e16g-8.g8.a8b16
+
+[r1]127
+
+#2
+
+@33 v100 q5F
+
+(!800, -1)
+(!900, 3)
+
+o3[
+@33 r8. y10 b-8 q58 y20 b-8r8 q5F y10 b-8 q58 y20 b-8r8 q5F y10 b-8 q58 y20 b-8r16 q5F y10 b-4
+@43 r8. y10 b-8 q58 y20 b-8r8 q5F y10 b-8 q58 y20 b-8r8 q5F y10 b-8 q58 y20 b-8r16 q5F y10 b-4
+]4
+
+/
+
+*8
+
+[[
+@45 o4r8.d8.r8.d8.
+[r8.e8.r8.e8.]
+@44 *
+@45 *
+]]8
+
+#3
+
+r8.
+
+@33 v60 q5F
+
+(!800, -1)
+(!900, 3)
+
+o3[
+@33 r8. y10 b-8 q58 y0 b-8r8 q5F y10 b-8 q58 y0 b-8r8 q5F y10 b-8 q58 y0 b-8r16 q5F y10 b-4
+@43 r8. y10 b-8 q58 y0 b-8r8 q5F y10 b-8 q58 y0 b-8r8 q5F y10 b-8 q58 y0 b-8r16 q5F y10 b-4]3
+@33 r8. y10 b-8 q58 y0 b-8r8 q5F y10 b-8 q58 y0 b-8r8 q5F y10 b-8 q58 y0 b-8r16 q5F y10 b-4
+@43 r8. y10 b-8 q58 y0 b-8r8 q5F y10 b-8 q58 y0 b-8r8 q5F y10 b-8 q58 y0 b-8r16 q5F y10 b-16
+
+/
+
+r8.
+
+*8
+
+y0
+
+[[
+@45 o4r8.d8.r8.d8.
+[r8.e8.r8.e8.]
+@44 *
+@45 *
+]]8
+
+#4
+
+v150 o4
+
+[[
+@30 y8 q78 e16 q7B e16 q7F e16 @35 y12 f8. [@30 y8 e8e16 @35 y12 f8.]3
+]]8
+
+/
+
+[[
+@30 y8 q78 e16 q7B e16 q7F e16 @35 y12 f8. *3
+]]127
+
+[r1]127
+
+#5
+
+[r2.]6
+
+@40 v140 y17 o4b8b16b16b16b16 y14 g-8g-16g-16g-16g-16 y6 <b16b16b16b16b16b16 y3 e16e16e16e16e16e16
+
+(500)[@34 v180 y10 o4d-8.d-8. @38 o3a-4^16a-8. @34 o4d-16d-8. @38 o3a-8 @34 o4d-8. @38 o3a-16]
+(501)[@34 y10 o4d-8.d-8. @38 o3a-8a-8.a-8. @34 o4d-16d-8. @38 o3a-8 @34 o4d-8. @38 o3a-16]
+(500)
+(502)[@34 o4d-8 @38 o3a-16 @34 o4d-8. @38 o3a-8 @34 o4d-8. @38 o3a-8. @34 o4d-16d-8 @38 o3a-16a-16a-16 @40 v140 y14 o4g-16g-8 y6 <b16]
+
+/
+
+(500)(501)(500)
+(503)[@34 v180 y10 o4d-8.d-8. @38 o3a-4^16a-8. @34 o4d-16d-8. @38 o3a-8 @34 o4d-16 @38 o3a-16a-16a-16]
+(500)(501)(500)(502)
+
+[[(500)(501)(500)(503)]]127
+
+[r1]127
+
+#6
+
+r8.
+
+@41 v90 y10
+
+o3[d2.r8d4.d4]4
+
+[r2.]7 ^4.
+
+@37 v60
+
+o3g16a16>c16 /
+
+o4d16e16g16
+
+@37 v60 (000)(001) @37 y10 (000)(001)
+
+@42 y15
+
+(002)4
+
+@36 v90 y10
+
+(003)
+
+o4r4.d8.c8.<b-4^16a4f8.f8.g2.r2^16
+o4r4.d8.e-8.d4^16c4<b-8.a8.g2.r4.
+
+v110 [@46 o3a-2.b-2. @47 b-2. @46 b-2.]3 @46 o3a-2.b-2. @47 b-2. v0 r2.
+
+[r1]127

@@ -1,0 +1,282 @@
+"gain=60"
+(!gain)[$F6 $05 $7F]
+"reset=61"
+(!reset)[$F6 $05 $FF]
+"gain1=62"
+(!gain1)[$F6 $15 $7F]
+"reset1=63"
+(!reset1)[$F6 $15 $FF]
+"gain2=64"
+(!gain2)[$F6 $25 $7F]
+"reset2=65"
+(!reset2)[$F6 $25 $FF]
+"gain4=66"
+(!gain4)[$F6 $45 $7F]
+"reset4=67"
+(!reset4)[$F6 $45 $FF]
+"gain5=68"
+(!gain5)[$F6 $55 $7F]
+"reset5=69"
+(!reset5)[$F6 $55 $FF]
+"reset5-2=70"
+(!reset5-2)[$F6 $55 $F8]
+"gain6=71"
+(!gain6)[$F6 $65 $7F]
+"reset6=72"
+(!reset6)[$F6 $65 $FF]
+#samples
+{
+	"optimized/00 SMW @0.brr"
+	"optimized/01 SMW @1.brr"
+	"optimized/02 SMW @2.brr"
+	"optimized/03 SMW @3.brr"
+	"optimized/04 SMW @4.brr"
+	"optimized/05 SMW @8.brr"
+	"optimized/06 SMW @22.brr"
+	"optimized/07 SMW @5.brr"
+	"optimized/08 SMW @6.brr"
+	"EMPTY.brr"
+	"optimized/0A SMW @9.brr"
+	"optimized/0B SMW @10.brr"
+	"optimized/0C SMW @13.brr"
+	"optimized/0D SMW @14.brr"
+	"EMPTY.brr"
+	"optimized/0F SMW @21.brr"
+	"EMPTY.brr"
+	"EMPTY.brr"
+	"optimized/12 SMW @15.brr"
+	"EMPTY.brr"
+	"One Winged Angel/Flute.brr"
+	"One Winged Angel/Timpani.brr"
+	"One Winged Angel/Brass.brr"
+	"One Winged Angel/Strings.brr"
+	"One Winged Angel/ALTTP Wind.brr"
+	"One Winged Angel/Snare.brr"
+	"One Winged Angel/Crash Cymbol.brr"
+	"One Winged Angel/Piano.brr"
+	"One Winged Angel/Piano Low.brr"
+	"One Winged Angel/Bell.brr"
+	"One Winged Angel/Chior.brr"
+	"One Winged Angel/MChoir.brr"
+	"One Winged Angel/Horn.brr"
+}
+
+#instruments
+{
+	"One Winged Angel/Flute.brr" $FF $E0 $BD $03 $00;30
+	"One Winged Angel/Timpani.brr" $FF $F2 $BD $0C $E0;31
+	"One Winged Angel/Brass.brr" $FF $E0 $BB $06 $00;32
+	"One Winged Angel/Strings.brr" $FE $E0 $BC $03 $D2;33
+	"One Winged Angel/ALTTP Wind.brr" $BF $72 $B8 $04 $00;34
+	"One Winged Angel/Piano.brr" $FF $F2 $BC $06 $00;35
+	"One Winged Angel/Chior.brr" $F8 $E0 $B5 $02 $E0
+	"One Winged Angel/MChoir.brr" $FF $E0 $B4 $03 $30;37
+	"One Winged Angel/Horn.brr" $FF $E0 $BA $02 $AB;38
+	"One Winged Angel/Crash Cymbol.brr" $FF $F1 $B8 $02 $50;39
+	"One Winged Angel/Snare.brr" $FF $E0 $B8 $05 $00;40
+	"One Winged Angel/Piano Low.brr" $FF $ED $B5 $03 $00;41
+	"One Winged Angel/Bell.brr" $FF $EE $B8 $04 $00;42
+}
+#amk 2
+$F4 $02
+
+w220
+t48
+#0(!gain, 3)(!reset, -1)@32v200y7(2)[o3q1Fe8q18e8]8@30y9[[$F4 $01 q77 o6d+32e32$F4 $01 ^32r8^32]]8y7@32(2)19^8o4@38$F4 $01 y13q78d24d+24e24a+16$F4 $01^16$DE $60 $13 $20 @32v200q1Cy7g4q7Be2q5Be8d+8e8f+4q7Bc1q5B^2(2)32q7D<d2c4<a+8a4>f+4f4d+8d4<g4a4a+8[o2q1Fb8q18b8]8(13)[o3q1Fd8q18d8]10$DF
+q7Eo4f2
+(13)2q7Eo4d+2
+(13)2q7Eo4e2
+(13)2q7Eo4g+2
+(13)2q7Eo4a2
+(13)2q7Eo4f+2
+(13)2q7Eo4f2
+(13)2q7Eo4b2/
+@32v220y7(14)[o2q7Fa8>[[q1Fd8]]9[[$F4 $01 q7Dc+8<a+16$F4 $01^16a8>q1Fd8]]2[[q1Fd8]]8
+$F4 $01 q7Dc+8<a+16$F4 $01^16a8>q1Fd8$F4 $01 q7Dc+8<a+16$F4 $01^16]
+(15)[>f8d+8d8r4@33v160y10[[o4q7Ff16q78f16]]3q7Fe16q78e16q78e16q75e16q7Fg16q78g16q78g16q75g16q7Ff4q7Fe16q78e16q7Fg16q78g16@32v220y7]2
+(14)
+(15)2
+[[o2q1Fa+8q18a+8>q1Fa+8q18a+8]]16
+(14)
+q7Fo3f8d+8d8r4v200(28)[q0F>c4<b4a4g4q6Ff4q1Fe8
+q7Fd8d8<b8[[q1Fb8]]5>c8c8c+8c+8d8d8d+8d+8]
+@33y10[[$F6 $05 $7F^2o4q77b8g8>e8<b8>g8e2^4.r4e8d+8d8d+2^8e8d+8f+8.f8.e8d+1^1]]2
+y13@32[[q1Do3a+4a+4a+4y7q18e4y13q1Da+4y7q18e4y13q1Da+4a+4b4b4b4q18y7e4y13q1Db4q18y7e4y13q1Db4b4]]2
+r4v240y7o3q7Be8e8g8.f+8.f8e1r4e8e8g8.e8.g8a+4b4^2
+r1^1
+(37)[o3q7Fd8q19o4a8a8q7Fo3c8q19o4g8g8]q7Fo3d+8q19o4a+8a+8(37)q7Fo3f8q19o5c16c16c16r16
+q7Ao3c1c+1q7Cd4d4d8.c8.<a+8[[q1Fg+8q16g+8]]4q7Ca+4a+4a+8.>c8.d8[[q1Fd+8q16d+8]]3r4[[^2]]8
+v220[ [[q1Fd8q18d8q1Fc+8q18c+8]]2[[q1Fd8q18d8]]3q1Fc+8q18c+8]6
+(15)2
+
+#1@33(!gain1, 3)(!reset1, -1)v160y8(3)[o4q1Fd8q18d8]8y14$EB $03 $09 $02 [[o6q59d8.r16]]8$EB $00 $00 $00 y8(3)8v95q5F@35[[o4e16b16g16>d16<a16>e16<a+16>g16]]4v160y8@33(3)4q1Fo4d8
+@32v200q1Fy8o3g4q7Fe2e8d+8e8f+4c1^2r1^1(11)[q7Co4f+4q1Cg12g12g12q7Ca4q1Cb12b12b12>q7Cc4<q1Cb12b12b12q7Ca+4q1Cb12b12b12q7C>c+4<q1Cb12b12b12q7C>d4<q1Cb12b12b12q7C>e4<q1Cb12b12b12q7Ca+4q1Cb12b12b12]y13$F4 $01 @38q79o4f+16g16a+16>f+16e2$F4 $01^8q49c+16d+16q69e8q19f+8q68e8q19d+8q69c+8c8<a+8g+8r2^4.q67>c8<g8g+8>d+8d8<a8>g8r4.^2@31q7Eo1e2[[^2]]8@38o5q7Ad2r2c2r2c+2r2d+2r2f2r2d+2r2c2r2f+2/
+r2
+[[^2]]15$DE $60 $13 $20 v130@38(27)[o5y13q7Fd4<a12b12>c+12d2r4f12a+12>c+12f4c+8<a+8a1[[q1Fa8a8q7Fa+4]]2]
+[[>f8f8d8r8^4<q5Da12a12g12q7Df2^4r4]]2
+^4q7Co5c+1f1a+1>c+1<c+1f1a+1>c+2^4
+(27)
+o6f8f8d8r4$FA $02 $0C @32y8(28)$FA $02 $00
+@38y13(34)[r1^4q7Eo4b8g8>e8<b8>g8e8b2^4q1Eb12b12b12q7Eb2^2r4]>c8<b8a+8.b8^4..>c8<b8a+8.b8^8.(34)>c8<b8>d8.c+8.c8<b1
+v180@32y8[o4q7Fa+8q0Fg8q7Fa+8q0Fg8[[$F4 $01 q7Fa+16a32$F4 $01^32g8f+8q0Fg8]]2q7Fa8q0Fg8q7Fa+8q0Fa8
+o4q7Fb8q0Fg8q7Fb8q0Fg8[[$F4 $01 q7Fb16a32$F4 $01^32g8f+8q0Fg8]]2q7Fa8q0Fg8q7Fb8q0Fg8]2q7Fo5d+8e16r2^4.^8.@33y9q79f+8g16r16e8.<b8.g8>f+4e1^2^4
+@35$E8 $FF $4A o4[[q78e16g16d16g16]]4[[e16g16c+16g16]]4r8
+v120@38$FA $02 $0C y12(38)[o4q1Ff8q0Ff4q1Fd+8q0Fd+4q1Ff+8q0Ff+4q1Ff8q0Ff4q1Fd+8q0Fd+4q1Fg+16g+16g+16r16]r1^1
+$FA $02 $00 o5q7Fa4a4a8.a8.a8>c1<a4a4a8.a8.a8>c2^4r4
+[[^2]]16^8
+v140@38y12[[o5q7Fg16g+16a1^2^8r4]]3o5q7Fg16g+16a1^2^8r8
+[[y13@38q7Ff8f8d8r2^8@42<d1]]2
+
+#2@33(!gain2, 3)(!reset2, -1)v150y12(4)[o5q1Fe8q18e8]8[[$F4 $01 o5q79a+8a32$F4 $01 ^32r16]]8(4)8(7)[$F4 $01 [[o5q79b24>c24<b24a+24b24a+24a24a+24a24g24a24g24]]3f+24g24f+24e24f+24e24d+24e24d+24<b24>c24<]b48$F4 $01^48v150y12@33(4)14o5q1Fe8@38[[$F4 $01 o4y13q7Bd24d+24e24a+16$F4 $01^32r32]]2@33v150y12o5q78e32r16.(4)7y9(11)y8o4q7Cf+16g16a+16>f+16e2^8q4Cc+16d+16q6Ce8q1Cf+8q6Ce8q1Cd+8q6Cc+8c8<a+8g+8v170q7Fd8<a8a+8>a8g+8d+8>c+8c8<g8g+8>d+8d8<a8>g8f+8c+8d8a+8a8e8f8q7D>c+1^1
+(!reset2, 0) v110 y12 $ED $74 $EC $FA $02 $FB (12)[$F4 $01 q7Fo5a24a+24b24>c24c+24d24d+24d24c+24c24<b24a+24
+o5a24a+24b24>c24c+24d24d+24d24c+24c24<b24a+48$F4 $01^48]2
+(!gain2, 3)(!reset2, -1)
+$FA $02 $00
+@33v185y9q7Fo4a1
+o4g1
+o4a1
+o5c1
+o5d1
+o4a+1
+o4a1
+o5d+1/
+@33v160y12
+(18)[ [[o4q7Fa16q78a16]]5q7Fg+16q78g+16$F4 $01 q7Fa8>q7Aa32$F4 $01^32r16<q7Fa16q78a16q7Fa16q78a16$F4 $01 q7Fo4a+8>q7Aa+32$F4 $01^32r16o4q7Fa16q78a16q7Fa16q78a16$F4 $01 q7Fo4a+8>q7Aa+32$F4 $01^32r16 ]2
+(21)[q7Fo5f8f8d8[[o5q7Fd16q78d16]]13]2
+(18)2
+(21)2
+[[r4y8o4q7Bf4e4f+4r1^4f4f4e4r1]]2y12
+(18)2
+(21)
+q7Fo5f8f8d8r4.q78@38o6d2<q7Af2^4
+@33(31)[$FA $01 $BC r4o4q7Cb8g8>e8<b8>g8e8a+8g2^4.r4>c8<b8a+8b2^8>c8<b8>d8.c+8.c8<b1^1]2
+v150[o5q7Fa+8q0Fg8q7Fa+8q0Fg8[[q7Fa+16a16g8f+8q0Fg8]]2q7Fa8q0Fg8q7Fa+8q0Fa8
+o5q7Fb8q0Fg8q7Fb8q0Dg8[[q7Fb16a16g8f+8q0Fg8]]2q7Fa8q0Fg8q7Fb8q0Dg8]2(35)[o6q7Fd+8e16r2^4.^8.d+8e16r16<b8.g8.e8>d4c+1^2^4]
+y10v60$E8 $C0 $94 [[q1Fo4a+8]]15r4
+y9v170(38)
+v120y12(36)[q7Fo6d16c16<a+8a8>c8<a+8g8a4.g16a16a+16a16g16f16e8g8f8d8]
+v180o4q7Ad4d4d8.d8.d8f1d4d4d8.d8.d8f2^4r4[[^1]]4
+y12@33[[o6q08d4$DD $00 $09 $C1]]48
+v160(21)2
+
+#3v210@31(1)[y13o1q7Fe4>q7Cy7e4]4^1^1(1)31y13o1q7Fe4>q7Cy7e4d2c4<a+8a2>f4d+8d2<a4a+8b2y13[[q7Fe2]]7[e4>v130$E8 $30 $D2y7[[q7Cd24]]6<y13q7Fe2]7e4>v130$E8 $30 $D2y7[[q7Cd24]]6<y13q7Fe4y7q7Ca24q7Aa24q78a24a24q77a24q76a24/
+@31>y8v210q7D[[d2]]8[[d8d8d1^2^4]]2[[d2]]8[[d8d8d2<a+12a+12a+12a+1]]2
+[[y13o1q7Fa+4>q7Cy7a+4]]16
+[[d2]]8d8d8d4<y13[[q7Bd8]]12q7Cy7>d8d8<b4y13[[q7Bd8]]12
+(32)[y13o1q7Fe4>q7Dy7e4]4(29)[y13o1q7Fe4q7Dy7b4]8(32)4(29)8
+@33y13[[o3q7Dc1^1e1^1]]2
+@31y7q7Co2e8e4.<b8.b8.b8>e1^4<y13q7Fe8e8e8.e8.e8e4e4^2
+y10v60$E8 $C0 $94 @33[[q1Fo4g8]]15r8v210@31y7o2q7Cd4.c4.d+4.d4.c4.f4.y13[[o1q7De4]]8
+y7q7Fo2d4d4d8.c8.<a+8g+1a+4a+4a+8.>c8.d8d+1
+v180@41y10q7F[[o4q7Fd8d+8c+8d+8d8d+8c+4d8f8d8d8d8d+8c+4]]8
+y7[[@31q7Fo2d8d8d2^4@41o3d1]]2
+
+#4@33(!gain4, 3)(!reset4, -1)v200o3y12(5)[q1Fa+8q18a+8]8y8[[q77$F4 $01 o5d+8e32$F4 $01^32r16$F4 $01 f16e16d+32$F4 $01^32r16$F4 $01 e8d+32$F4 $01^32r16$F4 $01 f+8e32$F4 $01^32r16]]2y12(5)8v130@30y13(7)o4b48$F4 $01^48@33v200y12(5)24$FA $02 $0C v150(11)^1^1$FA $02 $00
+v200y7q7Fo4d2c4<a+8a4>f+4f4d+8d4<g4a4a+8b1^1r1^1
+@33y7q7Do4d2@30y11q7Ao5a2
+@33y7q7Do4c2@30y11q7Ao5g2
+@33y7q7Do4c+2@30y11q7Ao5a2
+@33y7q7Do4d+2@30y11q7Ao6c2
+@33y7q7Do4f2@30y11q7Ao6d2
+@33y7q7Do4d+2@30y11q7Ao5a+2
+@33y7q7Do4c2@30y11q7Ao5a2
+@33y7q7Do4f+2@30y11q7Ao6d+2/
+$DE $00 $13 $50
+(22)[@37v200y12[[o4q4Fd4d4q7Fd8d8q4Fd4q7Fd8d8q4Fc+4q7Fd8d8q4Fc+4]]2 ]
+(23)[q7Fo4f8f8d8.r16^2^1]2
+(22)
+[@37v200y12q7Ff8f8d8.r16^4>@38$DFq57f12f12e12q77d2^4r4$DE $00 $13 $50]2
+[[^4@37q7Cv200y12o4f4e4f+4r1^4f4f4e4r1]]2
+(22)
+(23)
+q7Fo4f8f8d8.r8.^4.$DF @38o5q77a2q79d2
+@32v180y8
+$FA $02 $F4 
+$DE $60 $13 $20
+(31)2
+$DF
+$FA $02 $00
+v140y8
+@33$F6 $47 $B4[[q7Fo4$F6 $45 $7F^2e2g2>c2<r2<b2>e2g2]]2o3v220q7Ce2<b2q7Dg1g2q7Ee2<q7Fb1
+@33y10v70$E8 $C0 $94 [[q1Fo4c8]]8[[q1Fo4c+8]]7r4
+$FA $02 $FF y9v170(38)$FA $02 $00 
+r1^1y12v190q7Fo3d4d4d8.c8.<a+8q7Eg+1q7Fa+4a+4a+8.>c8.d8q7Ed+2^4r4
+@37$F6 $46 $EF v190[[o4q7F$F4 $01 d8d+32$F4 $01^32r16$F4 $01 c+8d+32$F4 $01^32r16$F4 $01 d8d+32$F4 $01^32r16c+4$F4 $01 d8f32$F4 $01^32r16d8d8$F4 $01 d8d+32$F4 $01^32r16c+4]]8@37
+(23)2
+
+#5[[^2]]17^4.(!gain5, 3)(!reset5, -1)@30v170$FA $02 $0C o5y10$F4 $01q78d24d+24e24a+16$F4 $01^32r32^1^1@33y13(9)[$F4 $01 q77o5e16<a+16a32$F4 $01^32r16]2@30y10
+[[$F4 $01 o5q78d24d+24e24a+16$F4 $01^32r32]]2^2@33y13(9)2^2(9)^8[[^2]]12$FA $02 $00 y8v150@32q7F<d8<a8a+8>a8g+8d+8>c+8c8<g8g+8>d+8d8<a8>g8f+8c+8d8a+8a8e8f8q7B>c+1^1
+@33(!reset5, 0) y12 v120 $ED $74 $EC (12)10/
+(!gain5, 3)(!reset5-2, -1)
+$DE $00 $13 $70
+(24)[@36v140y12[[o5q4Fa4a4q7F $F4 $01 a8g+16$F4 $01^16q4Fa4q7Fa8a8q4Fa+4q7Fa8a8q4Fa+4]]2 ]
+(25)[q7Fo6f8f8d8.r16^2^1]2
+(24)
+[[q7Fo6f8f8d8.r16^4y7$DF (!gain5, 3)(!reset5, -1)@32q2Ao5d12d12d12q79d2^2@36v150y12$DE $00 $13 $70 (!gain5, 3)(!reset5-2, -1)]]2
+[[$F6 $55 $7F^4o5q7Ff4e4f+4r1^4f4f4e4r1]]2
+(24)
+(25)
+q7Fo6f8f8d8.r8.^4.y10@33o4q7Ca2q7Fd2
+$DE $60 $13 $20 v150
+(!gain5, 3)(!reset5, -1)
+(33)[$FA $01 $BC r4@30o4q7Cb8g8>e8<b8>g8e8a+8g2^4.r4>c8<b8a+8b2^8>c8<b8>d8.c+8.c8]q7Co5b4y13@38q7Bd+8d+8d+8.<b8^4..>f+8f+8f+8.d+8^8.y10
+(33)q7Co5b4y13@38q7Bf+8f+8d+8.e8.f8f+1
+$DF $FA $01 $B7
+v140y8@33[[o4q7Fa+1^1b1^1]]2
+@30y10$FA $02 $F4 (35)$FA $02 $00 
+(36)o5e8c8d2^4r4^1(36)
+@32y8q7Do5d4d4d8.d8.d8f1d4d4d8.d8.d8f2^4r4
+[[^2]]16
+(!gain5, 3)(!reset5-2, -1)
+@36$DE $00 $13 $70 v140y8[[o6$F4 $01 q7Fd4c+8$F4 $01^8<$F4 $01 a4>c+8$F4 $01^8$F4 $01 f4e8$F4 $01^8$F4 $01 d4c+8$F4 $01^8]]4
+(25)2
+
+#6[[^2]]17^4.@40v170y11(8)[o4q77a24q78a24q79a24q7Ca8]^1^1@33y13(10)[$F4 $01 q77o5g16e16d+32$F4 $01^32r16]2
+@40y11(8)2^2@33y13(10)2^2(10)^8@39o5y10v230q7Fd2[[^2]]11[[d2^4.]]3d2[[^2]]7
+@33o4q77f2@39o5q7Fd2
+@33o4q77d+2@39o5q7Fd2
+@33o4q77e2@39o5q7Fd2
+@33o4q77g+2@39o5q7Fd2
+@33o4q77a2@39o5q7Fd2
+@33o4q77f+2@39o5q7Fd2
+@33o4q77f2@39o5q7Fd2
+@33o4q77b2@39o5q7Fd2/
+(!gain6, 3)(!reset6, -1)
+@33v160y12
+(19)[ [[o4q7Ff16q78f16]]5q7Fe16q78e16$F4 $01 q7Ff8>q7Af32$F4 $01^32r16[[o4q7Ff16q78f16q7Ff16q78f16$F4 $01 q7Ff8>q7Af32$F4 $01^32r16]]2 ]2
+(20)[o5q7Fc8<a+8a8r4[[q7Fa16q78a16]]3q7Fg16q78g16q78g16q75g16q7Fa+16q78a+16q78a+16q75a+16q7Fa4q7Fg16q78g16q7Fa+16q78a+16]2
+(19)2
+(20)2^2.@38q79o4y13a+1>c+1e1a+1<a+1>c+1e1
+@32q17y8o5c+12c+12c+12q78d1d4c+8<a+8a4q18>c+12c+12c+12q78d1d4c+8<a+8a8f8c+4
+@33y12(20)
+o5q7Fc8<a+8a8r4.y10@33q7Bo5d2q7D<f2^4
+@40o4y11v160[ [[q7Fa4.q79a24q7Ba24q7Da24]]8 [[q7Fa8q78a16a16q7Fa8a32q7Ba32q78a32q76a32q78a8q7Fa8a32q7Ba32q78a32q76a32q7Fa16a16]]2 ]2
+v230[[@31y13o1q7De4@39y10q7Fo5d4]]16
+y11@40o4q78a32q76a32q75a32q74a32q78a8^2^4y10@39q7Fo5d1^1@40y11o4q77a16a16q74a16a16q79a16a16q76a16a16q7Ba16a16q78a16a16q7Da16a16q7Aa16a16r1^1(39)[@33o3y7q7Cd8@38y12q15o5e8e8q7C@33y7o3c8q15y12@38o5d8d8]@33o3y7q7Cd+8@38y12q15o5f8f8(39)@33o3y7q7Cf8@38y12q15o5g16g16g16r16
+r2[[^2]]5@39y10q7Fo5d1^1d1
+q7D@31[[y12o1e4]]64
+@33v160y12
+(20)2
+
+#7v210y11$EB $12 $18 $11 @34(6)[$F6 $75 $BF o3g8$F6 $75 $7F^8]8^1^1(6)64$EB $00 $00 $00y11@40v150[q7Fo4a24 $E8 $90 $46 [[o4q7Ca24]]10 $E8 $90 $96 [[o4q7Ca24]]10 ]3$E8 $B0 $46 [[q7Fa24]]26$E8 $B0 $96 [[a24]]22v210 $EB $12 $18 $11 @34(6)40$EB $00 $00 $00 /
+@40v160y11(16)[o4q7Aa16a16a8q7Da8q7Aa16a16]8
+(17)[ [[q7Fa32q7Aa32q78a32q76a32]]2@39v230y10o5q7Fd1^2^4@40v160y11]2
+(16)8
+(17)2
+@39v230y10o5q7Fd2[[^2]]15
+@40v160y11
+(16)8
+(17)2
+v230[[q7B@40o2y10b4q7F@34y7o3g4]]24
+@40v160y11[q7Fo4a8q7Aa8[[q7Fa8q7Aa8q7Fa32q7Da32q7Ca32q7Ba32q7Aa8]]2q7Fa8q7Aa8q7Fa8q7Aa8q7Fa16q7Aa16a8]4
+@40v200o2y10[[q7Fo2b4.b8b2]]4^1^1
+o4v160y11[[q76^8q7Fa8q7Ca32q7Aa32q78a32q76a32]]5^8q7Fa16a16a8
+(40)[q7Da48q7Aa48q78a48q77a48q76a48q75a48q7Fa16a16a16a16q7Da48q7Aa48q78a48q77a48q76a48q75a48q7Fa16a16[[q7Da48q7Aa48q78a48q77a48q76a48q75a48]]2q7Fa16a16]2
+v55$E8 $B4 $48 [[q7Fa32]]30$E8 $B4 $60 [[q7Fa32]]30 $E8 $B4 $80 [[q7Fa32]]30 $E8 $B4 $A6 [[q7Fa32]]30v210a2[[^2]]23^4v160
+(40)4
+(17)2
+
+#SPC
+{
+	#length "7:01"
+}

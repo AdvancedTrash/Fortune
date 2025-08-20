@@ -1,0 +1,128 @@
+;;http://www.youtube.com/watch?v=jQKmK1mZjeM
+#amk 2
+
+#SPC
+{
+	#title	"Tower"
+	#game	"New Super Mario World"
+}
+
+$EF $F1 $30 $30
+$F1 $04 $BA $01
+
+#0 t40 w205
+r192 $f4 $02
+$f4 $03
+/
+$f4 $03
+@1 $ED $77 $E0 o2 v235 ;BASSY
+[e2^4^8^16 b16e16 r2^4^8^16]2
+d2^4^8^16 a16d16 r4
+v190
+$E8 $80 $00
+@22c16@22c16 [@22c32]18
+
+l8 @1 $ED $79 $E0 o2 v235
+rf+fag+>c<bed+2d2c+1c1<b1a+1a16
+r2^4^8^16
+o5 @2 v100 l8
+r (1)[cg+d>c<f+>eg+] r1^4 (1) r2..
+$EF $F0 $30 $30
+v70 @6 o4 $ED $7A $80
+$E8 $80 $80  b1 $E8 $C0 $01 b1
+
+
+#1
+r192/
+@6 o4 $ED $7A $80 y11
+[ v150 q4f r4b16r16 $E8 $80 $D0 q7f a+2^8r1  ]2
+  v150 q4f r4a16r16 $E8 $80 $D0 q7f g+2^8r1
+r1r1.
+
+@11 o4 v190 l4
+rf+fag+>c<b>ed+1d2
+r1
+@13 $ED $75 $8E o5 v150
+e1d+1e1b1
+
+v70 @6 o4 $ED $7A $80 y10
+$E8 $80 $80  g1 $E8 $C0 $01 f1
+
+[r1]100
+
+#2
+r192/
+@6 o4 $ED $7A $80 y10
+[v150 q4f r4g16r16 $E8 $80 $D0 q7f f+2^8r1]2
+ v150 q4f r4f16r16 $E8 $80 $D0 q7f e2^8r1
+r1r1r1.
+@0 $ED $78 $85 o4 l4 v110
+df+fag+> v130 df4. {g16g+16a16} 
+$E8 $C0 $01
+a+2 $DD $20 $40 $B7
+r1
+@13 $ED $75 $8E o5 v150
+[r1]3 d+1
+
+v70 @6 o4 $ED $7A $80
+$E8 $80 $80  d+1 $E8 $C0 $01 d+1
+
+[r1]100
+
+#3
+r192/
+@6 o4 $ED $7A $80 y9
+[v150 q4f r4e16r16 $E8 $80 $D0 q7f d+2^8r1]2
+ v150 q4f r4d16r16 $E8 $80 $D0 q7f c+2^8r1
+r1r1.
+@11 v190 o4
+d2c2e2g2b1a+2
+r1
+@13 $ED $75 $8E o5 v150
+r2.f1^1f1^4
+
+v70 @6 o4 $ED $7A $80 y10
+$E8 $80 $80  c+1 $E8 $C0 $01 c+1
+
+[r1]100
+
+#5
+r192/
+r1^4^16 q7f
+@3 v120 l16 o5
+$E8 $80 $90 [c+dd+e]6 $E8 $60 $01 [c+dd+e]2
+(500)[v0@29c16 v230 o2 a16a16g16d4..]
+[r1]5
+
+o5 @2 v100 l4
+fag+>c<b>ed+2r2d2
+r8.
+(500) r8r1. o2
+v190 $E8 $A0 $01
+[f32e32]11 r16 r2..
+v190 $E8 $A0 $01
+[f32e32]14
+
+@3 o4 v160 q3f l8
+rf+fag+>c<b>e>d+
+
+[r1]100
+
+#4
+r192/
+[r1]8
+v160 @10 o3 l8
+reeee [e32]4 e16e16eeeeeeee e16e16 eeeeeeeeee [e32]4 ee [e32]4 ee
+r1
+[r1 v170 $E8 $F0 $01 @22c@22c@22c@22c@22c@22c@22c@22c]2
+
+
+[r1]100
+
+#6
+r192/
+[r1]8
+@1 v100 o4 $DE $00 $11 $27 l8
+ff+fcff+bf+fe<a>ed+efa+fe<g+>d+dd+eaed<g>d {c+gf+fc+<a+}
+
+[r1]100

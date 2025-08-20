@@ -1,0 +1,177 @@
+#amk 2
+
+#spc
+{
+#author "Mutsuhiko Izumi"
+#game "TMNT IV: Turtles in Time"
+#title "Climactic Battle"
+#comment "Ported by DanTheVP"
+}
+
+#path "cb"
+
+#samples
+{
+	#default
+	"sample_00.brr"
+	"sample_03.brr"
+	"sample_08.brr"
+	"sample_01.brr"
+	"sample_04.brr"
+	"sample_0A.brr"
+	"sample_02.brr"
+	"sample_06.brr"
+	"sample_07.brr"
+	"sample_05.brr"
+	"sample_09.brr"
+}
+
+#instruments
+{
+	"sample_00.brr"	$FF $E0 $B8 $04 $53	; @30
+	"sample_03.brr"	$FF $E0 $B8 $03 $BF	; @31
+	"sample_08.brr"	$FF $E0 $B8 $06 $1A	; @32
+	"sample_01.brr"	$FF $E0 $B8 $02 $BB	; @33
+	"sample_04.brr"	$FF $E0 $B8 $04 $06	; @34
+	"sample_0A.brr"	$FF $EA $B8 $0E $21	; @35
+	"sample_02.brr"	$FF $E0 $B8 $03 $CD	; @36
+	"sample_06.brr"	$FF $E0 $B8 $04 $00	; @37
+	"sample_07.brr"	$FF $E0 $B8 $03 $AA	; @38
+	"sample_05.brr"	$FF $E0 $B8 $04 $00	; @39
+	"sample_09.brr"	$FF $E0 $B8 $04 $00	; @40
+}
+
+#0 $F4$02 w160 t61 
+@30 l16 v225 y10 o2 {c+c<ba+ag+gf+fed+d}					  			;17 17
+/l16 @31 y11 v220 q5f ; 1A 12
+[o2g+g+g+8b8>cc+8c+d8d+8f+8]3 o2 g+g+g+8b8>cc+8 v133 c+8 r4^16 			;09 06
+@32 v232 y9 q4f [o4cf+>c8<cfb8cfga+8agf+ [[cc>cc<]]4]2	 				;14 1C 
+(100)[o4fb>f8<fa+>e8<fa+>cd+8dc<b][ff>ff<]4 (100)ff+gg+aa+b>c [<ff>ff]2 
+$ED$08$E2 $DE$44$12$86 q7f <<c2 $ED$0F$E2 q4f >(101)[cccc8ccc]
+$ED$08$E2 $DE$44$0E$8F q7f <c+1 $DE$45$17$86 q7f c2 $ED$0F$E2 q4f (101)
+$ED$08$E2 $DE$44$17$8F q7f c+2 $ED$0F$E2 q4f c+eff+a+>cc+d+>
+[c8<a+>c8ccc]2 <a+8g+a+8a+a+a+ v110 a+a+a+ r4^16 						;04 06
+
+#1 @33 l16 v190 y10 o4 {dc+c<ba+ag+gf+fed+} 				 			;10 10
+/l16 @34 v124 y9 q5f [<d+d+d+8f+8gg+8g+a8a+8>c+8]3			 			;05 08
+<d+d+d+8f+8gg+8 v82 y10 g+8 r4^16 @32 $ED $09 $E2 v175 y11 q4f			;02 02	10 0b
+>>c8.(10)[f+>c8<cfb8cfga+8agf+] [cc>cc<]4 c(10) [cc>cc<]3 cc 
+f8.b>f8<fa+>e8<fa+>cd+8dc<b [ff>ff<]4 
+fb>f8<fa+>e8<fa+>cd+8dc<bff+gg+aa+b>c <ff>ff<ff  
+$ED$08$E2 v220 $DE$43$17$9F q7f <g2										;1A 12
+$ED$0F$E2 q4f >ffff8fff $ED$08$E2 $DE$44$0F$98 q7f <g+2
+@35 v160 q4f <ea>d<fa+>d+<f+b											;0d 09
+@32 $ED$08$E2 v220 $DE$44$1A$95 q7f >g2 								;1A 12
+q4f >ffff8fff q7f <g+2 $ED$0F$E2 v115 q4f	c+8. eff+a+>c  				;06 04
+v240 [g8fg8ggg]2 f8d+f8fff v110 fff r4^16								;1E 15	0b 07
+
+#2 l16 @36 v225 y10 o4 q5f {c<ba+ag+gf+fed+dc+}							;17 17
+/l16 @36 v225 y10 o4 q5f [ccc8d+8e<f8ff+8g8a+8]3 >ccc8d+8e f8 v90 f  	;03 03
+@37 v175 q7f bbbbbb q5f @36 v225 ;10 101    							;17 17
+[ccc8d+8ef8ff+8g8a+8]4 [<fff8g+8aa+8a+b8>c8d+8]3 <f>c<fb8a+g+gffffffff 
+q7f >(20)[cfgcga+cfgcga+cgca+c+f+g+c+g+b] c+g+<g+>c+f+<a>dg<a+>d+
+(20) c+bc+eff+gg+a+>c q5f <c8<a+>c8ccc  c8<a+>c8ccc 
+<a+8g+a+8a+a+a+   {>d+d+d+ddc+c<ba+ag+f+}  
+
+#3 @30 v225 y10 o3 														;17 17
+{c+c<ba+ag+gf+fed+d}
+/l16 @33 v155 y8 o5 q5f													;07 0E
+(30)[<ddd8f8f+g8gg+8] a8>c8 (30) @38 v192 <c8d+8 						;0A 15
+@33 v155 (30) a8>c8 <ddd8f8f+g8 r4.. 									;07 0E
+v192 (31)[ddd8f8f+] (32)[<g8gg+8a8>c8] (31) g8gg+8<a8>c8 (31) (32) (31) ;0A 15
+g8gg+8a8>c8< [ggg8a+8bc8cc+8d8f8]3 <g>d<g>c+8c<a+a [>g<gg]2 f8
+@32 $ED$08$E2 v222 $DE$43$1C$86 q7f >c2
+(33)[$ED$0F$E2 q5f a+a+a+a+8a+a+a+]  $ED$08$E2 q7f c+1 c2 (33)
+$ED$08$E2 q7f c+2 $ED$0F$E2 q5f <c+eff+a+>cc+d+  
+@31 v192 <[g+8f+g+8g+g+g+]2 f+8ef+8f+f+f+r2
+
+#4 
+r2 /@30 l16 v224 y12 o2 q5f 												;1D 0E
+(40)[c+c+c+8e8ff+8f+g8] g+8b8 (40) @38 v194 >>c8d+8 v80 y13 d+8			;15 0A	03 01
+@30 v224 y12 << c+8e8ff+8f+g8g+8b8 @38 >fff8g+8aa+8 v90 a+8 r4^16		;1D 0E	04 02
+[@31q7fv160 g+>dg+8<g+>c+g8<g+>c+d+f+8fd+d<[[q6f@31 g+8 v192@38 f8]]4]2 
+(41)[@31 q5f>c+g>c+8<c+f+>c8<c+f+g+b8a+g+g]<[q6f@31>c+8 @38<a+8]4 (41)
+@35 v135 q5f<c+dd+eff+gg+ @38 v255 >a+8.a+8.a+8 v224 f8 v135 f8			;0A 05	26 13	1D 0E	0A 05
+(42)[@33 v224[[dd>d8<]]3 @38 f+8v135f+8] 								;1D 0E 	0A 05
+@33 v224 [d+d+>d+8<]3 @38 f8 v135 f8 (42) @33 v224 d+d+>d+8 			;1D 0E 	0A 05
+@38 << f+aa+b>cc+d+f [f8d+f8fff]2 d+8c+d+8d+d+d+ @33 q7f>{fffeed+dc+c<ba+g+}  
+
+#5 
+r2/l16 y10 o4 
+(50)[v240 @39<gg @37>b8 @39<g8 @37>b8 @39 <g v215 g @37>b8 @39<gg @37>b8]3 ;1A 1A	15 15
+v240 @39<gg @37>b8  @39<gg @37>b @39<g rr @37 v175 >[b]6
+(50)3 v240 @39<gg @37>b8 @39<g8 @37>b8 @40 {eec}<aa @37>bbbb 
+[@39 v240 <gg @37>b8 @39<g8 @37>b8 v168 @39<g v215 g @37>b8 @39<gg @37>b8]3 ;0C 0C
+v240 @39<gg @37>b @39<g8g @37>b8b @39<gg @37>b @39<gg @37>b8 
+[@39<gg @37>b8]14 @37 b32 @40 e32ec<a @37>bbbb
+@39 v225 <g @40 >c @37 b @40 <a32>c32 @39 <g @40 a @37 >b @40 ee 
+@39 <g @40 >c @37 b @40 c32e32 @39 <g @40 a @37 >b @39 <g @40 >e32c32
+@37 b @40 c @39 <g @40 >c @37 b @40 c {eeeecccc<aaaa}
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

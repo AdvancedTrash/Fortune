@@ -1,0 +1,256 @@
+#amk 2
+#path "electricChocobo"
+#spc
+{
+#game "Final Fantasy VII"
+#title "Electric de Chocobo"
+#length "3:42"
+#comment "Midi by ???, MML by Wakana"
+}
+#samples
+{
+#optimized
+"chocoboBass.brr"
+"chocoboBassDrum.brr"
+"chocoboSnare.brr"
+"chocoboRide.brr"
+"chocoboGuitar.brr"
+"chocoboReed.brr"
+"Sukuna_Cymbal.brr"
+}
+
+#instruments
+{
+"chocoboBass.brr" $AF$40$00$06$2B ;@30 bass
+"chocoboBassDrum.brr" $00$00$FF$09$00 ;@31 bum o3 c
+"chocoboSnare.brr" $FF$F5$00$08$00 ;@32 pem
+"chocoboRide.brr" $FD$F0$00$0A$00 ;@33 ts
+@0 $FF$FA$00$06$00 ;@34 chocobo sound
+"chocoboGuitar.brr" $FD$EC$00$04$2F ;@35 pitch bend guitar
+"chocoboReed.brr" $FE$E0$00$05$3F ;@36 reed organ, apparently Eevee's favourite instrument
+"Sukuna_Cymbal.brr" $FF$F0$00$08$00 ;@37 cym
+}
+
+"ah= $ed$7f$f8 "
+"bum= @31 "
+"pem= @32 "
+"ts= @33 "
+"cym= @37 "
+
+$ef$FF$30$D0
+$f1$04$B0$01
+$f4$02
+
+#0 w210 t68
+
+;BASS
+@30 v170 y10 o4 l16 $f4$03
+c+cc<bba+a+aag+g+gf+ffe
+[e8 ah b8 $f4$09 g8 ah b8 $f4$09]8
+
+[g8> ah d8< $f4$09 a+8 ah >d8 $f4$09]8
+$fa$02$00
+
+/
+[[
+(001)[<g8g8g8f8d8d8f8f+8]8
+>
+
+
+(002)[c8c8<g8e8d8f+8a8>c8<g8g4f+4f+8f+8f+8>]
+(003)[c8c8e8g8d8d8<a8>d8<g8g8a8a8a+8a+8b8b8]
+(002)
+(004)[a8a8b8a8>c8<a8b8a8>d8d8c8<b8a8r8d4]
+
+]]2
+
+g8 [r2]7 r8 > g4 $dd$01$30e
+
+[
+c8ccc8<a+8g8g8a+8b8>c8c8<a+8>c4<g8a+8b8>
+c8ccc8<a+8g8g8a+8b8>c8c8<a+8>c4c8d+8e8
+f8fff8d+8c8c8d+8e8f8f8d+8f4<g8a+8b8>
+c8ccc8<a+8g8g8a+8b8>c8c8<a+8>c4d8f8f+8
+g8ggg8f8d8d8f8g8f8f8d+8f4<g8a+8b8>
+c8ccc8<a+8g8g8a+8b8>c8c8<a+8>c4<g8a+8b8
+]2
+
+(002)(003)(002)(004)
+
+[g8> ah d8< $f4$09 b8 ah >d8 $f4$09]8
+
+#1
+
+;;perc1
+r1 o3 v170
+(100)[$f4$03 bumc4 $f4$03 pemc8c8 $f4$03 bumc4 $f4$03 pemc4]8
+/
+[[
+(100)14
+(101)[$f4$03 bumc8c8c8c8c8c8 $f4$03 pemc8 $f4$03 bumc8c8c8c8c8c4c8 $f4$03 ^8 ]
+]]2
+
+(100)3 $f4$03 bumc4 $f4$03 pemc8c8 $f4$03 bumc8 $f4$03 pemc8c8c8
+
+[[ (100)11 [pemc8 q77 cc q7f]3 c q77 ccc q7f ]]2
+
+(100)6
+(101)
+
+(100)255
+
+
+
+#2
+
+;;perc2
+r1
+o3 v120 ts y9 [c8]64
+/
+
+[[ [c8]124 c4c4 ]]2
+
+[c8]120 (200)[$f4$03 bum v170 y10 c4c4c4c4 $f4$03 v120 y9 ts]
+[c8]88 (200)
+
+[c8]60 c4c4
+
+[c8]255
+
+
+#3
+r1
+r1r1
+@35 v120 o4 y11 $f4$01
+e8e8$dd$00$1Fd+ ^8$dd$00$1Fe ^8^1.
+
+r1r1g8g8$dd$00$1Ff+ ^8$dd$00$1Fg ^8^1^4
+
+;;MAIN
+$f4$01  (300)[$f4$01
+@36 v130 o2 y10 $de$1A$11$30
+g64a64b64>c64d64e64f64g64a64b64>c64d64e64f64g64a64> $f4$01]
+$f4$01/$f4$01
+[[ [d8 r8<b8g8e8>d8<b8g8 b8r8g8r8b4.a8 grgagrfrg4.f8grgb>drerf2]2
+
+(301)[e8r8c8<a8f+8a8>c8e8d8r8g8r8d4.<br]
+(302)[>c8r8<a8f+8d8f+8a8>c8<brb>c<brarb2]
+(301)
+(303)[arabargra4.g8 arab>crdrer8.f+4] ]]2
+g8 r1... $df
+
+[ v140 o5 @34 y12 f8$dd$00$0a>f< y8 f2 $dd$00$0a>f<  ^4. ]2
+
+[r2]24
+
+@36 v110 o5 y10
+[crcrgrgr<gr>e4er]3
+crcrgrgr<gr>e8d8c8
+frfr>crcr<cra4ar frfr>crcr<cra8g8f8
+crcrgrgr<gr>e4ercrcrgrgr<gr>e8d8c8
+grgr>drdr<drb4br8.g8f+8f8e8d+8d8c+8
+c4c8<a+8g8g8a+8b8>c8c8<a+8>c8r4
+
+(300)(301)(302)(301)(303)
+
+@35 v120 o4 y11 $f4$01 $de$1A$11$30
+r1r1g8g8$dd$00$1Ff+ ^8$dd$00$1Fg ^8^1^4 $f4$01 (300)
+
+[r2]255
+
+
+#4
+r1
+r1r1
+@35 v120 o3 y10 $f4$01
+b8b8$dd$00$1Fa+ ^8$dd$00$1Fb ^8^1.
+
+r1r1>d8d8$dd$00$1Fc+ ^8$dd$00$1Fd ^8^1. $f4$01
+/
+@36 v90 o3 y11 ;;acc
+[[ [g8r8g8f+8f2]8
+(400)[>c2d2<b4.b2^8
+g2a2g1>
+c2d2<b4.b2^8
+a8a8b8a8>c8<a8b8a8>d8d8c8<b8a8r8>d4] ]]2
+
+[r2]32
+
+o5
+[r4f+rf+r8.d+4d+r]3
+r4f+rf+r8.d+8r2brbr8.g+4g+rr4brbr8.g+8r2
+f+rf+r8.d+4d+r4^f+rf+r8.d+8r2>c+rc+r8.<a+4a+rr1<
+g4g8f8d8d8f8f+8g8g8f8g8r2
+
+(400)
+
+@35 v120 o3 y10 $f4$01
+r1r1>d8d8$dd$00$1Fc+ ^8$dd$00$1Fd ^8^1 $f4$01 ^2
+
+
+[r2]255
+
+#5
+r1
+r1r1
+@35 v120 o3 y9 $f4$01
+g8g8$dd$00$1Ff+ ^8$dd$00$1Fg ^8^1.
+
+r1r1a+8a+8$dd$00$1Fa ^8$dd$00$1Fa+ ^8^1. $f4$01
+/
+[[ @36 v90 o3 y9 ;;acc
+[d8r8d8d8c2]8
+(500)[g2a2g4.f+2^8e2f+2d1g2a2g4.f+2^8
+
+@35 o4
+r4a8a8r4a8r4.a8a8r4a4]
+]]2
+
+[r2]32
+
+@36 o5
+[r4crcr<r8g4gr]3
+r4>crcrr2. frfr8.c4cr4^frfrr2.crcrr8<g4gr4^>crcrr2.grgr8.d4dr [r2]6
+
+(500)
+
+@35 v120 o3 y9 $f4$01
+r1r1a+8a+8$dd$00$1Fa ^8$dd$00$1Fa+ ^8^1 $f4$01 ^2
+
+
+[r2]255
+
+
+#6
+
+r1 (600)[ r1 v140 o5 @34 y12 f8$dd$00$0a>f< y8 f2 $dd$00$0a>f<  ^4. ]4
+/
+
+[[
+[@36 v90 o3 y10 r2]16 ;;acc
+(601)[e2f+2d4.d2^8c2d2<b1>e2f+2d4.d2^8
+
+@35  o4 y11
+r4f8f8r4f8r4.f+8f+8r4f+4]
+]]2
+
+[r2 @36 o3 y10]56
+
+(601)
+
+(600)2
+
+[r2]255
+
+
+#7
+[r2]18
+/
+(701)[@35 v90 o4 y10 r2]28
+(700)[r4d8d8r4d8r4.d8d8r4]
+cym v170 o3 c1..
+(701)25
+(700) cym v170 o3 c1^4
+[r2]69 r4 c1
+
+[r2]255

@@ -1,0 +1,360 @@
+#amk 2
+;************************
+
+; SPC Generator Info
+#SPC
+{
+    #author  "Nobuo Uematsu"
+    #title   "Aerith's Theme"
+    #game    "Final Fantasy VII"
+    #comment "Ported by Ahrion"
+}
+
+#path "Aerith"
+
+#samples
+{
+	#Aerith
+	"Bassoon_small.brr"
+	"Clarinet.brr"
+	"Flute.brr"
+	"Harp.brr"
+	"Oboe.brr"
+	"Piano2.brr"
+	"StringAkk2.brr"
+	"Strings.brr"
+	"Trumpet1.brr"
+}
+
+#instruments
+{
+	"Bassoon_small.brr"  $FA $E1 $00 $05 $00 ; @30
+	"Clarinet.brr"	     $F7 $E1 $00 $03 $02 ; @31
+	"Flute.brr"	     $FA $E1 $00 $02 $00 ; @32
+	"Harp.brr"	     $CF $AC $00 $03 $02 ; @33
+	"Oboe.brr"	     $F7 $E1 $00 $06 $00 ; @34
+	"Piano2.brr"	     $AF $AB $00 $02 $40 ; @35
+	"StringAkk2.brr"     $F7 $E1 $00 $05 $40 ; @36
+	"Strings.brr"	     $F7 $E1 $00 $03 $A8 ; @37
+	"Trumpet1.brr"	     $F9 $E1 $00 $03 $C8 ; @38
+}
+
+w192
+t28
+
+"Piano = v180"
+
+"Strings11 = v190"
+"Strings12 = v140"
+"Strings13 = v120"
+
+"Strings21 = v180"
+"Strings22 = v140"
+"Strings23 = v200"
+"StringsAkk21 = v160"
+"Trumpet21 = v115"
+
+"Flute31 = v185"
+"Clarinet31 = v190"
+
+"Trumpet41 = v110"
+"Strings41 = v180"
+"Strings42 = v140"
+"Clarinet41 = v190"
+"Oboe41 = v160"
+
+"Trumpet51 = v100"
+"Trumpet52 = v130"
+"Strings51 = v140"
+"Bassoon51 = v190"
+"Bassoon52 = v160"
+
+"Strings61 = v120"
+"StringsAkk61 = v160"
+"Trumpet61 = v115"
+"Flute61 = v160"
+
+"Trumpet71 = v90"
+"Trumpet72 = v100"
+"Oboe71 = v170"
+"StringsAkk71 = v160"
+
+"Harp81 = v170"
+"Strings81 = v180"
+
+"Rel = $ED $78 $E9"
+"Atk = $ED $72 $E0"
+"Atk2 = $ED $75 $E1"
+
+"VIB = $DE $60 $16 $0F $EA $0C"
+
+
+
+
+
+$F4 $02
+
+
+
+; +---------------------+
+; |     Channel #0	|
+; |     Piano		|
+; |     Strings		|
+; +---------------------+
+
+#0
+o5
+
+@35 Piano y9
+f+8 a8 > d2. c8 < a8 e2.
+
+/
+
+y9
+f+8 a8 > d8 c+8 e8 d8 < b8 > c+8 < a2 e2
+
+@37 Strings11 y6
+<<<
+d1 < a1 a+1 g1 >
+
+Strings12
+d1 Rel ^1 > @37 Atk2 b1 a1 g1 a1 a1^1 g1^1
+
+Strings13 y12
+@37 a1 > f+2 a2 <
+
+Strings12 y7
+Atk g1^1 
+
+@37 < d1 < g2 b4 g4 f+2 g+4 a4 b2 > c+4 d4 e1 < a1 g1 e1 d1 Rel ^1 r1^1^1 >>>>
+
+@35 Piano y9
+f+8 a8 > d2. c8 < a8 e2. 
+
+
+
+; +---------------------+
+; |     Channel #1	|
+; |     Trumpet		|
+; |     Strings		|
+; +---------------------+
+
+#1
+o5
+@35 Piano y11
+e1 < a1 >
+
+/
+
+y11
+e1 r2 c2 r4
+
+@38 Trumpet21 y12 $ED $78 $E0
+f+4 e4 d4 c1 d2^8 @38 c8 d8 c8 < a+1 $ED $78 $E0 a1 Rel ^1 <
+
+@37 Strings22 y9
+Atk2 f+2. f+8 e8 f+1 g1 f+1 f+1^1 < b1^1 >>
+
+@36 StringsAkk21
+Atk2 c+1^1 Atk g1^4 r2. <
+
+@37 Strings22
+f+2 d2 < b2 > d4 e4 f+2 a4 > c+4 < b2 a4 g4 e2 c+2 < b2 a2 b1^1 a1 Rel ^1 r1^1^1 >>>
+
+@35 Piano y11
+e1 < a1 
+
+
+
+; +---------------------+
+; |     Channel #2	|
+; |     Clarinet	|
+; |     Flute		|
+; +---------------------+
+
+#2
+o4
+@35 Piano y11
+a1 e1
+
+/
+
+y11
+a1 a1
+
+@32 Flute31 y12 VIB
+f+8 a8 > d2^8^16^32 r32 c8 < a8 e2^16^64^192 r32^96 d16 e16 d4^8^16^32^192 r64^96 f8 e8 d8 e8 d1^2^4 Rel ^1 <
+
+@31 Clarinet31 y9
+d8 e8 f+2^8^16^64^192 r32^96 f+8 g8 a2^8^32^64^192 r16^96 b8 > c+8 d4 < b4^8^16^32^96 r64^192 g8^16^32^96 r64^192 $F4 $01 a16 b32 $F4 $01 ^32 $ED $7A $E1 a2^32^64^192 r16^96 @31 a8 f+8 $ED $76 $E1 c+1 Rel ^2^16 r8. @31 b8 a8 $ED $76 $E1 d1 Rel ^2^16 r8. @31 a8 f+8 $ED $76 $E1 c+1 Rel ^2^8 r8 @31 b8 > c+8 $ED $76 $E1 d1 $ED $7F $F0 ^4
+
+@32 Flute31 y12
+b4 a4 g4 f+2 d2^8 r8 b4 a4 g4 a4^16^32^192 r64^96 > c+16^32^96 r64^192 c+2^8 r8 < b4 a4 g4 e2 c+1^32^64^192 r8^16^96 g8 a8 b8 a8 g8 > d1 r8 < b8 a8 f+8 g8 f+1 Rel ^1 r1^1^1
+$DF
+
+@35 Piano y10 y11
+a1 e1 
+
+
+
+; +---------------------+
+; |     Channel #3	|
+; |     Clarinet	|
+; |     Strings		|
+; |     Oboe		|
+; |     Trumpet		|
+; +---------------------+
+
+#3
+o4
+@35 Piano y11
+d1 r1
+
+/
+
+@35 Piano y11
+d1 e1 <
+
+@37 Strings41 y13
+e8 c+8 d2. e8 d8 c2. < a+2 > d8 c8 < a+1^4
+Strings42 a1 Rel ^1 >>>
+
+[[r2]]13
+
+@38 Trumpet41 y13 $ED $77 $E1
+g2 d2 < b2 > c+1^2 Rel ^2
+
+@37 Strings42 y8
+<<< b1^1 r2 >>>
+
+@38 Trumpet41 y13
+f+4 d4 < b2 > d4 e4 f+4. a8 a2. r1^4 > c+2 < b2 a2 <<
+
+@34 Oboe41 y11 VIB
+b1. > e8 d8 < b8 > c+8 d1 Rel ^4
+
+@31 Clarinet41 y9
+d4 c+4 < b4 a2 e4^16 r16 $F4 $01 e16 f+32 $F4 $01 ^32 g8 f+8 e8 d2^16 r16 g2 b2 $ED $77 $EB a1^2^16 $DF r4.. 
+
+
+
+; +---------------------+
+; |     Channel #4	|
+; |     Bassoon		|
+; |     Strings		|
+; |     Trumpet		|
+; +---------------------+
+
+#4
+o6
+r1^1
+
+/
+
+[[r4]]13
+
+@38 Trumpet51 y7
+c4 < b4 a4 f2 a+2 g2 a+2 a1 Rel ^1
+
+[[r2]]10
+
+@30 Bassoon52 y8
+f+2 c+2 d1^1 r2 c+2 f+2 c+2 d1^4 r2. <<
+
+@37 Strings51 y8
+a1 >
+
+@38 Trumpet52 y7
+g2 b4 g4 f+2 g+4 a4 b4^16^32^192 r64^96 b16^32^64^192 r96 > c+4 d4 e1 < a1
+
+@30 Bassoon51 y8
+d2 e4 f+4 g2 b2 a1 Rel ^1 [[r2]]6
+
+@35 Piano y11
+d1 r1 
+
+
+
+; +---------------------+
+; |     Channel #5	|
+; |     Flute		|
+; |     Strings		|
+; |     Trumpet		|
+; +---------------------+
+
+#5
+o4
+r1^1
+
+/
+
+@36 StringsAkk61 y11
+r1^1 f+8 a8 > d2. c8 < a8 e2^8 d16 e16 d2 f8 e8 d8 e8 d1^1 Rel ^1 <
+
+@37 Strings61 y8
+Atk2 d1 c+1 < b2 > c+4 d4 d1 c+1^1 r2 >
+
+@38 Trumpet61 y13 $ED $77 $E1
+b2 a2 g2 f+1^2 Rel ^2 <
+
+@37 Strings61 y8
+Atk b1^4 >>
+
+@32 Flute61 y11 VIB
+d4 c+4 < b4 a2 f+2^8 r8 > d4 c+4 < b4 > c+4^16^32 r32 f+16^32^96 r64^192 f+2^8 r8 d4 c+4 < b4 a2 e1^32^64^192 r8^16^96 e8 f+8 g8 f+8 e8 d1 r8 g8 f+8 d8 e8 d1 Rel ^1
+$DF
+
+[[r2]]10
+
+
+
+; +---------------------+
+; |     Channel #6	|
+; |     Oboe		|
+; |     Strings		|
+; |     Trumpet		|
+; +---------------------+
+
+#6
+o4
+r1^1
+
+/
+
+@38 Trumpet71 y12 $ED $78 $E0
+r1^1^4 a4 a4 a4 a4 >
+
+Trumpet72
+e4 d4 c4 d2 @38 f8 e8 d8 e8 d1^1 Rel ^1
+
+[[r2]]9
+
+@34 Oboe71 y11 VIB
+c+2 < b2 a2 b1^1 r2 > c+2 < b2 a2 b1^4 >
+$DF
+
+@36 StringsAkk71
+d4 c+4 < b4 a2 f+2. > d4 c+4 < b4 > c+4. f+8 f+2. d4 c+4 < b4 a2 e1 r4 e8 f+8 g8 f+8 e8 d1^8 g8 f+8 d8 e8 d1 Rel ^1
+
+[[r2]]10 
+
+
+
+; +---------------------+
+; |     Channel #7	|
+; |     Harp		|
+; |     Strings		|
+; +---------------------+
+
+#7
+o4
+r1^1
+
+/
+
+@33 Harp81 y12
+r1^1^4 f+8 a8 > d8 f+8 r2 < e8 a8 > c8 e8 r4. << a+8 > f8 a+8 > d8 < a+8 f8 d8 < a+4.. a+64^192 > d64^192 g64^192 a+8. d64^192 g64^192 a+64^192 > d4 r4 < d8 f+8 a8 > d8 r2 < d8 f+8 a8 > d8 r4 << b8 > f+8 b8 > d2^8 < c+8 f+8 a8 > c+2^8 < d8 g8 b8 > d2^8 < d8 f+8 a8 > d2^8 < c+8 f+8 a8 > c+2^8 < c+8 f+8 a8 > c+2^8 < d8 g8 b8 > d2^8 < d8 g8 b8 > d2^8 < c+8 f+8 a8 > c+2^8 < c+8 f+8 a8 > c+2^8 < d8 g8 b8 > d2^8 < d8 g8 b8 > d2^8 r1 <<<
+
+@37 Strings81
+a4 g4 f+4 g4 a2 > c+4 e4 d2 c+4 < b4 > c+2 < a2 g2 e2 d2 e4 f+4 g2 e2 f+1 Rel ^1 
+[[r2]]10 

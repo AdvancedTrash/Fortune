@@ -1,0 +1,179 @@
+#amk 2
+#halvetempo
+
+#SPC
+{
+	#title "Casino Night Zone"
+	#game "Sonic The Hedgehog 2"
+	#author " "
+	#comment "ported by Wakana"
+}
+
+#samples
+{
+#optimized
+"Waka_Saxophone_HQ.brr"
+"XG_hihat2.brr"
+"XG_kick.brr"
+"XG_snare.brr"
+"@8.brr"
+"Piano2.brr"
+"XG_crash.brr"
+"Strings.brr"
+}
+
+#instruments
+{
+"Waka_Saxophone_HQ.brr" $8B $E5 $00 $05 $70; @30 Sax
+"XG_hihat2.brr" $FF $FA $00 $0D $00; @31 SHORT
+"XG_hihat2.brr" $FF $F2 $00 $0C $00; @32 LONG
+"XG_kick.brr" $FF $F5 $00 $04 $00 ; @33 Kick
+"XG_snare.brr" $FF $F5 $00 $05 $00; @34 Snare
+"@8.brr" $FF $EC $B8 $04 $82       ;@35
+"Piano2.brr" $8F $F2 $C0 $03 $05 ;@36
+"XG_crash.brr" $FE $F0 $CF $0A $92; @37
+"XG_crash.brr" $F3 $F0 $CF $0A $92; @38
+"Strings.brr" $F9 $C0 $C0 $02 $10;@39
+}
+
+$F4 $02
+
+$EF $FF $30 $30 
+$F1 $06 $B0 $01
+
+
+"bum=@33 v200 y10"
+"pem=@34 v160 y7"
+"tz=@31 v150 y11"
+"ts=@32 v120 y12"
+
+
+#0 w180 t71
+r1/r4
+;MAIN
+@30 o5 v150 y12
+$de $20 $05 $40
+$f4 $01 d32d+4... $f4 $01 c8 v90 c8 v150 f+8^32f16. v90 f8^32 v150 d+16. v90 d+8^32 v150 c4^16^32 v90 c4< v150 g8 v90 g8 v150 a+8^32g+16. v90 g+8^32
+v150 g16. v90 g8 r4. v150 e4e4
+(1)[e1^4e8^32 v90 e16. v150 f8^32e4^16^32g+8^32g+16. v90 g+8^32 v150 e1^4^16^32 e8^32e16.a8^32a16. v90 a8^32 v150 e16.c1c8^32 v90 c16. v150 d8^32c16.d+4d8^32c1.^16^32 v90 c4 v150 e8. v90 e16 v150
+f8. v90 f16 v150 e8. v90 e16 v150 g+8^32g+16. v90 g+8^32 v150 e2^16^32 v90 e4 v150 a2b8^32a16.>c2^8^32 v90 c16. v150 <a8 v90 a8 v150 g2e2c2] d2d+2f8^32d+16.f8^32g16.
+<r2^8^32 v150 g16.a8^32>c16. (1) d4a8 v90 a8 v150 g2e2c2d4a8 v90 a8 v150 g2e2c2d4^8^32c16. [r2]4
+
+
+
+#1
+r1/r4
+;MAIN
+@30 o4 v120 y10
+$de $20 $05 $40
+$f4 $01 b32>c4... $f4 $01 <g8r8 v120 >d+8^32d16. v70 d8^32 v120 c16. v70 c8^32 v120 <g4^16^32 v70 g4 v120 d8 v70 d8 v120 f8^32d+16. v70 d+8^32 v120 d16.
+r2 v120 <a4b4> (2)[c1^4c8^32 v70 c16. v120 d8^32c4^16^32e8^32e16. v70 e8^32 v120 <b1^4^16^32b8^32b16.>e8^32e16. v70 e8^32 v120 c16.<a1a8^32 v70 a16. v120
+b8^32a16.>c4<a+8^32
+g+1.^16^32 v70 g+4 v120 >c8. v70 c16 v120 d8. v70 d16 v120 c8. v70 c16 v120 e8^32e16. v70 e8^32 v120 <b2^16^32 v70 b4 v120 >e2g8^32e16.a2^8^32 v70 a16. v120 f8 v70 f8 v120 e2c2<a2]
+b2>c2d8^32c16.d8^32d16.
+<r2^8^32e16.e8^32g16. (2) b4>f8 v70 f8 v120 e2c2<a2b4>f8 v70 f8 v120 e2c2<a2b4^8^32g16. [r2]4
+
+
+
+#2
+$f4 $03
+r1/
+;BASS
+@35 v200 o5 l4
+c4<c4>c4<c4>c4<c8^32>c16.r8^32c16.<c4<
+r4g8r8a+8^32g+16.r8^32g16.r8^32>g16.<g4a8.r16b8r8>
+c4<b4a4g4>c4<g4>c4d4e4d4c4<b4e4f+8^32g+8^32r16g+16.e4
+a4a4>e4e4<a4b4>c4<a4g+4a+4>c4d4d+4<g+8^32>c16.r8^32c16.<g+4>c4c4d4d+4e4<
+e4f+4g+4a4a4g4g4f4>c4<f4a4r4>c4r4c4r4f4r4f4<g+2g+8^32g+16.g+8^32g16.r8^32>g16.f4e4d4^32
+c8^32c16.<d+ff+gb>cde<bg+f+eb>e<eab>c<ba>ce<ag+a+>c<a+g+aa+b>c<b>cde<beg+ab>cef8^32<a4^16^32a+b> [rcrcrfrf]2 rcrcrff8^32f16.f8^32c16.r1c8r32c16.<bag
+
+
+[r2]255
+
+#3
+r1/
+;PIANO
+@36 v142 o5 y7
+r4g2g2g2g2f4f8^32f16.^8^32f16.^1^4
+
+g4^8^32g16.^4g4.^32g4^16^32g8^32g16^4^32
+g+4^8^32g+16.^4g+4.^32g+4^16^32g+8^32g+16^4^32
+a4^8^32a16.^4a4.^32a4^16^32a8^32a16^4^32
+g+4^8^32g+16.^4g+4.^32g+4^16^32g+8^32g+16^4^32
+
+g4^8^32g16.^4g+4.^32g+4^16^32g+8^32g+16^4^32
+a4^8^32a16.^4a4.^32a4^16^32a8^32a16^4^32
+
+g2g2a2a4>c2c8^32c16.c8^32<b16.^1^4
+
+e4.^32e16.^4e4f8^32e16.^2^4
+d4.^32d16.^4d4e8^32d16.^2^4
+c4.^32c16.^4c4d8^32c16.^2^4
+c4.^32c16.^4c4d8^32c16.^2
+@39 v95 e1d2e4d4c1f1r4 v142 @36
+[g2g2a2a2]2 g2g2a4a8^32a16.a8^32g16.
+
+[r2]255
+
+#4
+;PERCUSS2
+o4
+[tzc8^32c16.]2 c8^32 ts c16.c4
+/
+[tzc8^32c16. tsc8^32 tzc16.]4 tzc4 tsc4 tzc4 tsc4 tz c8^32c16. {c8c8c8} c8^32c16. ts c8^32 tz c16.
+
+[tz c8^32c16. tsc8^32 tzc16.]30
+tz  c8^32c16.^8^32c16.c8^32c16. tsc8^32tzc16.
+*36
+tz c4c4c4 {c8c8c8} [c8^32c16.]4
+
+[r2]255
+
+
+#5
+;PERCUSS1
+o4 bumc4c4c8^32 pemc16.c4
+/
+[bumc4 pemc8^32 bumc16.^8^32c16. pemc8^32 bumc16.]2
+[bumc8^32c16.]2 pemc8^32c16. bumc8^32 pemc16.^4 bumc8^32c16.c8^32c16. pemc8^32 bumc16.
+
+(5)[bum c8^32 c16. pemc8^32 bumc16.^8^32 c16. pemc8^32 bumc16.]14
+bumc8^32c16. pemc8^32 bumc16. pemc8^32c16.c8^32c16. bumc8^32c16.^4c8^32c16.pemc8^32bumc16.
+(5)18
+r1.^8^32 pemc16.c4
+
+
+[r2]255
+
+
+#6
+r1/
+;PIANO
+@36 v142 o4 y7
+r4g2g2g2g2f4f8^32f16.^8^32f16.^1^4>
+
+(6)[e4^8^32e16.^4e4.^32e4^16^32e8^32e16^4^32]3
+d+4^8^32d+16.^4d+4.^32d+4^16^32d+8^32d+16^4^32
+(6)
+e4^8^32e16.^4f4.^32f4^16^32f8^32f16^4^32<
+
+g2g2a2a4>c2c8^32c16.c8^32<b16.^1^4
+>
+c4.^32c16.^4c4d8^32c16.^2^4<
+b4.^32b16.^4b4>c8^32<b16.^2^4
+a4.^32a16.^4a4b8^32a16.^2^4
+g+4.^32g+16.^4g+4a+8^32g+16.^2
+@39 v95 e1d2e4d4c1f1r4 v142 @36
+[g2g2a2a2]2 g2g2a4a8^32a16.a8^32g16.
+
+[r2]255
+
+
+
+#7
+r2 v190 o3 y12 @38 c+2 /
+@37 y12 c+1r1r2..^32 y8 c1^16^32 y12 c+1[r1]15 y8 c1 [r2]32 r2..^32 c+1
+
+
+
+[r2]255

@@ -1,0 +1,39 @@
+{
+	"style" : "groupbox",
+	"title" : "Room Settings",
+	"layout": [
+		{
+			"control": "comboBox",
+			"name": "usePhysicalBounds",
+			"title": "Use Physical Boundaries",
+			"tooltip": "If set, this room will have \"solid\" walls and a death plane if there isn't an adjacent room.",
+			"elements": ["Default", "Off", "On"],
+			"value-default": 0
+		},
+		{
+			"control": "comboBox",
+			"name": "actAsSpawnZone",
+			"title": "Act as Spawn Zone",
+			"tooltip": "If set, any NPC's inside will be spawned when the player is in the room,\nregardless of if they are on camera.",
+			"elements": ["Default", "Off", "On"],
+			"value-default": 0
+		},
+		{
+			"control": "comboBox",
+			"name": "resetWhenEntered",
+			"title": "Reset Level When Entered",
+			"tooltip": "If set, most of the level will be reset (similar to when respawning) when this room is entered.",
+			"elements": ["Default", "Off", "On"],
+			"value-default": 0
+		},
+		{
+			"control": "lineEdit",
+			"name": "tags",
+			"title": "Tags",
+			"tooltip": "A list of \"tags\" that can be used by lua code to identify the room.\nShould be separated by a comma, quotation marks are not necessary.",
+			"placeholder": "tag1, tag2, tag3, etc",
+			"value-default": ""
+		}
+	]
+}
+

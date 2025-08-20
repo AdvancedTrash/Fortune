@@ -1,0 +1,473 @@
+#define version 2
+
+; 1 = empty space gets filled with lava-like sound effects.
+; 2 = empty parts of channels stay empty.
+
+
+#SPC
+{
+	#title "Hot-Head Bop"
+	#game "Kinky Schlong Crunchy 2"
+	#author "Dave Wise"
+	#comment "when will i take porting srs"
+}
+
+#samples
+{
+	#default
+	"optimized/0A SMW @9.brr"
+}
+
+#instruments
+{
+	@8 $CF $F0 $B8 $1E $00					;@30 bass
+	@1 $81 $C4 $B8 $03 $00					;@31 strings
+	@4 $9F $4E $B8 $03 $00					;@32 harpsichord
+
+	"optimized/0A SMW @9.brr" $BF $8F $B8 $05 $5F		;@33 piano
+
+	@6 $8C $EE $B8 $03 $00					;@34 sax 1
+	@1 $8C $EE $B8 $03 $00					;@35 sax 3
+	n1F $FF $31 $B8 $00 $00					;@36 ride hat
+	@21 $00 $00 $7F $03 $00					;@37 kick o4e
+	@10 $00 $00 $7F $04 $00					;@38 snare o4d
+	@0 $AE $2A $B8 $03 $00					;@39 flutevibraphones
+	@13 $88 $E0 $B8 $03 $00					;@40 low choir
+	@6 $89 $CE $B8 $03 $00					;@41 harmonica
+	@12 $8E $F2 $B8 $04 $90					;@42 bongos
+
+	"default/13 SMW Thunder.brr" $F2 $E0 $B8 $03 $00	;@43 lava
+}
+
+#amk 2
+
+$EF $3A $5D $5D
+$F1 $03 $3C $01
+
+$F5 $77 $08 $08 $08 $00 $00 $00 $00
+
+w255 t44
+
+#if version == 1
+
+#0
+
+@30 v255 y10 l16
+
+o1(000)[q7F aar4aar4.. q7A a q7F aar8. q7A a q7F aar8e8g8a-8]8
+o1 q7F ffr4ffr4.. q7A f q7F ddr8. q7A d q7F ddr8d8g8a-8
+(000)
+
+[[r2]]4
+
+o1(002)[q7F ffr4ffr4.. q7A f q7F ggr8. q7A g q7F ggr8e8g8a-8]
+(000)
+(002)
+
+(000)
+o1 q7F aar4aar4.. q7A a q7F aar8. q7A a q7F aar8a8b-8b8
+
+o2 q7F ccr4ccr4.. q7A c q7F ccr8. q7A c q7F ccr8c8<a8g-8
+o1(003)[q7F ffr4ffr4.. q7A f q7F ffr8. q7A f q7F ffr8f8e8e-8]
+o1 q7F ddr4ddr4.. q7A d q7F ddr8. q7A d q7F ddr8d8e8f8
+o1 q7F ggr4ggr4.. q7A g q7F ggr8. q7A g q7F ggr8g8g8a-8
+
+o1 q7F aar4aar4.. q7A a q7F aar8. q7A a q7F aar8a8a-8g8
+(003)
+o1 q7F ddr4ddr4.. q7A d q7F ddr8. q7A d q7F ddr8d8d8e-8
+o1 q7F eer4eer4.. q7A e q7F eer8. q7A e q7F eer8e8g8a-8
+
+#1
+
+@31 v80 y7 $DE $00 $0E $45
+
+o6(100)[c1^1 y13 <b1^1>e1^1^1^1]
+
+@32 y12 v70 $DF l4
+
+o3[a>dd<b]12
+
+@31 v80 y7 $DE $00 $0E $45
+
+(100)
+
+v0
+
+[[r2]]8
+
+@32 y12 v70 $DF
+
+[[ o4[eeee]6 o4[dddd]2 ]]2
+
+[r1]127
+
+#2
+
+v0
+
+[r1]3 ^4.
+
+(200)[@38 v180 y9 q7A o4d32 q7C d32 q7D d32 q7E d32 q7F d16d16 @37 v230 y10 e16 @38 v180 y9 q7B d32 q7D d32 q7F d16d16d8]
+
+(201)[@37 v230 y10 q7F o4e8.e16 @38 v180 y9 d8.d16 @37 v230 y10 e16 @38 v180 y9 d16 @37 v230 y10 e8 @38 y9 v180 d16 @37 v230 y10 e8 @38 v180 y9 d16
+@37 v230 y10 q7F o4e8.e16 @38 v180 y9 d8.d16 @37 v230 y10 e16 @38 v180 y9 d16 @37 v230 y10 e8 @38 y9 v180 d16 @37 v230 y10 e16 @38 v180 y9 d16d16]8
+
+[[r2]]6 ^4.
+
+(200)(201)3
+
+(202)[@37 v230 y10 q7F o4e8.e16 @38 v180 y9 d8.d16 @37 v230 y10 e16 @38 v180 y9 d16 @37 v230 y10 e8 @38 y9 v180 d16 @37 v230 y10 e8 @38 v180 y9 d16
+@37 v230 y10 q7F o4e8.e16 @38 v180 y9 d8] q7A o4d32 q7C d32 q7D d32 q7E d32 q7F d16d16 @37 v230 y10 e16 @38 v180 y9 q7B d32 q7D d32 q7F d16d16d16d16
+
+(201)7(202)(200)
+
+[r1]127
+
+#3
+
+@31 v60 y7 $DE $00 $0E $45 r8
+
+o6(300)[c1^1<b1^1>e1^1^1^1]
+
+@32 y12 v70 $DF l4
+
+o4[egec]12
+
+@31 v60 y7 $DE $00 $0E $45
+
+(300)
+
+v0
+
+[[r2]]8
+
+@32 y12 v70 $DF
+
+[[ o4[cf<g>c]6 o3[b>e<gb]2 ]]2
+
+[r1]127
+
+#4
+
+@43 v220 $F4 $03
+
+(420)[l4 o2 y12g. >y7cc <y8a+. y13 f2^16 y5 > g+8. a8. 
+a+ y15 o2g a+. 
+y8 o3f+ o2 y12gag+f+
+y8f2^8 o3c o2 y7e. >y12g8.f+]2
+
+;[r1]12
+
+@39 v135 y8 $DE $18 $0E $35
+
+o5(400)[r8c8<b8>c16<b8a4..r8>c8<b8>c16d8.c8<b8>c8<b8a8a8g16a1^16r2]
+o5(401)[r8c8<b8>c16<b8a4^16a8>d4c4<b4>c4<b8a8a8g16a1^16r2]
+
+@33 v110 $F4 $03 $DF
+
+(402)[o5 q7F e16c16<a16 q7B >e16c16<a16 q78 >e16c16<a16 q75 >e16c16<a16 q7F >f16c16<a16>f16
+o5 q7F g16d16<b16 q7B >g16d16<b16 q78 >g16d16<b16 q75 >g16d16<b16 q72 >g16d16<b16>g16]2
+
+(403)[@34 o5 q7F e16c16<a16 q7B >e16c16<a16 q78 >e16c16<a16 @35 q75 >e16c16<a16 @34 q7F >f16c16<a16>f16
+o5 q7F g16d16<b16 q7B >g16d16<b16 q78 >g16d16<b16 @35 q75 >g16d16<b16 q72 >g16d16<b16>g16]2
+
+@43 v220 $F4 $03 q7F
+
+(421)[l4 o2 y12g. >y7cc <y8a+. y13 f2^16 y5 > g+8. a8. 
+a+ y15 o2g a+. 
+y8 o3f+ o2 y12gag+f+
+y8f2^8r16]
+
+@33 v110 y8 q7F $DE $0C $0E $35 $F4 $03
+
+o4(404)[r8e8f8g8>c8.<g8.f8e4c8c2^8r8e8f8g8>c8.<g8.f8e4f8e4c4.r8e8f8g8>c8.c8.d8d1]
+
+[[r2]]4
+
+@41 $DE $00 $0E $35
+
+o5(405)[r8e8f8g8g8.f8.e8e1r8e8f8g8g8.f8.e8e4c8c2^8r8e8f8g8g8.f8.e8d1r8d8d8e8f8e8d4]
+
+[r1]127
+
+#5
+
+@43 v140 r8
+
+(420)2
+
+;[r1]12
+
+@39 v70 y12 $DE $18 $0E $35
+
+(400)(401)
+
+@33 v60 $DF
+
+(402)2(403)2
+
+@43 v140
+
+(421)
+
+@33 v60 y12 $DE $0C $0E $35
+
+(404)
+
+[[r2]]4
+
+@41 $DE $00 $0E $35
+
+(405)
+
+[r1]127
+
+#6
+
+@36 v60 y12 $E5 $00 $00 $00
+
+(600)[q7F c8 q7A c8]80
+
+@42 v120 y9 l16
+
+o4(601)[g<<c+>dg<<g+>>>d<cd]8
+
+@36 v60 y12
+
+(600)64
+
+@13 $ED $7C $E0 v110 y12 $E5 $18 $06 $35 q7F
+
+o4e1^1c1^1<a1^1>d1^1
+
+[r1]127
+
+#7
+
+@42 v120 y9 $E5 $00 $00 $00
+
+(601)16
+
+@43 v220 $F4 $03
+
+(420)2
+
+@40 v220 y10 $E5 $18 $06 $35 $F4 $03
+
+o1[a1^1f1g1]2
+
+[[r2]]8
+
+@43 v220 $E5 $00 $00 $00 $F4 $03
+
+(420)
+
+o2 l4 y12g. >y7cc <y8a+. y13 f2^16 y5 > g+8.
+
+@40 $ED $7C $E0 v110 y8 $E5 $18 $06 $35 $F4 $03
+
+o4c1^1<a1^1f1^1a-1^1
+
+[r1]127
+
+#endif
+
+#if version == 2
+
+#0
+
+@30 v255 y10 l16
+
+o1(000)[q7F aar4aar4.. q7A a q7F aar8. q7A a q7F aar8e8g8a-8]8
+o1 q7F ffr4ffr4.. q7A f q7F ddr8. q7A d q7F ddr8d8g8a-8
+(000)
+
+[[r2]]4
+
+o1(002)[q7F ffr4ffr4.. q7A f q7F ggr8. q7A g q7F ggr8e8g8a-8]
+(000)
+(002)
+
+(000)
+o1 q7F aar4aar4.. q7A a q7F aar8. q7A a q7F aar8a8b-8b8
+
+o2 q7F ccr4ccr4.. q7A c q7F ccr8. q7A c q7F ccr8c8<a8g-8
+o1(003)[q7F ffr4ffr4.. q7A f q7F ffr8. q7A f q7F ffr8f8e8e-8]
+o1 q7F ddr4ddr4.. q7A d q7F ddr8. q7A d q7F ddr8d8e8f8
+o1 q7F ggr4ggr4.. q7A g q7F ggr8. q7A g q7F ggr8g8g8a-8
+
+o1 q7F aar4aar4.. q7A a q7F aar8. q7A a q7F aar8a8a-8g8
+(003)
+o1 q7F ddr4ddr4.. q7A d q7F ddr8. q7A d q7F ddr8d8d8e-8
+o1 q7F eer4eer4.. q7A e q7F eer8. q7A e q7F eer8e8g8a-8
+
+#1
+
+@31 v80 y7 $DE $00 $0E $45
+
+o6(100)[c1^1 y13 <b1^1>e1^1^1^1]
+
+@32 y12 v70 $DF l4
+
+o3[a>dd<b]12
+
+@31 v80 y7 $DE $00 $0E $45
+
+(100)
+
+v0
+
+[[r2]]8
+
+@32 y12 v70 $DF
+
+[[ o4[eeee]6 o4[dddd]2 ]]2
+
+[r1]127
+
+#2
+
+v0
+
+[r1]3 ^4.
+
+(200)[@38 v180 y9 q7A o4d32 q7C d32 q7D d32 q7E d32 q7F d16d16 @37 v230 y10 e16 @38 v180 y9 q7B d32 q7D d32 q7F d16d16d8]
+
+(201)[@37 v230 y10 q7F o4e8.e16 @38 v180 y9 d8.d16 @37 v230 y10 e16 @38 v180 y9 d16 @37 v230 y10 e8 @38 y9 v180 d16 @37 v230 y10 e8 @38 v180 y9 d16
+@37 v230 y10 q7F o4e8.e16 @38 v180 y9 d8.d16 @37 v230 y10 e16 @38 v180 y9 d16 @37 v230 y10 e8 @38 y9 v180 d16 @37 v230 y10 e16 @38 v180 y9 d16d16]8
+
+[[r2]]6 ^4.
+
+(200)(201)3
+
+(202)[@37 v230 y10 q7F o4e8.e16 @38 v180 y9 d8.d16 @37 v230 y10 e16 @38 v180 y9 d16 @37 v230 y10 e8 @38 y9 v180 d16 @37 v230 y10 e8 @38 v180 y9 d16
+@37 v230 y10 q7F o4e8.e16 @38 v180 y9 d8] q7A o4d32 q7C d32 q7D d32 q7E d32 q7F d16d16 @37 v230 y10 e16 @38 v180 y9 q7B d32 q7D d32 q7F d16d16d16d16
+
+(201)7(202)(200)
+
+[r1]127
+
+#3
+
+@31 v60 y7 $DE $00 $0E $45 r8
+
+o6(300)[c1^1<b1^1>e1^1^1^1]
+
+@32 y12 v70 $DF l4
+
+o4[egec]12
+
+@31 v60 y7 $DE $00 $0E $45
+
+(300)
+
+v0
+
+[[r2]]8
+
+@32 y12 v70 $DF
+
+[[ o4[cf<g>c]6 o3[b>e<gb]2 ]]2
+
+[r1]127
+
+#4
+
+[r1]12
+
+@39 v135 y8 $DE $18 $0E $35 $F4 $03
+
+o5(400)[r8c8<b8>c16<b8a4..r8>c8<b8>c16d8.c8<b8>c8<b8a8a8g16a1^16r2]
+o5(401)[r8c8<b8>c16<b8a4^16a8>d4c4<b4>c4<b8a8a8g16a1^16r2]
+
+@33 v110 $F4 $03 $DF
+
+(402)[o5 q7F e16c16<a16 q7B >e16c16<a16 q78 >e16c16<a16 q75 >e16c16<a16 q7F >f16c16<a16>f16
+o5 q7F g16d16<b16 q7B >g16d16<b16 q78 >g16d16<b16 q75 >g16d16<b16 q72 >g16d16<b16>g16]2
+
+(403)[@34 o5 q7F e16c16<a16 q7B >e16c16<a16 q78 >e16c16<a16 @35 q75 >e16c16<a16 @34 q7F >f16c16<a16>f16
+o5 q7F g16d16<b16 q7B >g16d16<b16 q78 >g16d16<b16 @35 q75 >g16d16<b16 q72 >g16d16<b16>g16]2
+
+[[r2]]10
+
+@33 v110 y8 q7F $DE $0C $0E $35
+
+o4(404)[r8e8f8g8>c8.<g8.f8e4c8c2^8r8e8f8g8>c8.<g8.f8e4f8e4c4.r8e8f8g8>c8.c8.d8d1]
+
+[[r2]]4
+
+@41 $DE $00 $0E $35
+
+o5(405)[r8e8f8g8g8.f8.e8e1r8e8f8g8g8.f8.e8e4c8c2^8r8e8f8g8g8.f8.e8d1r8d8d8e8f8e8d4]
+
+[r1]127
+
+#5
+
+@43 v140 r8
+
+[r1]12
+
+@39 v70 y12 $DE $18 $0E $35
+
+(400)(401)
+
+@33 v60 $DF
+
+(402)2(403)2
+
+[[r2]]10
+
+@33 v60 y12 $DE $0C $0E $35
+
+(404)
+
+[[r2]]4
+
+@41 $DE $00 $0E $35
+
+(405)
+
+[r1]127
+
+#6
+
+@36 v60 y12 $E5 $00 $00 $00
+
+(600)[q7F c8 q7A c8]80
+
+@42 v120 y9 l16
+
+o4(601)[g<<c+>dg<<g+>>>d<cd]8
+
+@36 v60 y12
+
+(600)64
+
+@13 $ED $7C $E0 v110 y12 $E5 $18 $06 $35 q7F
+
+o4e1^1c1^1<a1^1>d1^1
+
+[r1]127
+
+#7
+
+@42 v120 y9 $E5 $00 $00 $00
+
+(601)16
+
+[r1]12
+
+@40 v220 y10 $E5 $18 $06 $35
+
+o1[a1^1f1g1]2
+
+[[r2]]24
+
+@40 $ED $7C $E0 v110 y8 $E5 $18 $06 $35 $F4 $03
+
+o4c1^1<a1^1f1^1a-1^1
+
+[r1]127
+
+#endif

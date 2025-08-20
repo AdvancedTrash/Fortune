@@ -1,0 +1,59 @@
+#amk 2
+#spc
+{
+#title "Knuckles"
+#game "Sonic the Hedgehog 3"
+#comment "Ported by MarioSonic4life"
+}
+#path "Knuckles"
+#samples
+{
+	#optimized
+	"Kick.brr"
+	"Snare.brr"
+	"Pre-Kick.brr"
+	"Clap.brr"
+	"YEAH.brr"
+	
+}
+#instruments
+{
+	"Kick.brr"		$FF $E0 $7F $0A $90		;@30
+	"Snare.brr"		$FF $E0 $7F $0A $90		;@31
+	"Pre-Kick.brr"	$FF $E0 $7F $0A $90		;@32
+	"Clap.brr"		$FE $E0 $7F $08 $00		;@33
+	"YEAH.brr"		$FF $E0 $7F $05 $42		;@34
+	
+}
+w200
+t45
+$F4$02
+
+
+
+#0
+/
+[[
+@30{c8}c8[{c16}@31c8@30c4c8@31c4]
+@30{c8}^8*
+]]8
+
+#1
+/
+@32
+[[
+c16c16c16^8[c16]11
+]]16
+
+#2
+/
+@33v240
+[[
+[r8c8{f8c16}c8]c8{c8c16}f4
+*c8{^8c16}f4
+]]8
+
+#3
+/
+@34v205
+[r1]15r2r4r8c8

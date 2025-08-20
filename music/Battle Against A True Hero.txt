@@ -1,0 +1,414 @@
+#amk 2
+
+#SPC
+
+{
+	#title "Battle Against A True Hero"
+	#game "Undertale"
+	#author "Toby Fox"
+	#comment "ported by S1Z2"
+}
+
+#path "BattleAgainstATrueHeroSOI"
+
+#samples
+{
+#BattleAgainstATrueHero
+"Piano.brr"
+"Trumpet.brr"
+"Bass.brr"
+"Choir.brr"
+"Strings.brr"
+"Sawtooth.brr"
+"Guitar.brr"
+"Tubular Bells.brr"
+"Oct Strings.brr"
+"Crash Cymbal.brr"
+"Kick.brr"
+"Snare.brr"
+"Sleigh Bells.brr"
+"Open Hat.brr"
+"Tamborine.brr"
+}
+
+#instruments
+{
+"Piano.brr"               $AE $70 $B8 $03 $00 ; @30
+"Trumpet.brr"             $00 $00 $D8 $02 $00 ; @31
+"Bass.brr"                $FF $EB $B8 $02 $00 ; @32
+"Choir.brr"               $8A $A0 $B8 $03 $00 ; @33
+"Strings.brr"             $8E $A8 $B8 $02 $71 ; @34 ; Hard Strings
+"Sawtooth.brr"            $FF $A0 $B8 $10 $00 ; @35
+"Guitar.brr"              $DF $CF $B8 $06 $00 ; @36
+"Strings.brr"             $86 $E0 $B8 $02 $71 ; @37 ; Soft Strings
+"Tubular Bells.brr"       $AF $70 $B8 $04 $00 ; @38
+"Oct Strings.brr"         $00 $00 $D9 $05 $00 ; @39 ; Using these to save a channel
+"Crash Cymbal.brr"        $FF $E0 $B8 $05 $00 ; @40 ; Reverse Cymbal
+"Crash Cymbal.brr"        $8F $36 $B8 $05 $00 ; @41
+"Kick.brr"                $FF $F5 $B8 $04 $00 ; @42
+"Snare.brr"               $AF $B7 $B8 $06 $00 ; @43
+"Sleigh Bells.brr"        $8F $D4 $B8 $07 $80 ; @44
+@22                       $FF $E0 $B8 $07 $A8 ; @45
+"Open Hat.brr"            $FF $E0 $B8 $07 $A8 ; @46 ; Taken from Mega Man & Bass
+"Tamborine.brr"           $FF $E0 $B8 $05 $80 ; @47
+}
+
+(!100)[$F4 $09]
+(!101)[$ED $80 $B8]
+
+"RCR=v40 @40 $E8 $90 $82"
+"CR=@41"
+"K=@42"
+"S=@43"
+"CH=@45 q7f"
+"OH=@46 q7b"
+
+$EF $FF $C0 $C0
+$F1 $07 $3F $01
+$F5 $FF $08 $17 $24 $24 $00 $00 $00
+
+#0 w220 t60 ; w255
+
+$F4 $02
+
+/
+
+v140 o6 @30 l16
+
+$DF
+
+[[
+(1)[y10 q7f d+. y10,0,1 q79 d+.
+y10 q7f f. y10,1,0 q79 f.<
+y10 q7f a+. y10,0,1 q79 a+.>
+y10 q7f c. y10,1,0 q79 c.<
+y10 q7f g+. y10,0,1 q79 g+32
+y10 q7f f. y10,1,0 q79 f32>
+
+y10 q7f c+. y10,0,1 q79 c+.<
+y10 q7f g+. y10,1,0 q79 g+.>
+y10 q7f d+. y10,0,1 q79 d+.]<
+(2)[y10 q7f g+. y10,1,0 q79 g+.
+y10 q7f g. y10,0,1 q79 g32
+y10 q7f d+. y10,1,0 q79 d+32>]
+
+(1)
+
+y10 q7f g+. y10,1,0 q79 g+.
+y10 q7f g. y10,0,1 q79 g. y10,1,0 q76 g<
+]]14
+
+(1)
+
+(2)
+
+(1)
+
+y10 q7f g+. y10,1,0 q79 g+.
+y10 q7f g. y10,0,1 q79 g. y10,1,0 q76 g 
+
+[[
+[
+y10 q7f f. y10,1,0 q79 f32>
+y10 q7f c. y10,1,0 q79 c32<
+y10 q7f a+. y10,0,1 q79 a+32>
+y10 q7f c. y10,1,0 q79 c32<
+y10 q7f g+. y10,0,1 q79 g+32>
+y10 q7f c. y10,1,0 q79 c32<
+y10 q7f g. y10,0,1 q79 g. y10,1,0 q76 g
+
+y10 q7f g. y10,0,1 q79 g32
+y10 q7f g+. y10,0,1 q79 g+32
+y10 q7f g. y10,0,1 q79 g32
+y10 q7f g+. y10,0,1 q79 g+32
+]
+
+y10 q7f g. y10,0,1 q79 g. y10,1,0 q76 g8.
+y10 q7f a+. y10,0,1 q79 a+. y10,1,0 q76 a+8.
+y10 q7f f. y10,0,1 q79 f. y10,1,0 q76 f8.
+y10 q7f d+. y10,0,1 q79 d+. y10,1,0 q76 d+8.
+
+*
+
+y10 q7f g. y10,0,1 q79 g. y10,1,0 q76 g
+y10 q7f a+. y10,0,1 q79 a+. y10,1,0 q76 a+>
+y10 q7f d+. y10,0,1 q79 d+32^24
+y10 q7f d24c+24 c. y10,0,1 q79 c. y10,1,0 q76 c2^
+]]2
+
+v120 o5 @31 y9
+
+$DE $18 $0C $18
+
+[[
+[q4f f8>c8<a+8>c8<g+8>c8<g8r8
+g8g+8g8g+8] q7f g4.a+4.f4.d+4.
+* q7f g4a+4>d+8^24d24c+24c2.<
+
+* q7f g4.a+4.f4.d+4.
+f4.c8d+8f8g+4g4d+4f2.f2.
+]]2
+
+#1
+v160 o4 @32 y10 l16
+
+(5)[r2]8
+
+(!100, -1)
+(!101, 3)
+
+[f1f2.d+4f1]f2.<ga+>cd+
+*c+c+8d+8.a+8r2
+
+[[<ff>f8<f8>f<frf>f8<ff>f8
+<c+c+>c+8<c+8>c+<c+rd+>d+8<d+d+>d+8]]24
+
+(5)12
+
+v80 @33 y11
+
+c+2.d+2.f2.f2.
+c+2.d+2.f2.a+2.
+
+v160 @32 y10
+
+[[
+<c+8>c+8<c+8>c+8<c+8>c+8
+<d+8>d+8<d+8>d+8<d+8>d+8
+<c8>c8<c8>c8<c8>c8
+<f8>f8<f8>f8<d+8>d+8
+]]8
+
+#2
+v90 o4 @33 y11 l16
+
+(5)8
+
+(!100, -1)
+(!101, 3)
+
+$DF
+
+(3)[
+[[f1f2.d+4]]3
+f1f2r2
+]
+
+v120 o5 @34
+
+[[
+[q7f d+8 q7b d+
+q7f f8 q7b f<
+q7f a+8 q7b a+>
+q7f c8 q7b c<
+q7f g+8f8>
+
+c+8 q7b c+<
+q7f g+8 q7b g+>
+q7f d+8 q7b d+<]
+
+q7f g+8 q7b g+
+q7f g8d+8>
+
+*
+
+q7f g+8 q7b g+
+q7f g8. q7b g q7f
+]]4
+
+v100
+
+[[
+(6)[c8.f8.g+8f1^4g8g+8a+1^2fgg+8a+8>c8<]
+(7)[g1^2r2g2.f4c1>]
+(6)
+(8)[d+1^2r4f4c1^1<]
+]]2
+
+v100 o3 @36 y10
+
+[[c+2.d+2.f2.f2.]]2
+
+v80 o4 @33 y9
+
+[g+2.a+2.>c2.]<g+2.
+*>f2.
+
+(!0,0)
+
+v120 o5 @31 y11
+
+$DE $18 $0C $18
+
+[[
+[q4f c8f8f8f8f8f8d+8r8
+d+8d+8d+8d+8] q7f d+4.d+4.c4.c4.
+* q7f d+4g4a+4a2.
+
+* q7f d+4.d+4.c4.c4.
+c4.<g+8>c8c8d+4d+4<a+4a+2.a2.
+]]2
+
+#3
+v90 o4 @33 y9 l16
+
+(5)8
+
+(!100, -1)
+(!101, 3)
+
+[c1c2.<a+4>
+c1]c+2.<g4>
+*c2r2
+
+(!0,0)
+
+v110 o3 @35 y10
+
+[[
+(4)[q3f ffccffcfrcfgg+gfc]
+(12)[c+c+<g+g+>c+c+<g+>](10)[d+r<a+>d+fgfd+<a+>]
+(4)
+(13)[c+rc+<g+rg+>c+](10)
+]]4
+
+[[
+o3 @35
+
+(4)(12)(10)
+(4)(13)(10)
+
+(4)(12)(10)
+(4)(13)(10)
+
+(4)(12)(10)
+(4)(13)(10)
+
+o4 @34
+
+q7f g+1^2r2a1^1
+]]2
+
+v130 o4 @36 y10
+
+[[d+2.f2.g2.g+2.
+d+2.f2.g2.g+4g4d+4]]2
+
+v70 @37 y11
+
+[[g+2.a+2.>d+2.f2.<
+g+2.a+2.>c2.f2.<]]4
+
+#4
+v100 o4 @33 y10 l16
+
+(5)8
+
+(!100, -1)
+(!101, 3)
+
+$FA $02 $F4
+
+(3)
+
+$FA $02 $00
+
+v70 o5 @38
+
+(9)[f2.. q79 f8 q7f c+4.d+2^8 $DD $00 $18 <d+]4
+
+v100 o4 @39
+
+[[g+1^1<a+1^1>]]2
+
+v110 o4 @34 y9
+
+$FA $02 $F4
+
+[[
+(6)
+(7)
+(6)
+(8)
+]]2
+
+$FA $02 $00
+
+(!0,0)
+
+o3 @36 y10
+
+[[g+2.a+2.>c2.c2.<]]4
+
+v70 o4 @37 y9
+
+[[f2.g2.a+2.>c2.<]]8
+
+#5
+v70 o5 @38 y10 l16
+
+(5)8
+
+[[f1^1]]3
+f2.< RCR c2.r2 v180
+
+[[Kc8 Sc Kc8. Sc8
+Kcc Sc8 Kc8 Sc8]]47
+Kc8 Sc Kc8. Sc8.c8.cc8c
+
+v120 @44 (15)[c2.]16 v180
+
+[[Kc8 Sc8]]96
+
+#6
+o4 y10 l16
+
+(5)24
+
+[[
+q7f v140 CR c4 v110
+(11)[OH c8 CH cc]31
+]]5
+
+q7f v140 CR c4 v110
+(11)29 v60 @40 $E8 $60 $8C c2
+
+v140 CR c2.
+v120 @47 (15)15
+
+[[
+q7f v140 CR c4 v110
+(11)47
+]]2
+
+#7
+v90 o4 @33 y10 l16
+
+(5)24
+
+[[f1c+4.d+2^8]]4
+
+v70 o5 @38
+
+(9)3
+f2.. q79 f8 q7f c+4 <
+RCR c2.
+
+[[
+v90 @33
+
+[f1^1]6
+
+v110 @35
+
+(4)(12)(10)
+(4)(13)(10)
+]]2
+
+v120 @47 c2.
+v70 @38 [[>c2.<]]15
+
+o4 @37 y10
+
+[[c+2.d+2.g2.g+2.
+c+2.d+2.f2.a2.]]4

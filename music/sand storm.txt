@@ -1,0 +1,128 @@
+#amk 2
+#samples
+{
+#default
+}
+
+#instruments
+{
+	@21 $8F $E0 $00 $05 $00
+	@29 $8F $E0 $00 $06 $00
+	@10 $8F $E0 $00 $08 $00	
+	
+}
+
+#spc
+{
+	#title "Sand Storm"
+	#game "Gradius III"
+	#comment "darude xd comedy"
+}
+
+"k = @30"
+"s = @31"
+
+(!900)[n1d]
+(!901)[n1f]
+
+$EF $1B $3F $3F
+$F1 $06 $10 $01
+$F5 $0d $22 $22 $24 $11 $F0 $03 $FF
+$F4 $02
+
+#0 w137 t48 @4 v175 $ED $1C $EA l16 $DE $18 $10 $20
+o4g2r16gb>dg2^8.r<a2ra>cfa2^8.r<
+b2rb>dgb2^8.rc2rcfa>c2^8.r<<
+
+g4^r> d2^8.r d.r32c.r32<b.r32>c4rg1^8r<
+g4^r> d2^8.r c.r32<b.r32>c.r32<a1^8r8>c8d8
+
+e4^r e8f+8g8d4.r8c8<b8a2r16g8r16 gab>cdef+gab>cd<
+e4^r e8f+8g8d2rf+8.g4^rg8a8a+8a8a+8>c4rc<b>c
+d1^4.r8<<
+
+[g2rgag>d4..rc8<b8]g2rgag>g4^rf+8d8<a8
+* g4^r g8>c8g8f+8g8a4..r	
+
+#1 @13 $ED $0F $F0 q5f l16 q5d
+o4 [[ [gd<bgb>d]4 [fc<afa>c]4]]2
+(20)[gbg>d<b>c<]4 (21)[faf>c<ab]4
+(20)4 (21)2 <a>cfcfafa>c<a>cf<
+(1)[ [[bgeceg]]2 [[af+d<b>df+]]2] [gec<a>cf]2  o3 gab>cdef+gab>cd
+(1) < [gd+<a+ga+>d+]2  [afc<a>cf]2 
+bgdgd<b> afcfc<a>ge<b>e<bg>ec<g>c<ge
+
+[[ [gb>d<gb>g<]2 [a>df+<a>da<]2 [b>eg<b>eb]2 cegce>c <<a>df+<a>da]]2
+
+
+#2 @4 q5b $ED $7F $F0 l16 
+o1 [g8 gggggggg>d<g]8
+[g8gg>d<g]16
+
+[o2 c8ccccccccgc <b8bbbbbbbb>f+<b ] a8aaaaaaaa>e<a>d8dddddc<b>c<ba
+* o2 d+8d+d+d+d+d+d+d+d+a+d+ f8fffff8ffed
+o2 g8<gg>g<g>f8<ff>f<f>e8<ee>e<e>dd<bagf+
+
+o1 g8ggggg>d<ggb>d< [f+8f+f+f+f+f+>d<f+f+a>d< e8eeeeebeegb >c8ccccd<b>ddc<b]
+g8 gg>d<gg>d<ggb>d *
+
+#3 @1 $ED $2C $E9 $DE $30 $0C $0C y7
+o4 g1.f1.
+g1.f1.
+<b2.b4.b8>c8d8<a2^16 a16a16a16a4.a8g8a8
+b1^8b8>c8d8f1.
+o4 e2.d2.c2.d2.
+e2.d2.d+2.f2.
+@15 $ED $1F $F2 
+o4g4.f4.e4.d4.
+@1 $ED $2C $E9 v255
+[d2.d2.<b2.g4.a4.]2
+
+#4 @1 $ED $2C $E9 $DE $30 $0C $0C y13
+o4 d1.c1.
+d1.c1.
+<g2.g4.g8a8b8f2^16 f16f16f16f4.f8d8f8
+g1^8g8a8b8>c1.
+o3 b2.a2.g2.a2.
+g2.a2.a+2.>c2.
+@4 $ED $1F $F2 v155
+o5d4.c4.<b4.a4.<
+@1 $ED $2C $E9 v255 
+[g2.f+2.e2.c4.d4.]2
+
+#5 l16 $FA $03 $FF 
+[k c8. s c8 k cc8c s c8 k cc8c s c8 k cc8 c s] ccc 
+* c8 k c 
+* ccc
+k c8. s c8 k cc8c sc8 k c 
+(13)[@32 v220 b32b32bbgggeeeccc v255]
+
+[
+k c8 c s c8 k cc8 c s c k ccc8 c s c8  k cc8c s c k ccc8 c s c8 k cc8c s c k ccc8c s c8 k c]  c8 c s c k cc 
+* s cccccc
+
+[[ [k c8 c s c k ccc c32c32c s] c8.]]3 (13)
+[[* c8.]]3 * ccc
+c8. cccc8. cccc8. ccc v220 @32 bggeec v255
+
+k c8. [s c8 
+[[k cc8 c s c8]]4 k c] c8 c s c8 k cc8 c s c8 k c v220 @32 bbggee v255
+
+k c8 c16 * s ccccccc k c s c k c s c k c v220 @32 b32b32ggee $F4 $02 c
+
+#6 l8 v100 (!900,-1)
+[$ED $0F $F0 c1^2 ]4
+(!901,-1)
+v90 [$ED $0F $F8 l16 c8 cccc8c8c8c]7 c8c8c2
+[r2]12
+(!900,-1)
+v100 [ $ED $0F $F0 c4. ]5 [r2]12
+
+#7 
+@4 $ED $1F $F2 v155
+[r2]36
+o5g4.f4.e4.d4.<
+*12
+
+
+

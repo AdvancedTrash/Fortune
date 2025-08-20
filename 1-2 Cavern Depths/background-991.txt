@@ -1,0 +1,4 @@
+image=background-991.png
+priority=-40
+frames=2
+grid=8

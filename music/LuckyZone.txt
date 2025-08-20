@@ -1,0 +1,360 @@
+#amk 2
+;************************
+
+; SPC Generator Info
+#SPC
+{
+    #author  "Kazuki Muraoka, Kazuhiko Uehara, Harumi Ueko, Yukie Morimoto"
+    #title   "Lucky Zone"
+    #game    "Gradius III"
+    #comment "Ported by Ahrion"
+}
+
+#path "LuckyZone"
+
+#samples
+{
+	#default
+	"Bass.brr"
+	"CH.brr"
+	"Choir.brr"
+	"Crash.brr"
+	"Drone.brr"
+	"Hit.brr"
+	"Kick.brr"
+	"Saw.brr"
+	"Sine.brr"
+	"Snare.brr"
+	"Tom.brr"
+}
+
+#instruments
+{
+	"Bass.brr"	$89 $A9 $00 $03 $C3 ; @30
+	"CH.brr"	$FF $EF $00 $03 $5D ; @31
+	"Choir.brr"	$89 $B0 $00 $07 $B9 ; @32
+	"Crash.brr"	$9F $70 $00 $04 $00 ; @33
+	"Drone.brr"	$8F $A5 $00 $03 $80 ; @34
+	"Hit.brr"	$89 $A9 $00 $07 $BC ; @35
+	"Kick.brr"	$FF $E0 $00 $01 $FF ; @36
+	"Saw.brr"	$FF $E0 $00 $04 $03 ; @37
+	"Sine.brr"	$FF $EB $00 $07 $00 ; @38
+	"Snare.brr"	$FF $E0 $00 $04 $00 ; @39
+	"Tom.brr"	$AF $72 $00 $04 $00 ; @40
+}
+
+w180
+t49
+
+"Kick = v255"
+"Kick2 = v241"
+"Crash = v198"
+"Crash2 = v177"
+"CH = v45"
+"Snare1 = v214"
+"Snare2 = v131"
+"Snare3 = v149"
+"Snare4 = v184"
+"Snare5 = v59"
+"Snare6 = v113"
+"Snare7 = v196"
+"Tom1 = v159"
+"Tom2 = v188"
+"Tom3 = v214"
+"Tom4 = v134"
+"Tom5 = v167"
+"Tom6 = v196"
+
+"Bass1 = v143 y10"
+"Bass2 = v141 y11"
+
+"Saw11 = v117"
+"Saw12 = v93"
+"Saw13 = v84"
+"Saw14 = v72"
+"Saw15 = y0 v114 $DC $A8 $10"
+"Saw21 = v147"
+"Saw22 = v117"
+"Saw23 = v106"
+"Saw24 = v89"
+"Saw25 = y0 v144 $DC $C0 $0C"
+"Saw41 = v162"
+"Saw42 = v97"
+"Saw43 = v131"
+"Saw44 = v113"
+
+"Hit21 = v151"
+"Hit22 = v122"
+"Hit23 = v106"
+"Hit24 = v92"
+"Hit51 = v177"
+"Hit52 = v143"
+"Hit53 = v123"
+"Hit54 = v106"
+"Hit55 = v176"
+"Hit56 = v143"
+"Hit57 = v124"
+
+"Choir11 = v101"
+"Choir21 = y6 v141"
+"Choir22 = y7 v142"
+"Choir31 = y7 v142"
+"Choir41 = v143"
+"Choir51 = y13 v175"
+"Choir52 = y14 v176"
+"Choir53 = v141"
+"Choir54 = v123 $FA $03 $B6"
+
+"Drone1 = y0 v102 $DC $60 $04 $E8 $60 $A1"
+"Drone2 = $DC $60 $07"
+"Drone3 = v104 $DC $60 $0B $E8 $60 $A0"
+"Drone4 = $DC $60 $0D"
+"Drone5 = v104 $DC $60 $0C $E8 $60 $A0"
+"Drone6 = $DC $60 $0A"
+"Drone7 = v104 $DC $60 $08 $E8 $60 $A0"
+"Drone8 = $DC $60 $07"
+
+"Sine41 = y12 v110"
+"Sine42 = y4 v110 $DC $C0 $08"
+"Sine43 = $DC $C0 $0C"
+"Sine44 = v110"
+"Sine45 = $DC $60 $11"
+
+
+"VIB = $DE $31 $12 $60"
+
+$F4 $02
+
+
+
+; +---------------------+
+; |     Channel #0	|
+; |     Saw		|
+; |     Choir		|
+; |     (Kick Crash)	|
+; +---------------------+
+
+#0
+o4
+@37 Saw11
+g8. > c16 d16 f8 < g16 > c16 g8 f16 e16 f16 e16 d16 c16 d16 <
+(11)[g16 > c16 d16 f8 < g16 > c16 g8 f16 e16 f16 e16 d16 c16 d16 <]
+$FA $02 $FE (11)
+$FA $02 $00
+f16 a+16 > c16 d+8 < f16 a+16 > f8 d+16 d16 d+16 d16 c16
+
+g4^32^64^192
+
+(15)[r96 g32^64^192 r96 Saw12 g32^64^192 r96 Saw11 g32^64^192 r96 Saw12 g32^64^192 r96 Saw13 g32^64^192 r96 Saw14 g32^64^192 r96 @32 Choir11]
+< a8. b4 > @37 Saw11 g8^32^64^192
+(15)
+c8. < b4 > @37 Saw11 g8^32^64^192
+(15)
+< a8. b4 < @37
+
+Saw15
+(16)[c32^96 d32^96 > e32^96 f32^96 g32^96 < a32^96 b32^96 > c32^96 d32^96 e32^96 f32^96 g32^96 a32^96 b32^96 > c32^96 d32^96 e32^96 f32^96 g32^96 a32^96 b32^96 <<]
+>>
+
+Saw11 y10
+f4.
+
+(12)[< a16 > c16 f16 e8 d8 c8 < b16 > c16 d16 f4 < a16 > c16 f16 g8 f16 e16 c8 d16 e16 e16]
+
+d8. < b1^2^8^16 > f4.
+
+(12)
+
+d8. a2 $DD $00 $0C b ^1^8^16
+
+a+4.
+
+(13)[g+16 g16 f32^64^192 r96 f8 g16 < a+8. > d+16 f16 a+4^16 g16 f16 d+16 f8 g16 < a+8. > c16 d16 d+16 d8. c8. g8 c8. f8. a+8]
+
+> d+16 d16 c16 < a+8 g+16 g16 f8 g16 g+16 d8 d+16 <
+
+@36 Kick2 c96 @33 Crash2 f+8^16^32^64^192 > @37 Saw11 a+8
+
+(13)
+
+(14)[> d+32^96 d32^96 c32^96 < a+32^96 g+32^96 g32^96 f32^96 d+32^96 d32^96 c32^96 < a+32^96 a32^96 g32^96 f32^96 d32^96 c16 < a+16 f16 d16 >>]
+
+
+
+; +---------------------+
+; |     Channel #1	|
+; |     Saw		|
+; |     Choir		|
+; |     Hit		|
+; +---------------------+
+
+#1
+o4 @37 Saw21 VIB
+(11)2
+$FA $02 $FE (11)2
+$FA $02 $00
+>
+
+f8 $DD $00 $18 g ^32^64^192 
+(22)[r96 g32^64^192 r96 Saw22 g32^64^192 r96 Saw21 g32^64^192 r96 Saw22 g32^64^192 r96 Saw23 g32^64^192 r96 Saw24 g32^64^192 r96]
+@32 Choir21 < a8. b4 > @37 y10 Saw21 g8^32^64^192 
+(22)
+@32 Choir22 c8. < b4 > @37 y6 Saw21 f8 $DD $00 $0C g ^32^64^192 
+(22)
+@32 Choir21 < a8. b4 < @37
+
+Saw25
+(16) >>> c32^96 d32^96 e32^96 <
+
+Saw21 y10
+f4
+(12)
+c+8. $DD $00 $0C d < b1^4^8 >
+< @35 $ED $7F $E0 y3 Hit21 b16 Hit22 b16 Hit23 b16 > y17 Hit21 c16 Hit22 c16 Hit23 c16 Hit24 c16 @37 Saw21 y10
+f4
+(12)
+d8. a+2 $DD $00 $18 b ^2^4^8
+< @35 $ED $7F $E0 y17 Hit21 b16 Hit22 b16 Hit23 b16 > y3 Hit21 c16 Hit22 c16 Hit23 c16 Hit24 c16 @37 Saw21 y10
+a+4
+(13)
+> d+16 d16 c16 < a+8 g+16 g16 f8 g16 g+16 d8 d+16 f16 < a+16 > a+4
+(13)
+
+(14)
+<<< a+8 
+
+
+
+; +---------------------+
+; |     Channel #2	|
+; |     Bass		|
+; +---------------------+
+
+#2
+o4 @30 Bass1
+g1^1 f1 r16
+
+$ED $0F $96 a+16 a16 f16 c16 < a+8 a8 a+8 > c16 f16 c16 < f16 r16
+
+Bass2 $ED $0F $7F
+[[g16 > c16 d16 g8 c16 d16 < g8 > c16 d16 g8 c16 < a+16 > c16 <]]4
+
+[[
+g16 g16 g16 g16 g16 > g16 < g16 g16 > g16 < g16 g16 > g16 < g16 g16 > g16 d16 <
+g16 g16 g16 g16 g16 > g16 < g16 g16 > g16 < g16 g16 > g16 < g16 g16 > g16 < g16
+a16 > a16 < a16 a16 > a16 < a16 > g16 a16 < a16 a16 a16 a16 a16 a16 a16 > a16 <
+a16 a16 > a16 < a16 > g16 a16 < a16 a16 a16 > a16 < a16 a16 > g16 a16 < g16 a16
+]]2
+
+
+[[g+16]]11 g+8
+
+(31)[
+g+16 g+16 g+16
+[[g16]]16
+[[f16]]9
+[[g16]]7
+[[g+16]]8
+[[a+16]]6
+g+16 g+16]
+
+[[g+16]]13
+
+(31)
+
+
+
+; +---------------------+
+; |     Channel #3	|
+; |     Sine		|
+; |     Saw		|
+; |     Choir		|
+; +---------------------+
+
+#3
+o4
+@38 Sine41
+[[g32^96 > c32^96 d32^96 g32^96 > c32^96 <<<<< d32^96 >>>]]8
+[[f32^96 a+32^96 > c32^96 f32^96 a+32^96 > c32^96 <<]]8
+
+
+@37 y10 Saw41 a+8 $DD $00 $18 >c ^32^64^192
+(41)[r96 c32^64^192 r96 Saw42 c32^64^192 r96 Saw41 c32^64^192 r96 Saw43 c32^64^192 r96 Saw44 c32^64^192 r96 Saw42 c32^64^192 r96 @32 $ED $08 $B0 Choir41 < f8. g4 >]
+@37 Saw41 c8^32^64^192 r96 c32^64^192 r96 Saw42 c32^64^192 r96 Saw41 c32^64^192 r96 Saw43 c32^64^192 r96 Saw44 c32^64^192 r96 Saw42 c32^64^192 r96
+
+@32 $ED $08 $B0 Choir41 < a8. g4
+@37 a+8 $DD $00 $0C >c ^32^64^192
+(41)
+@37 c8^32^64^192
+(41)
+<
+
+@38 
+Sine42 (42)[g16 > c16 d16 f16 g16 c16 d16 f16 <]2
+Sine43 (42)2
+$FA $02 $02
+$DC $18 $0D (42)4
+$FA $02 $00
+
+(42)4
+$FA $02 $02
+(42)4
+$FA $02 $00
+
+y14
+(43)[Sine44 g+16 > c16 d+16 a+16 < g+16 > c16 d+16 g+16 < g+16 > c16 d+16 g16 < g+16 a+16 > c16 g+16 < g16 a+16 > f16 g16 < g16 a+16 > f16 g16 < g16 a+16 > f16 g16 < g16 a+16 > f16 g16 < f16 g+16 > c16 d+16 < f16 g+16 > c16 d+16 < g16 a+16 > d16 f16 < g16 a+16 > d16 f16 < a16 > c16 d+16 g16 < a16 > c16 d+16 g16 <]
+
+Sine45
+(44)[< b32^96 > c32^96 d32^96 d+32^96 f32^96 g32^96 g+32^96 a+32^96 > c32^96 d32^96 d+32^96 f32^96 <]
+
+y12
+(43)
+(44)
+
+
+; +---------------------+
+; |     Channel #4	|
+; |     Drone		|
+; |     Hit		|
+; |     Choir		|
+; +---------------------+
+
+#4
+o2
+$FA $03 $00
+@34 Drone1 g2 Drone2 ^2 Drone3 g2 Drone4 ^2 Drone5 f2 Drone6 ^2 Drone7 ^2 Drone8 ^2 >>
+
+(51)[y10 @35 $ED $7F $E0 Hit51 g16 Hit52 g16 Hit53 g16 Hit51 g16 Hit53 g16 Hit51 g16 Hit52 g16 Hit53 g16 Hit54 g16]
+@32 Choir51 > c8. d4 <
+(51)
+@32 Choir51 > e8. d4 <
+(51)
+@32 Choir52 > c8. d4 <
+(51)
+@32 Choir52 > c8. d4 <
+
+[[$ED $08 $A9 Choir53 a1 a2 f4 a4 g1^2^16 @35 $ED $7F $E0 Hit55 g16 Hit56 g16 Hit57 g16 Hit55 a16 Hit56 a16 Hit57 a16 a16 @32]]2
+[[y13 $ED $08 $A9 Choir54 g2 c4 g4 f4 g4 a+4 g4 g+2 a+2 > c2 d2 <]]2
+
+
+
+; +---------------------+
+; |     Channel #5	|
+; |     Drums		|
+; +---------------------+
+
+#5
+o4
+(61)[@36 Kick c96 @33 Crash f+8^16^32^64^192 @31 CH > c32^96 c32^96 c32^96 c16 c16 < @39 Snare1] a+4^16
+@36 Kick c16 c16 c16 c16 @39 Snare1 a+16 @36 Kick c16 c16 @39 Snare1 a+16 @36 Kick c16 c16 @39 Snare1 a+16 @36 Kick c16 c16 c16 c16 @39 Snare2 a+32 Snare3 a+32 Snare4 a+16 Snare1 a+16 a+16
+(61) a+16 Snare5 a+16 Snare6 a+8. @36 Kick c16 c16 c16 c16 c16 c16 c16 c16 @33 Crash b8 b8 @40 Tom1 > d+32^96 d+32^96 d+32^96 d+16 < Tom2 a+16 a+16 Tom3 d16 d16
+
+@33 Crash2 f+8
+[[@39 Snare7 a+8 @36 Kick2 c8 @39 Snare7 a+8 @36 Kick2 c8 @39 Snare7 a+8 @36 Kick2 c16 c16 @39 Snare7 a+8 @36 Kick2 c8]]2
+@39 Snare7 a+8 @36 Kick2 c8 @39 Snare7 a+8 @36 Kick2 c8 @39 Snare7 a+8 @36 Kick2 c16 c16 @39 Snare7 a+8
+
+@40 Tom4 a+16 a+16 Tom5 f32^96 f32^96 f32^96 Tom6 d16 d16 d16 d16 @39 Snare7 a+16 @36 Kick2 c16 c16 @39 Snare7 a+16 @36 Kick2 c16 c16 @39 Snare7 a+8
+
+[[@36 Kick2 c8 @39 Snare7 a+8 @36 Kick2 c8 @39 Snare7 a+8 @36 Kick2 c16 c16 @39 Snare7 a+16 @36 Kick2 c8 c16 @39 Snare7 a+8]]15
+
+@36 Kick2 c8 @39 Snare7 a+8 @36 Kick2 c8 @39 Snare7 a+8 @40 Tom4 a+32^96 a+32^96 a+32^96 Tom5 f16 f16 Tom6 d16 d16 @39 Snare7 a+8 

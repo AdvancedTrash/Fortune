@@ -1,0 +1,239 @@
+#amk 2
+;************************
+
+; SPC Generator Info
+#SPC
+{
+    #author  "Nobuo Uematsu"
+    #title   "Costa Del Sol"
+    #game    "Final Fantasy VII"
+    #comment "Ported by Ahrion"
+}
+
+#path "CostaDelSol"
+
+#samples
+{
+	#CostaDelSol
+	"AcousticBass.brr"
+	"AcousticGuitarCDS01.brr"
+	"AcousticGuitarCDS02.brr"
+	"AcousticGuitarCDS03.brr"
+	"AcousticGuitarCDS04.brr"
+	"AcousticGuitarCDS05.brr"
+	"Conga1.brr"
+	"Conga2.brr"
+	"Flute.brr"
+	"GlassBell.brr"
+	"Kick1.brr"
+	"RimSnare.brr"
+	"Shaker_small.brr"
+	"Tambourine_small.brr"
+}
+
+#instruments
+{
+	"AcousticBass.brr"		$FF $F0 $B0 $06 $00 ; @30
+	"AcousticGuitarCDS01.brr"	$FF $EF $00 $03 $D1 ; @31
+	"AcousticGuitarCDS02.brr"	$FF $EF $00 $03 $CC ; @32
+	"AcousticGuitarCDS03.brr"	$FF $EF $00 $03 $D1 ; @33
+	"AcousticGuitarCDS04.brr"	$FF $EF $00 $03 $CC ; @34
+	"AcousticGuitarCDS05.brr"	$FF $EF $00 $03 $CE ; @35
+	"Conga1.brr"			$FF $E0 $00 $03 $00 ; @36
+	"Conga2.brr"			$FF $E0 $00 $03 $80 ; @37
+	"Flute.brr"			$FA $E0 $00 $02 $00 ; @38
+	"GlassBell.brr"			$FF $EB $B0 $03 $68 ; @39
+	"Kick1.brr"			$FF $E0 $00 $02 $00 ; @40
+	"RimSnare.brr"			$FF $E0 $00 $02 $00 ; @41
+	"Shaker_small.brr"		$FF $E0 $B0 $02 $00 ; @42
+	"Tambourine_small.brr"		$FF $E0 $00 $01 $F3 ; @43
+}
+
+w192
+t47
+
+
+"Shaker1 = v110"
+"Shaker2 = v160"
+
+"Tamb1 = v120"
+"Tamb2 = v80"
+"Tamb3 = v140"
+
+"Flute = @38 y11 v180"
+"GlassBell = @39 y9 v190"
+
+"Guitar = y12 v235"
+"Bass = @30 v180"
+"Bass2 = v225"
+
+"Conga11 = v180"
+"Conga12 = v160"
+"Conga13 = v140"
+"Conga14 = v120"
+
+"Conga15 = v170"
+"Conga16 = v150"
+"Conga17 = v130"
+"Conga18 = v110"
+
+"Conga2 = @37 v190"
+
+"Kick = @40 y10 v200"
+"Snare = @41 y8 v210"
+
+"Rel = $ED $7F $EE"
+
+"VIB = $DE $60 $12 $1A $EA $0C"
+
+$F4 $02 /
+
+
+
+; +---------------------+
+; |     Channel #0	|
+; |     Guitar		|
+; +---------------------+
+
+#0
+o4
+
+Guitar
+(11)[@31 c8 r8 c4. c4 @32 c4 c4 c8 r4 c4]4
+
+[[
+(11)2
+$FA $02 $7E
+(11)2
+$FA $02 $00
+]]2
+
+[[@33 c8 r8 c4. c4 @34 c4 c4 c8 r4 c4]]2
+
+@33 d8 r8 d4. d4 @35 c4 c4 c8 r4 c4
+@33 d8 r8 d4. d4 @35 c4 c4 c2^8
+
+
+
+; +---------------------+
+; |     Channel #1	|
+; |     Bass		|
+; +---------------------+
+
+#1
+o4
+
+Bass
+[[a2 a2 > d2 d2 <]]2
+
+Bass2
+a4. a8 a4. a8 > d4. d4 < f+8 g8 g+8 a4. a8 a4. a8 > d4. d4 d4 d8 <
+
+(21)[a4. a8 a4. a8 > d4. d4 < f+8 g8 g+8 a4. a8 a4. a8 > d4. d8 d4 < a8 g+8 g4. g8 g4. g8 > c4. c4 < e8 f8 f+8 g4. g8 g4. g8 > c4. c8 c4 <]
+a+4
+
+(21)
+g4
+
+[[f4. f8 f4. f8 a+4. a+8 a+4. a+8]]2
+
+g4. g8 g4. g8 a4. a8 a4. a8
+g4. g8 g4. g8 a4. a2^8
+
+
+
+; +---------------------+
+; |     Channel #2	|
+; |     GlassBell	|
+; +---------------------+
+
+#2
+o4
+[[r8]]61
+
+GlassBell
+c8 e8 d2. < g8 g+8 a2. e8 g8 a4. a8 g8 a8 > c4 d4 < a2 a8 > c8 < b8 a+2 r8 f8 f+8 g2. g8 a8 a+4 a8 a+8 > c8 d8 f4 e2. c8 e8 d2. < g8 g+8 a2. e8 g8 a4. a8 g8 a8 > c4 d4 < a2 a8 > c8 < b8 a+2 r8 f8 f+8 g2. g8 a8 a+4 a8 a+8 > c8 d8 f4 e2. r1^4^8 d8 < a+8 a8 f2^8 r1 > d8 < a+8 a8 f2^8 r1 > c+8 < a8 g8 e2^8 r1 > c+8 < a8 g8 e2^8 
+
+
+
+; +---------------------+
+; |     Channel #3	|
+; |     Flute		|
+; |     Conga		|
+; +---------------------+
+
+#3
+o5
+[[r8]]31
+
+y10
+@36 y12 Conga11 c32 Conga12 c32 Conga13 c32 Conga14 c32
+(41)[@36 y12 Conga11 c8 Conga13 c8 Conga2 < f+8 > @36 Conga13 c8 Conga11 c8 Conga2 < f+8 > @36 Conga13 c8 Conga12 c16 Conga13 c16 Conga11 c8 Conga2 < f+8 > @36 Conga13 c8 c8 Conga2 < f+8 > @36 Conga13 c8 Conga2 < f+8 > @36 Conga11 c32 Conga12 c32 Conga13 c32 Conga14 c32]9
+
+r1^2^8 <
+
+Flute VIB
+e4 d8 e1 Rel ^2 @38 r8 g4 f8 e1 Rel ^2 @38 r8 e4 f8 f+1 Rel ^2 @38 r8 a4 g8 f+1 Rel ^2 $DF r2 
+
+
+
+; +---------------------+
+; |     Channel #4	|
+; |     Shaker		|
+; +---------------------+
+
+#4
+o5
+
+[[@42 y8 Shaker1 e8 e8 Shaker2 e8 Shaker1 e8]]64
+
+
+
+; +---------------------+
+; |     Channel #5	|
+; |     Tambourine	|
+; +---------------------+
+
+#5
+o4
+
+[[r2]]8
+
+[[@43 y11 Tamb1 a8 Tamb2 a8 Tamb3 a8 a8]]55
+
+r2 
+
+
+
+; +---------------------+
+; |     Channel #6	|
+; |     Kick + Snare	|
+; |     Conga		|
+; +---------------------+
+
+#6
+o5
+
+[[r2]]8
+
+(71)[Kick c4 Snare c8 Kick c8 c8 Snare c4 Kick c8 Snare c4. d8 Kick c4 Snare c8 Kick c8]9
+
+(41)4
+
+Conga11 c8 Conga13 c8 Conga2 < f+8 > @36 Conga13 c8 Conga11 c8 Conga2 < f+8 > @36 Conga13 c8 Conga12 c16 Conga13 c16 Conga11 c8 Conga2 < f+8 > @36 Conga13 c8 Conga11 c32 Conga15 c32 Conga12 c32 Conga16 c32 Conga13 c32 Conga17 c32 Conga14 c32 Conga18 c32 r4. 
+
+
+
+; +---------------------+
+; |     Channel #7	|
+; |     Kick + Snare	|
+; +---------------------+
+
+#7
+o5
+
+[[r2]]44
+
+(71)4
+
+c4 Snare c8 Kick c8 c8 Snare c4 Kick c8 Snare c4. d4. r4 

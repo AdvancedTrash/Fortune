@@ -1,0 +1,58 @@
+{
+	"style" : "groupbox",
+	"title" : "Resizable Trigger Extra-Settings",	
+	"layout": [
+		{
+			"control": "checkBox",
+			"name": "reTriggerable",
+			"title": "Re-Triggerable: ",
+			"tooltip": "Can the resizable trigger be able to be triggered again after nothing is touching it?",
+			"value-default": false,
+			"text-at-left": true
+		},
+		
+		{
+			"control": "checkBox",
+			"name": "npcTriggerable",
+			"title": "NPC Triggerable: ",
+			"tooltip": "Can the resizable trigger be able to trigger for npcs as well?",
+			"value-default": false,
+			"text-at-left": true
+		},
+		
+		{
+			"control": "lineEdit",
+			"name": "activateEvent",
+			"title": "Activate: ",
+			"tooltip": "What event will activate when the trigger appears onscreen.",
+			"value-default": ""
+		},
+		
+		{
+			"control": "checkBox",
+			"name": "reActivatable",
+			"title": "Re-Activatable: ",
+			"tooltip": "Can the resizable trigger be able to be activated again once it goes offscreen?",
+			"value-default": false,
+			"text-at-left": true
+		},
+		
+		{
+			"control": "lineEdit",
+			"name": "talkEvent",
+			"title": "Talk: ",
+			"tooltip": "What event will activate when the trigger is talked to.",
+			"value-default": ""
+		},
+		
+		{
+			"control": "multiLineEdit",
+			"name": "talkMessage",
+			"title": "Message: ",
+			"tooltip": "What will the trigger say when talked to. <b>Setting any value to this will make the trigger \"Friendly\" & will only be able to be talked to. </b>",
+			"value-default": ""
+		}
+	]
+	
+}
+

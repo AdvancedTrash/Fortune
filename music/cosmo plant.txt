@@ -1,0 +1,141 @@
+#amk 2
+#samples
+{
+#default
+}
+
+#instruments
+{
+	@21 $8F $E0 $00 $05 $00
+	@29 $8F $E0 $00 $06 $00
+	@10 $8F $E0 $00 $08 $00	
+	
+}
+
+#spc
+{
+	#title "Cosmo Plant"
+	#game "Gradius III"
+	#comment "aka best song"
+}
+
+"k = @30"
+"s = @31"
+
+
+
+$EF $FF $1F $1F
+$F1 $07 $30 $01
+$F5 $0D $22 $22 $24 $11 $F0 $03 $FF
+$F4 $02
+
+#0 t45 w135 
+(1)[ $DE $30 $10 $20 @1 o5 q7e $ED $1B $EB l16 c<g>c q5f d8 q7f g2^8r16 <a+fa+> q5f c8 q7f f2^8r16]2
+
+[[ (2)[o4 @6 q7d $ED $1F $EB c4 q79 ^ q7d  <g>cd4^16 q79^q7d <g>cf4^16 q79^q7d <g>cfe8 q79^q7d d8 q79^q7d c16.q79^32q7d  d8 q79^q7d <a+8 q79^q7d f8. q79^q7d d. q79^32q7d e.q79^32q7d f.q79 ^32q7d e q79^q7d f] g8.@4 $ED $1B $F0 q5a o4 e8fg4. ^16 ]]2
+$F4 $01
+(3)[@6 $ED $1B $C0 q7d
+o4 a+>cc+d+rd+rc+f8rc+8rd+.r32 <a+>cc+d+rd+rg+g8rd+8r<a+16.r32]
+$FA $02 $02 (3) 
+$FA $02 $00 (3)
+(4)[o5 cdd+frfrd+g8rd+8rf. $F4 $01 r32  <g>cd<b>cd<g>  g4r @1 o5 q7e $ED $1F $C0 e.r32f. $F4 $01 r32]
+(5)[o5  g8rf32e32d4..re.r32f.r32 		g8rf32e32c4..rd.r32e.r32]
+(6)[o5 f8rd+32d32c4..rc.r32d.r32 e8.r<g8.r >c8.re8. r ]
+(5)
+(7)[o5 f4rcfg4^16rcfa4^16rcf>c2.. $F4 $01  r8.]
+
+
+#1 v155 $EE $0C r16 (1)2 [[(2) o3g8 @4 $ED $1B $F0 q5a v255 o4 c8de4. v155  ^16 r ]]2 $F4 $01 (3) $FA $02 $02 (3) $FA $02 $00 (3) (4) (5) (6) (5) (7) [r1]100 
+
+#2
+@0 $ED $1B $E8 q7c y14
+o4 c1<a+1>c1d1
+
+@1 $ED $1B $E8
+[o4 c2.^16c16c16c1^16
+<a+1>c4.e8f16g4..]2
+
+[o4 q7f @15 d+2 @1 $ED $14 $EE  d+2>d+2.r8 @15 <d+d+]
+$FA $02 $02 * $FA $02 $00 *
+o4 @15 f2 @1 $ED $14 $EE o4 f2@15 g8.g8. g8 @1 $ED $14 $EE g2
+$ED $1B $C0 $F4 $01 q7c
+[$FB $02 $03 $00 $05  y10
+o4d=191r=1
+$FB $02 $03 $00 $07
+c=191r=1]
+$FB $02 $03 $00 $05
+c=191r=1
+$FB $02 $03 $00 $04
+c=95r=1
+$FB $02 $03 $00 $05
+<g=95r=1
+*
+$FB $02 $03 $00 $05
+>c4.^=11r=1g=95r=1>c=95r=1d2^=95 $F4 $01 $F4 $02 $FB $00 $00 r1
+
+ 
+#3 y7
+
+@0 $ED $1B $E8 q7c y6
+o3 g1f1g1a1
+@1 $ED $1B $E8
+[o3 g2.^16g16g16g1^16
+f1g4.>c8d16e4..]2
+
+
+[o3 q7f @15 d+2 @1 $ED $14 $EE  a+2>a+2.r8 @15 <d+d+]
+$FA $02 $02 * $FA $02 $00 *
+o3 @15 f2 @1 $ED $14 $EE o4 c2@15 <g8.g8. g8 @1 $ED $14 $EE d2
+
+@0 $ED $0F $C0 q7b
+[o4 c<g>cc32d32gdc<g>cdgdc<g>cd]6
+q5b c4^16ccc4.ccc4.ccg1r2
+
+
+#4 @14 $ED $1F $F1 l16
+[o2c8>c<c8c>c<c]24
+[o2d+8a+d+8d+>d+8<d+d+a+d+8d+>d+8<]2
+$FA $02 $02 *2 $FA $02 $00 *2
+o2f8>c<f8f>f8<ff>c<f8f>f8 [o2g>cd<]5g
+[o2a+a+>c<a+8a+>c<a+8a+>c<a+a+a+>c<a+  o2aa>c<a8a>c<a8a>c<aaa>c<a]
+o2g+g+>c<g+8g+>c<g+8g+>c<g+g+g+>c<g+  o2gg>c<g8g>c<g8g>c<ggg>c<g
+*
+o2 d8>d<d8d>d<e8.>e<e8e>e<f8.>f<f8f>f<g8.>g<g8g>g<g8def8efg
+
+
+#6
+@13 $ED $1F $C0 l16
+[o5q5acq54cq5a<c>cq54cq5a<c>c<c]7 q7a l32 o2 g2 $DD $00 $60 $B7
+*8 l16 
+[o5c<c8>cq54cq5a<c>c<c]8
+[o3 q7c  d+4.<a+>fa+4.	d+a+>d+4.<a+>d+a+2]
+$FA $02 $02 * $FA $02 $00 *
+o3f4.cg>c4.<f>cd4.<g>dg2
+[o5 r4g8.f32e32d2r4g8.f32e32c2]
+r4f8.d+32d32c2<c2<g2>
+*
+o5 q5a f<ff>f<ff>fgg<gg>g<gg>gaa<aa>a<aa>a>c  
+q7a o2g2 $DD $00 $C0 $B7 ^2
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#5 l16 o3 $FA $03 $80
+[k c8 s c k c8 c s c8]6
+k c8 s c k c8 c s c k c8
+s cccccc32c32c32c32
+[k c8 s c k c8 c sc8]16
+(10)[k c8 cc8 c @32 g8 k cccc8 c s] c8
+(10) cc
+(11)[@32 e8 k cc8 c @32 g8 k cccc8 c s c8] k c8cc8c s c8 k cccc8 s ccc
+(10) c8
+(10) cc
+(11)
+[k c s c32c32 @32 b]2 k c n1f q73 $ED $7F $F9 c8 q7f @32 bbbggee
+[k cc s c k c8 c s c8 k c8 s c k c8 c s c8 ]6
+k c8 s c k c8 @32 bg k c8. @32 g k c8 @32 ge k c8. s c k c8  @32 bg k c8 s ccccccc @31 l32 bbbbggggeeeecccc 
+
+#7 [r2]8 v235 l16
+[q73 n1b $ED $1F $FC cc n1f $ED $1F $F8 c8]32 	
+[r2]16
+[q73 n1f $ED $1F $F8 c8cc8cc8]12 
+n1e $ED $1F $F3	c4..c2c2c2 r2..

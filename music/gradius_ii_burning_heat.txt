@@ -1,0 +1,123 @@
+#amk 2
+
+#spc
+{
+	#title "Burning Heat"
+	#game "Gradius II"
+	#author "Shinji Tasaka, Motoaki Furukawa, Kenichi Matsubara, Seiichi Fukami"
+	#comment "Cover by Dippy"
+}
+
+#path "GRIII"
+
+#samples
+{
+    #optimized
+    "GD3_BASS.brr"
+    "GD3_KICK.brr"
+    "GD3_SNAR.brr"
+    "GD3_ORCH.brr"
+    "GD3_SHMR.brr"
+    "GD3_LD00.brr"
+    "GD3_TOMM.brr"
+    "GD3_LD02.brr"
+    "GD3_STRG.brr"
+    "GD3_CHAH.brr"
+    "GD3_CRSH.brr"
+}
+
+#instruments
+{
+    "GD3_BASS.brr" $8F $7F $00 $03 $C0 ;@30 | Synth bass
+    "GD3_KICK.brr" $FF $E0 $00 $02 $00 ;@31 | Kick
+    "GD3_SNAR.brr" $FF $E0 $00 $07 $20 ;@32 | Snare
+    "GD3_ORCH.brr" $FF $E0 $00 $07 $B0 ;@33 | Orchestra hit
+    "GD3_SHMR.brr" $FF $F6 $00 $03 $CD ;@34 | Shimmering lead 
+    "GD3_LD02.brr" $DF $EC $00 $08 $00 ;@35 | Lead
+    "GD3_TOMM.brr" $AF $72 $00 $0A $0D ;@36 | Tom tom
+    "GD3_LD02.brr" $CD $D0 $00 $08 $00 ;@37 | Saw
+    "GD3_STRG.brr" $CD $D2 $00 $02 $18 ;@38 | Strings
+    "GD3_LD02.brr" $DF $EC $00 $08 $10 ;@39 | Saw (detuned)
+    "GD3_CHAH.brr" $89 $AA $00 $07 $A0 ;@40 | Choir ahhs
+    "GD3_CRSH.brr" $9F $6F $00 $05 $A0 ;@41 | Crash cymbal
+}
+
+;Drum Macros
+"KICK=@31 v240 o4c"
+"SNARE=@32 v195 o4c"
+"TOMH=@32 v195 o3g"
+"TOMM=@32 v195 o3f"
+"TOML=@32 v195 o3d"
+
+
+w255 t95
+
+#0 l8 o4 ;Percussion
+KICKSNARE16SNARE16SNARESNARESNAREKICK
+/[KICKrKICKSNAREKICKr]4
+[KICKrKICKSNAREKICKr]3 KICKKICK[SNARE]4
+[KICKrKICKTOMHTOMMTOML]4
+[KICKrKICKTOMHTOMMTOML]2 KICKSNARE16SNARE16SNARESNARESNARESNAREKICKTOMHTOMH[TOMM16]4TOML
+[KICKrKICKSNAREKICKr]4
+[KICKrKICKSNAREKICKr]2 [SNAREKICK]5 SNARESNARE
+[KICKrKICKSNAREKICKr]4
+[KICKrKICKSNAREKICKr]2 KICK[SNARE]3KICKrKICKrKICK8[SNARE16]3 TOMH16TOMM16TOML16
+
+
+#1 @30 l8 o3 v145 ;Bass
+g+>g+<g+a+>a+<a+>
+/[ [[c4cc>c<c]]3 c>c<c<aa+b>]2 <
+[a+4a+a+fa+]2 [a4aafa]2 >
+[d+4d+d+<a+>d+]2 [f4ffcf]2<
+[a+>a+<a+>f<a+>a+<]2 [g+>g+<g+>d+<g+>g+<]2
+[f+>f+<f+>c+<f+>f+<]2 [f>f<f>c<f>f<]2
+[a+>a+<a+>f<a+>a+<]2 [g+>g+<g+>d+<g+>g+<]2<
+[g>g<g>d<g>g]2< g+>d+g+>g+4^8a+>fa+<a+4^8
+
+
+#2 @35 v169 o4 l8 p22,14,20 ;Lead
+rrrrrr
+/fedec<g2g>c<gg+d+g+>c4^8<a+fa+>d4^8
+fefg2^4g>c<gg+d+g+>c4^8<a+fa+>d4^8<
+e2efg4f4e4f4c4f4a2^4
+g+gg+a+2^8g16a+16>d+<a+ga+aa+>c2^4<a>cf<
+d2dd+f2^4f2fa+>d+4d4<a+4>
+c+2<a+f+>c+4^8<f+a+>c+f4c4<a+4a4f4c4
+d2dd+f2^4f2fa+>d+4d4<a+4
+a+2a+>dg2^4^8c+c+c+2d+d+d+16c16<g+16d+16c16<g+16
+
+
+#3 @39 v120 o4 l8 p22,14,20 y5 ;Lead Echo
+rrrrrr
+/rfedec<g2g>c<gg+d+g+>c4^8<a+fa+>d4^8
+fefg2^4g>c<gg+d+g+>c4^8<a+fa+>d4^8<
+e2efg4f4e4f4c4f4a2^4
+g+gg+a+2^8g16a+16>d+<a+ga+aa+>c2^4<a>cf<
+d2dd+f2^4f2fa+>d+4d4<a+4>
+c+2<a+f+>c+4^8<f+a+>c+f4c4<a+4a4f4c4
+d2dd+f2^4f2fa+>d+4d4<a+4
+a+2a+>dg2^4^8c+c+c+2d+d+d+16c16<g+16d+16
+
+
+#4 @40 v135 o5 ;Background Chords 
+rrrrrr
+/[c1^2<g+2^4a+2^4]2
+e1^2f1^2
+a+1^2>c1^2<
+f1^2d+1^2
+f+1^2f1^2
+f1^2d+1^2
+d1^2c+2^4d+2^4
+
+
+#5 @40 v135 o4 ;Background Chords & Shimmering Lead
+rrrrrr
+/[g1^2d+2^4f2^4]2
+@34v140[y0<c>ey20cy0gy20cy0>cy20<]2 [<y0c>y20fy0cy20ay0cy20>cy0<]2<<
+[y20d+y0>>gy20d+y0a+y20d+y0>d+y20<<]2< [fy0>>ay20fy0>cy20<fy0>fy0<<]2>
+@40y10v135a+1^2g+1^2
+c+1^2c1^2
+a+1^2g+1^2
+g1^2f+2^4g+2^4
+
+

@@ -1,0 +1,198 @@
+#amk 2
+;Ahuhuhu~
+;Size: 98E
+#SPC
+{
+	#title "Spider Dance"
+	#game "Undertale"
+	#author "Toby Fox"
+	#comment "by Wakanahuhuhu~"
+}
+#samples
+{
+#default
+}
+#instruments
+{
+@29 $00$00$FF$05$00
+@21 $00$00$FF$05$00
+@6  $9F$80$00$03$00
+@6  $98$80$00$03$00
+@6  $CF$60$00$03$00
+}
+
+"bum= @31 v255 "
+"pem= @30 v190 "
+"AY= $ee$60 "
+
+
+$EF $00 $40 $40
+$F1 $06 $C5 $01
+
+(!800)[$f4$09]
+(!801)[$ED$7F$FC]
+
+#0 t48 w225
+$f4$02 r64/
+AY
+(!800,-1) (!801,3)
+o5 v140 l16 y12
+[@32 f8 cr<g+rfr8ba+ra+g+d+e+r>c<a+g+a+>c<d+fg+fd+>f8d+c32<a+32g+
+ f8r8g8r8g+8r8a+8r8> @33 c8<a+8>f8c8e8c+8c< @32 cde
+>f8cr<g+rfr8ba+ra+g+d+er>c<a+g+a+>c<d+fg+fd+>f8d+c32<a+32g+>
+ c+8r8d+8r8f8r8g8r8] @33 c8<a+8>f8c8e8c+8c< @32 cde
+* @33 >>c8<a+8>f8c8e8c+8c4<
+(!800,0) (!801,0)
+@1 $ED$7A$E0 o4 v110 y12
+[ [[f2g+2f2c2]]3 f2f+2f4c4c+8e8f4 ]2
+
+$EF $00 $40 $40 
+
+(!800,-1) (!801,3)
+@34 v120 y10 l16 q5f >
+[ [[c+g+a+g+]]4 [[f>cc+c<]]4 ]4
+< v140 q7f
+[ [[fg+a+g+]]4 [[f>cc+c<]]4 ]3
+[fg+a+g+]3 c+32r32g+32r32a+32r32>c+32r32 crcrecr<a+>c8.e32f32g4
+
+
+
+
+
+
+#1r64/ AY
+(!800,-1) (!801,3)
+o5 v140 l16 y8
+[@32 c8<g+rfrc+r8g+frg+d+<a+>crg+fd+gg+<a+>c+d+c<a+>>c8<a+g+32f32d+
+c+8r8d+8r8f8r8g8r8 @33 g+8c+8g+8f8a+8g+8g4
+@32>c8<g+rfrc+r8g+frg+d+<a+>crg+fd+gg+<a+>c+d+c<a+>>c8<a+g+32f32f+
+f8r8g8r8g+8r8a+8r8] @33 g+8c+8g+8f8a+8g+8g4
+* @33 >g+8c+8g+8f8a+8g+8g4
+(!800,0) (!801,0)
+@1 $ED$7A$E0 o4 v110 y10
+[ [[c2c+2c+2<a+2]]3 >c2c+2c+4<g+4a+8>c8c4]2
+
+[r1]100
+
+
+
+
+
+#2r64/
+AY
+@8 $ED$0F$60 o2 v200 l16
+[ff>c<ffffd+c+fg+fcd+gd+ffffggggg+g+g+g+d+d+d+d+c+c+a+c+c+c+a+c+c+c+fc+c+c+g+c+ c4.c8c2
+ ff>cc<ffd+d+c+c+ffcca+a+ffccggccg+g+cc>cc<ccffc+8ggc+8g+g+c+8a+a+c+8 c4.c8c2]2
+q5f <v240
+[f4f4a+4a+4>c+4c+4c4c4]3 <f4f4f+4f+4>c+4c4 q7f c+8e8f4
+<
+q5f f4f4a+4 q7f a+a+>crc+8>c+16<g+16cef8e8c<g>c8e8 q5f f4<f4>q7f a+8.>f32a32a+agf q5f c+4 q7f c+c+g+rc8<g+a+>c8<e8
+<q5f f4f4a+4a+4>c+4c+4c4c4 <f4f4f+4f+4>c+4c4 q7f c+8e8f4
+[r1]4
+f2.ed+dc+c2.c+dd+ef2.g+4g2g+2
+
+[q5f f4f4f4 q7f ed+dc+ q5f c4c4c4 q7f c+dd+e q5f f4f4f4] g+4 q7f g8d+32r32f32r32g8a+rg+8d+eg+8.r
+*r4 >crcrecr<a+>c8.e32f32g4
+
+[r1]100
+
+
+
+
+
+
+#3r64/
+o3 l16
+[ [[ bumc8pemc8bumc8pemc8bumc8pemc8 bumccpemcc]]3 bumc4.c8c2]3
+[ bumc8pemc8bumc8pemc8bumc8pemc8 bumccpemcc]3 r1
+(300)[ [[bumcc pemc8]]3 bumccpemcc [[bumccpemc8]]3 bumc8pemcc]7
+[bumcc pemc8]3 bumccpemcc ^1
+[r1]8
+(300)3
+bumccpemc8bumccpemc8bumccpemc8bumccpemccbumcpemcbumc8cpemcbumc8c8c8c8c8
+
+
+[r1]100
+
+
+
+
+
+
+#4r64/ AY
+"Q = q7f "
+"W = q79 "
+$DF
+@14 $ED$3F$60 o2 l16
+[v150 f>c<a+>c<f>c<a+>c<c+g+fg+cgd+gf>c<a+>c<g>c<a+>c<g+>c<a+>c<d+>c+c+c+<c+g+a+g+c+a+g+a+c+>c<a+>c<c+>c+c+c+ r1
+v120 >>f>c<a+>c<f>c<a+>c<c+ba+bd+>c<ga+f>c<a+>c<g>c<a+>c<g+>c<a+>c<a+>c+cc+<c+g+gg+d+a+g+a+f>c<a+>c<g>c+cc+] r1
+* r2.
+
+$EF $FB $30 $30 
+r16
+@4 $ED$7A$E8 $DE$10$0F$30 v130 o5 $fa$02$0c
+c+cc+c8<g+8fg+cfg+8fg4^16g+8fg4^16g+8fg8>
+c+cc+c8<g+8fg+cfg+8a+g4^16g+8a+g4^16g+8a+>c8
+c+cc+c8<g+8fg+cfg+8fg4^16g+8fg4^16g+8fg8>
+c+cc+c8f8
+<a+ W > f Q < g+ W> c Q <a+ W g+  a+ Q a+8.g+a+ 
+b W a+ Q g+ W b Q e W g+ Q c W e Q c+ W c Q e W c Q f4
+
+@0 v190 $ED$1A$A0 $de$03$0C$40 $fa$02$00 o5 $E5$00$00$00
+c8<g+8fWg+QcWfQg+8fWg+Qc+Wf<Qg+>Wc+Qc+W<g+Q>g+Wc+QgWg+QfWgQeWfQfWeQgWfQeWgQ
+l32 t49
+v190fWeQcWfQfWcQgWfQg+WgQfWg+Qg+WfQa+Wg+Q>cW<a+Qa+W>cQ<g+Wa+QgWg+Qg+WgQgWg+QfWgQgWfQ
+l16v180 t48
+fg>d+<f>c+Wc+QcWc+Q<a+>c<g+a+>c4
+
+c8<g+8fg+cfg+8fg4^16g+8fg4^16g+8fg8>
+c+cc+c8f8
+<a+ W > f Q < g+ W> c Q <a+ W g+  a+ Q a+8.g+a+ 
+b W a+ Q g+ W b Q e W g+ Q c W e Q c+ W c Q e W c Q f4
+> $ED$1F$80 v140 $de$00$10$50
+[r8a+g+32r.a+g+32r.r8a+g+32r.a+g+32r. f32r32a+32g+32frfre32r32f4^r4
+ r8a+g+32r.a+g+32r.r8a+g+32r.a+g+32r. g+ra+rb32r32a+rg+32r32f4^16r8.]2
+v155
+<[r8a+g+32r.a+g+32r.r8a+g+32r.a+g+32r. g+32r32a+32g+32f32r.f32r.e32r32f4^32 [[g+32f32]]5
+ r16.a+g+32r.a+g+32r.r8a+g+32r.a+g+32r.] g+ra+rb32r32a+rg+32r32f4^16r8.
+ * >crcre32r32cr<a+ >[c32c+32]8
+
+[r1]100
+
+
+
+
+
+
+
+#5r64/
+[r1]16
+AY
+@14 $ED$3C$60 v145 o3 l16 y7
+[ [[f>cc+c<f>c<a+>c<a+>fg+f<a+>fgfc+fg+fc+fgfcfg+fcege]]3 <f>cc+c<f>c<a+>c<f+>cc+c<f+>cc+f+c+fg+fcegec+g+cgf4]2
+
+
+
+[r1]100
+
+
+
+
+
+
+
+#6r64/
+[r1]16
+AY
+@1 $ED$7A$E0 o3 v110
+[ [[g+2a+2a+2g+2]]3 g+2g+2g+4e4g+8g+8g+4]2
+[r1]100
+
+
+
+#7r64/
+[r1]16
+AY
+@1 $ED$7A$E0 o3 v110 y10
+[ [[f2g+2f2c2]]3 f2f+2f4c4c+8e8f4 ]2
+[r1]100

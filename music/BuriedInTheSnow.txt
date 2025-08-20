@@ -1,0 +1,317 @@
+#amk 2
+;************************
+
+; SPC Generator Info
+#SPC
+{
+    #author  "Nobuo Uematsu"
+    #title   "Buried in the Snow"
+    #game    "Final Fantasy VII"
+    #comment "Ported by Ahrion"
+}
+
+#path "BuriedInTheSnow"
+
+#samples
+{
+	#optimized
+	"AcousticBass.brr"
+	"GlassBell.brr"
+	"Pizzicato.brr"
+	"Strings.brr"
+	"Strings2.brr"
+}
+
+#instruments
+{
+	"AcousticBass.brr"	$FF $F0 $B0 $06 $00 ; @30
+	"GlassBell.brr"		$FF $EB $B0 $03 $68 ; @31
+	"Pizzicato.brr"		$FF $E0 $B0 $02 $D0 ; @32
+	"Strings.brr"		$F9 $F6 $B0 $03 $A8 ; @33
+	"Strings2.brr"		$F9 $F6 $B0 $03 $65 ; @34
+}
+
+w192
+t42
+
+"Bass = v180"
+"GlassBell1 = v160"
+"GlassBell2 = v120"
+
+"Pizzi = v150"
+
+"Strings11 = v200"
+"Strings12 = v80"
+
+"Strings21 = v200"
+"Strings22 = v80"
+
+"Strings31 = v180"
+"Strings32 = v80"
+"Strings33 = v215"
+"Strings34 = v90"
+
+$F4 $02 /
+
+$EF $FF $20 $20
+$F1 $04 $28 $01
+
+
+
+; +---------------------+
+; |     Channel #0	|
+; |     Strings		|
+; +---------------------+
+
+#0
+o4
+y13
+q2F
+
+@33
+[[
+(31)[
+r4 Strings11 d8 Strings12 d8 Strings11 d8 Strings12 d8 Strings11 d8 Strings12 d8 Strings11 d8 Strings12 d8 Strings11 d8 Strings12 d8 Strings11 f+8 Strings12 f+8 Strings11 d8 Strings12 d8 Strings11 d8 Strings12 d8 r4 Strings11 d8 Strings12 d8 Strings11 d8 Strings12 d8]
+(32)[
+r4 Strings11 c+8 Strings12 c+8 Strings11 c+8 Strings12 c+8 Strings11 c+8 Strings12 c+8 Strings11 c+8 Strings12 c+8 Strings11 c+8 Strings12 c+8 Strings11 e8 Strings12 e8 Strings11 c+8 Strings12 c+8 Strings11 c+8 Strings12 c+8 r4 Strings11 c+8 Strings12 c+8 Strings11 c+8 Strings12 c+8]
+(31)
+$FA $02 $7B
+(31)
+$FA $02 $00
+]]2
+
+
+(31)
+(32)
+$FA $02 $7E
+(32)
+$FA $02 $7B
+(31)
+
+$FA $02 $00
+(31)
+$FA $02 $7E
+(31)
+$FA $02 $00
+(31)
+(32)
+
+$FA $02 $00
+(31)
+$FA $02 $7E
+(31)
+$FA $02 $00
+(31)
+
+r4
+[[Strings11 c+8 Strings12 c+8]]5
+
+Strings11 f+8 Strings12 f+8
+
+(33)[Strings11 d+8 Strings12 d+8 Strings11 d+8 Strings12 d+8]
+r4
+(33)
+
+
+
+; +---------------------+
+; |     Channel #1	|
+; |     Strings		|
+; +---------------------+
+
+#1
+o3
+
+q2F
+@33
+[[
+(41)[
+Strings21 b8 Strings22 b8 Strings21 g8 Strings22 g8 r4]4
+(42)[
+Strings21 a8 Strings22 a8 Strings21 f+8 Strings22 f+8 r4]4
+(41)4
+$FA $02 $7B
+(41)4
+$FA $02 $00
+]]2
+
+(41)4
+(42)4
+$FA $02 $7E
+(42)4
+$FA $02 $7B
+(41)4
+
+[[
+$FA $02 $00
+(41)4
+$FA $02 $7E
+(41)4
+$FA $02 $00
+(41)4
+$FA $02 $00
+(42)4
+]]2
+
+
+
+; +---------------------+
+; |     Channel #2	|
+; |     Strings2	|
+; +---------------------+
+
+#2
+o4
+y7
+q2F
+@34
+$FA $02 $00
+[[
+(51)[
+Strings31 c8 Strings32 c8 Strings31 e8 Strings32 e8 Strings33 < c8 Strings34 c8 >]4
+<
+(52)[
+Strings31 b8 Strings32 b8 > Strings31 d8 Strings32 d8 Strings33 << b8 Strings34 b8 >]4
+>
+(51)4
+$FA $02 $7B
+(51)4
+$FA $02 $00
+]]2
+
+
+(51)4
+(52)4
+$FA $02 $7E
+(52)4
+$FA $02 $7B
+(51)4
+$FA $02 $00
+
+(53)[
+Strings31 d8 Strings32 d8 Strings31 e8 Strings32 e8 Strings33 < e8 Strings34 e8 >]4
+$FA $02 $7E
+(53)4
+$FA $02 $00
+(51)4
+(52)4
+
+
+(53)4
+$FA $02 $7E
+(53)4
+$FA $02 $00
+(51)4
+
+$FA $02 $7B
+(52)2
+
+$FA $02 $7F
+(51)2
+
+
+
+; +---------------------+
+; |     Channel #3	|
+; |     Bass		|
+; +---------------------+
+
+#3
+o5
+@30 Bass
+r2
+c1^1^1 < b1^1^1 > c1^1^1 < g1^1^1 > c1^1^1 < b1^1^1 > c1^1^1 < g1^1^1 > c1^1^1 < b1^1^1 a1^1^1 g1^1^1 > e1^1^1 d1^1^1 c1^1^1 < b1^1^1 > e1^1^1 d1^1^1 c1^1^1 < f+1 r2 b1 
+
+
+
+; +---------------------+
+; |     Channel #4	|
+; |     GlassBell	|
+; +---------------------+
+
+#4
+o4
+[[r2]]24
+
+y12
+GlassBell1
+(11)[@31
+e2 g4 b1^1^8 r8 d2 f+4 b1^1^8 r8 e2 g4 b1^1^8 r8 d2 g4 b1^1^8 r8 e2 g4 b1^1^8 r8 d2 f+4 b1^1^8 r8 c2 e4 b1... r8 a4 f+1^1^2^4^8 r8 b2 > d4 f+1^1^8 r8 < b2 > d4 f1^1^8 r8 < b2 > d4 a1^1^8 r8 < b2 > d4 a1^1^8 r8 < b2 > d4 f+1^1^8 r8 < b2 > d4 f1^1^8 r8 < b2 > d4 a1... r8 g4 f+1^1^4]
+
+r2.
+
+
+
+; +---------------------+
+; |     Channel #5	|
+; |     GlassBell	|
+; +---------------------+
+
+#5
+o4
+[[r4]]51
+
+y8
+$EE $10
+GlassBell2
+(11)
+
+
+; +---------------------+
+; |     Channel #6	|
+; |     Pizzicato	|
+; +---------------------+
+
+#6
+o5
+
+[[r4]]55
+
+y11
+@32 Pizzi
+g4 e4 r4 b4 g4 r1..
+f+4 d4 r4 a4 f+4 r1..
+g4 e4 r4 b4 g4 r1..
+g4 d4 r4 b4 g4 r1..
+g4 e4 r4 b4 g4 r1..
+f+4 d4 r4 a4 f+4 r1..
+e4 c4 r4 g4 e4 r1..
+d4 < b4 r4 > g4 d4 r1..
+g4 e4 r4 b4 g4 r1..
+f4 d4 r4 a4 f4 r1..
+g4 e4 r4 b4 g4 r1..
+f+4 d4 r4 a4 f+4 r1..
+g4 e4 r4 b4 g4 r1..
+f4 d4 r4 a4 f4 r1..
+g4 e4 r4 b4 g4 r1..
+f+4 d+4 r4 a4 f+4 
+
+
+
+; +---------------------+
+; |     Channel #6	|
+; |     Pizzicato	|
+; +---------------------+
+
+#7
+o5
+
+[[r4]]55
+
+@32 Pizzi y9
+e4 c4 r4 g4 e4 r1..
+d4 < b4 r4 > f+4 d4 r1..
+e4 c4 r4 g4 e4 r1..
+d4 < b4 r4 > g4 d4 r1..
+e4 c4 r4 g4 e4 r1..
+d4 < b4 r4 > f+4 d4 r1..
+c4 < a4 r4 > e4 c4 r1..
+< b4 g4 r4 > d4 < b4 r1..
+> e4 < b4 r4 > g4 e4 r1..
+d4 < a4 r4 > f4 d4 r1..
+e4 c4 r4 g4 e4 r1..
+d4 < b4 r4 > f+4 d4 r1..
+e4 < b4 r4 > g4 e4 r1..
+d4 < a4 r4 > f4 d4 r1..
+e4 c4 r4 g4 e4 r1..
+d+4 < b4 r4 > f+4 d+4 

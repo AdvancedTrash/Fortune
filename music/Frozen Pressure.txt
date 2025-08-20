@@ -1,0 +1,320 @@
+;======================================;
+;	SPC Generator
+;======================================;
+
+#SPC
+{
+	#title "Frozen Pressure"
+	#game "Sonic the Hedgehog 3 & Knuckles"
+	#author "comp. The Jetzons / arr. H. Edge"
+	#comment ""
+	#length "2:05"
+}
+
+;======================================;
+;	Samples
+;======================================;
+
+#path "HardTimes"
+
+#SAMPLES
+{
+	#hardtimes
+
+	"Lead Sawtooth.brr"
+
+	"Chrono String Ens.brr"
+	"Sawtooth 001.brr"
+	"Square Pop.brr"
+	"Synth Bass.brr"
+
+	"Yasui Snare.brr"
+	"DR-880 KICK.brr"
+	"Chrono Closed H.brr"
+	"MM7 High Hat.brr"
+	"SCD Record Scratch.brr"
+}
+
+;======================================;
+;	Instruments
+;======================================;
+
+#INSTRUMENTS
+{
+	"Yasui Snare.brr" $9F $F4 $B8 $14 $A0 ; @30 snare
+	"DR-880 KICK.brr" $CF $00 $B8 $13 $00 ; @31 bass drum
+	"Chrono Closed H.brr" $FF $E0 $B8 $0B $70 ; @32 closed hi-hat
+	"MM7 High Hat.brr" $8F $D6 $B8 $14 $A0 ; @33 open hi-hat
+	n1F $8F $F3 $7F $04 $00 ; @34 crash cymbal
+
+	@13 $AE $2F $B8 $03 $00 ; @36 ice sound
+	"SCD Record Scratch.brr" $FF $E0 $B8 $05 $D0 ; @36 record scratch
+
+	"Lead Sawtooth.brr" $FE $C8 $B8 $03 $F5 ; @37 sawtooth
+
+	"Sawtooth 001.brr" $AF $F7 $B8 $06 $02 ; @38 synth
+	"Square Pop.brr" $FE $80 $B8 $03 $00 ; @39 xylophone
+	"Chrono String Ens.brr" $F7 $E8 $B8 $02 $10 ; @40 strings
+	"Synth Bass.brr" $FF $EF $B8 $09 $00 ; @41 synth bass
+}
+
+;======================================;
+;	Global Volume / Tempo
+;======================================;
+	w146 t58
+;======================================;
+
+;======================================;
+;	Pitch Macros
+;======================================;
+
+	"@echo = $F4 $03"
+	"@leg = $F4 $01"
+	
+	"@rest = r4.^69 /"
+	"@end = [ r2 ]50"
+	
+;======================================;
+;	Main Macros
+;======================================;
+
+	"@sawtooth = @37 o5 v245 y9 | $DE $2F $0A $20"
+		"(900) = v145"
+		"(F00) = $ED $7F $F2 ^8 | @37"
+		"(F10) = $ED $7F $F2 ^4 | @37"
+		"(F20) = $ED $7F $EE ^2 | @37"
+
+	"@synth = @38 o3 v190 y7"
+	"@xylophone = @39 o4 v205 y7 | q79"
+	"@strings = @40 o4 v205 | $DF"
+	"@bass = @41 o2 v205 y11"
+		"(A00) = $ED $7F $EA"
+
+;======================================;
+;	Percussion Macros
+;======================================;
+
+	"@snare = @30 o3 v210 y10"
+	"@kick = @31 o3 v195 y10"
+
+	"@closed = @32 o4 v235 y10"
+	"@open = @33 o3 v245 y10"
+	"@crash = @34 o3 v245 y8"
+
+	"@ice = @35 o6 v205 | $FA $03 $00"
+		"(bend) = r8 f $DD $00 $0D < < < c r16 > > >"
+	"@record = @36 o2 v255 | $FA $03 $4F"
+
+;======================================;
+;	Echo Values
+;======================================;
+
+	$EF $C7 $25 $25
+	$F1 $05 $57 $01
+	$F4 $02
+
+;======================================;
+;	Extras
+;======================================;
+
+	"Channel # = #"
+
+;======================================;
+	Channel #0 | @rest $FA $02 $00
+;======================================;
+
+@crash q74 c4
+
+@sawtooth | l8
+q7E [ c c c4 c d d+ d c d d+ $DD $1D $20 < a+^
+b+ b+ $DD $20 $40 a+^ g4 g4 g4 ]
+f1 (F10)
+b+ * f1 (F00)
+
+@crash q74 c4
+
+@sawtooth
+q7E < g2^ @leg ^ g f @leg ^ d+4 f4 d+ $DD $12 $20 c ^1^1 (F10)
+* f1 (F00)
+
+c4 (001)[ b+4 a+2 d. d+. f < a+. > c. d
+c4 b+4 a+2 d1
+c4 b+4 a+4 a+ > c d. d+. f < a+. > c. d c4 g4 f2 ] d2 (F20)
+
+$FA $02 $02
+(000)[ @strings | l1
+q7B g. f2 g f ]4
+
+@sawtooth | l8
+q7E < c4 > (001) d2 (F20)
+(002)[ < g4. g d+ g d+32 g32 d+16 d c2^ c d+ g b+4. b+ a+ b+ a+32 b+32 a+16 f g2. >
+d4 d+4. d+ d d+ g d f c < a > f c < a > d4 d+ c < g > d+ d < a+ f > d d4. c
+c2 (F20) ^1^1 ]
+
+@end
+
+;======================================;
+	Channel #1 | @rest $FA $02 $00
+;======================================;
+
+@strings y12 | l2
+q7B [[ [ d+1. d d+1 d1 ]4
+[ g d+ f d g d+ ] f1
+* f1
+$FA $02 $02 ]]2
+
+* f1
+* f (F20)
+
+l1
+@crash q74 c^ r^
+c^ r^
+
+@end
+
+;======================================;
+	Channel #2 | @rest $FA $02 $00
+;======================================;
+
+@strings y8 | l2
+q7C [[ [ c < a+ b+ a+ b+ a+1. > ]4
+[ d+ c d < a+ > ]4
+$FA $02 $02 ]]2
+
+*3 d+ c d (F20)
+
+@end
+
+;======================================;
+	Channel #6 | @echo @rest @echo
+;======================================;
+
+$FA $03 $00
+(000)4
+
+(310)[ @xylophone | l16
+[[ c g b+ g c g b+ g c g+ b+ g+ c g+ b+ g+
+d a+ > d < a+ d a+ > d < a+d a+ g a+ d a+ g a+ ]]3
+[[ c g b+ g ]]2 [[ c g+ b+ g+ ]]2 [[ d a+ > d < a+ ]]4 ]
+
+$FA $02 $02
+(300)[ @synth
+q7F g q76 g q7F g q76 g q7F g g q76 g q7F g q76 g
+q7F g q76 g32 @leg ^32 q74 g q73 g q72 g q71 g32 @leg ^32 r ]16
+
+(310)
+
+$FA $02 $00
+@echo [[ @ice
+q79 (700)[ y14 (bend) y7 (bend) ]3 y14 (bend)
+
+@record
+r8 (710)[ q4F y14 g y7 c+ ]
+
+@ice | (700)3
+@record | r8 *3 ]]4
+
+@end
+
+;======================================;
+	Channel #4 | r69
+;======================================;
+
+l8
+q7C @kick c c c @echo /
+
+$FA $02 $00 | l16
+q7D [[ (400)[ @bass
+b+8 b+4 b+ b+ a+8 a+4 a+ a+ g+8 g+4 g+ g+ g8 g4 g g
+> c8 c4 c c d+8 d+4 d+ d+ < a+8 a+4 a+ a+ a+8 a+4 a+ a+ ]4
+[ b+8 b+ b+ b+ b+ b+ b+ g+8 g+ g+ g+8 g+ g+
+a+8 a+ a+ a+ a+ a+ a+ g8 g g g8 g g ]3
+b+8 b+ b+ b+ b+ b+ b+ g+8 g+ g+ g+8 g+ g+
+a+8 a+ a+ a+ a+ a+ a+ a+8 a+ a+ a+8 a+ a+
+$FA $02 $02 ]]2
+
+(A00) | l2
+[ b+ g+ a+ g ]3 b+ g+ a+ (F20)
+
+(400)2
+
+;======================================;
+	Channel #5 | r69
+;======================================;
+
+l8
+@snare q7E c c c /
+
+q7C [[ (500)[ @kick c c @snare q7E c @kick q7B c16 q7C c16
+c c @snare q7E c @kick q7B c ]3
+(510)[ @kick c c @snare q7E c @kick q7B c16 q7C c16
+c c @snare q7E c c16 c16 q7B ] ]]3
+
+(500)3 (520)[ @kick c c @snare q7E c @kick q7B c16 q7C c16
+@kick c @snare q7E c c c16 c16 q7C ]
+
+[[ (530)[ @kick c c @snare q7E c @kick q7B c16 c16 ]3
+[ @kick c @snare q7E c c16 c c16 q7C ] ]]4
+
+[[ (500)3 (510) ]]3 (500)3 (520)
+[[ (530)3 * ]]8
+
+[[ (500)3 (510) ]]4
+
+
+;======================================;
+	Channel #3 | r69
+;======================================;
+
+q6B @open c+ c+ c+ /
+
+l16
+(600)[ q58 @closed c8 q4A @open c+ q49 c+ ]63
+(610)[ q58 @closed c q55 c q4A @open c+ q49 c+ ]
+
+[ q6A @open c+ q37 @closed c q38 c q37 c ]32
+
+(600)63 (610) *64
+
+(600)32
+
+@end
+
+;======================================;
+	Channel #7 | @rest $FA $02 $00
+;======================================;
+
+(300)16
+
+@crash q74 c4
+
+@sawtooth | (900)
+q7E r16. (001) d4.^32 (F20)
+
+$DF
+@crash q74 c4
+
+@echo @ice | q79 (700)3
+@record | r8 (710)
+@ice | (700)3
+@record | r8 (710)3
+
+[[ @ice | (700)3 y14 (bend)
+@record | r8 (710)
+@ice | (700)3
+@record | r8 (710)3 ]]3 @echo
+
+$DF | $FA $03 $00
+@crash q74 c4
+
+@sawtooth | $FA $02 $02 | (900)
+q7E r16. (001) d2 (F20)
+(900) (002)
+
+@end
+
+;======================================;
+;	AddmusicK 1.0.6
+;======================================;
+
+#amk 2

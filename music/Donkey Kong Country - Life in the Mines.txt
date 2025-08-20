@@ -1,0 +1,310 @@
+#amk 1
+
+#spc
+{
+	#title   "Life in the Mines"
+	#game    "Donkey Kong Country"
+	#author  "Dave Wise"
+}
+
+#path "LifeMines"
+
+#samples
+{
+	#optimized
+	"0B Stick.brr"
+	"0F Kick.brr"
+	"20 Strings.brr"
+	"22 Claves.brr"
+	"23 Harp.brr"
+	"24 Tom.brr"
+	"26 Synthbass.brr"
+	"27 Harp.brr"
+	"28 Vibraslap.brr"
+	"29 Hi-Hat.brr"
+	"2A Drip.brr"
+	"2B Vox.brr"
+	"2C Clank.brr"
+	"2D Wood Block.brr"
+	"2E Pan Flute.brr"
+	"2F Metallic rise.brr"
+	"30 Harp 2.brr"
+}
+
+#instruments
+{
+	"0B Stick.brr" $8F $F8 $80 $05 $00
+	"0F Kick.brr" $8F $DE $80 $05 $00
+	"20 Strings.brr" $83 $A1 $80 $05 $00
+	"22 Claves.brr" $8F $FC $80 $05 $00
+	"23 Harp.brr" $8E $FB $80 $05 $00
+	"24 Tom.brr" $8C $FA $80 $05 $00
+	"26 Synthbass.brr" $8F $DA $80 $05 $00
+	"27 Harp.brr" $8E $FB $80 $05 $00
+	"28 Vibraslap.brr" $8F $D5 $80 $05 $00
+	"29 Hi-Hat.brr" $8C $FA $80 $05 $00
+	"2A Drip.brr" $8E $D5 $80 $05 $00
+	"2B Vox.brr" $8C $F8 $80 $05 $00
+	"2C Clank.brr" $8F $FA $80 $05 $00
+	"2D Wood Block.brr" $8A $F8 $80 $05 $00
+	"2E Pan Flute.brr" $8E $EA $80 $07 $00
+	"2F Metallic rise.brr" $8E $FB $80 $05 $00
+	"30 Harp 2.brr" $8E $FB $80 $05 $00
+	"29 Hi-Hat.brr" $8C $FC $80 $05 $00
+	"24 Tom.brr" $8C $F0 $80 $05 $00
+	"2D Wood Block.brr" $8F $F8 $80 $05 $00
+	"2C Clank.brr" $8F $F8 $80 $05 $00
+	"22 Claves.brr" $8F $F8 $80 $05 $00
+	"0B Stick.brr" $8F $D5 $80 $05 $00
+	"2B Vox.brr" $8F $E0 $80 $05 $00
+	"30 Harp 2.brr" $8E $F8 $80 $07 $00
+	"30 Harp 2.brr" $8E $FB $80 $12 $00
+	"2B Vox.brr" $80 $D0 $80 $09 $00
+	"26 Synthbass.brr" $8F $DE $80 $05 $00
+	"2F Metallic rise.brr" $87 $EB $80 $08 $00
+	"2E Pan Flute.brr" $8F $EA $80 $07 $00
+	"2E Pan Flute.brr" $8D $E8 $80 $07 $00
+}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;Donkey Kong Country - Life in the Mines
+;;;;;Artist: Dave Wise
+;;;;;Ported by: Slash Man
+;;;;;Song Duration: 2:10
+;;;;;Insert size: 3339 bytes
+;;;;;N-SPC Patch required (Addmusic 4)
+;;;;;Sample bank required
+;;;;;Header Type: Level
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;==========Sample bank==========;
+;00 = Strings (20)
+;01 = Kick (0F)
+;02 = Claves (22)
+;03 = Harp (23)
+;06 = Tom (24)
+;08 = Stick (0B)
+;09 = Synthbass (26)
+;0A = Harp (27)
+;1A = Vibraslap (28)
+;1B = Hi-Hat (29)
+;1D = Drip (2A)
+;1E = Vox (2B)
+;1F = Clank (2C)
+;20 = Wood Block (2D)
+;21 = Pan Flute (2E)
+;22 = Metallic rise (2F)
+;23 = Harp 2 (30)
+
+#0 t58 w255
+v0c4
+/
+$EF $EB $3C $3C
+$F1 $04 $42 $01
+l8 q7f y10 ;Ambience
+(10)[$EE $65 @39 v120o3g @35 v180>d 
+@40 v190o2a+ @38 v170o4d+ $DD $00 $18 $AA
+@41 v140o4e $DD $00 $18 $AC $EE $50 @30 v150o6d 
+$EE $65 @47 v100o4c @47 <a+
+@43 v170c @42 v150<g+ @48 v170o3g @49 g+
+@33 >e @43 o2g+ @50 v150o4g @51 v170o2d+]21
+[$EF $42 $3C $3C 
+$EE $65 @31 v230o2g 
+$EF $43 $3C $3C 
+@35 v180o4d @40 v190o2a+ @38 v170o4d+ $DD $00 $18 $A9
+$EE $65 @52 y9v220o2g+y10 @41 v140o4e $DD $00 $18 $AC
+@42 v150o2g+ @47 v100o3a+ @43 v170c 
+$EF $42 $3C $3C 
+@31 v230o2g
+$EF $43 $3C $3C 
+@48 v170o3g @49 g+ $EE $65 @52 y9v220o2g+y10
+@43 o2g+ @50 v150o4g @51 v170o2d+]4 ;Echo switchoff 1
+[$EF $62 $3C $3C
+$EE $65 @31 v230o2g
+$EF $63 $3C $3C
+@35 v180o4d @40 v190o2a+ @38 v170o4d+ $DD $00 $18 $A9
+$EE $65 @52 y9v220o2g+y10 @41 v140o4e $DD $00 $18 $AC
+@42 v150o2g+ @47 v100o3a+ @43 v170c
+$EF $62 $3C $3C
+@31 v230o2g
+$EF $63 $3C $3C
+@48 v170o3g @49 g+ $EE $65 @52 y9v220o2g+y10
+@43 o2g+ @50 v150o4g @51 v170o2d+]8 ;Echo switchoff 2
+(10)4[r2]32
+
+#1
+r4
+/
+q7f l1 y10 ;Low Voice
+@53 v240 o1 $EE $60
+f+^^^^^^^^^^^^^^^
+$EE $20 v200 [o2c+^e^f+^c+^] c+^e^f+^g+^
+<g+^^^^^^^^^ > **
+o2c+^e^f+^g+^ <g+^^^^^^^^^r^
+
+#7
+r4
+/
+ q7f  l16 ;Harp/Bass
+v61 (2)[y9 o4 $EE $20
+@37 g+
+@45 <g+>g+
+@34 $EE $D0 f<f
+y11 @46 o6fo4f
+y9 @46 o5f]16
+v67 (2)16 v61 (2)28 y10 $EE $20
+@54 o3 l16 y12
+(8)[v135a v90>c v135f v90<a v135>e v90f v135f v90e v135e v90f v135d v90e v135<a v90>d v135d v90<a
+v135a+ v90>d v135f v90<a+ v135>e v90f v135f v90e v135e v90f v135d v90e v135<a+ v90>d v135d v90c]3
+(9)[o3v110a v70>c v110f v70<a v110>e v70f v110f v70e v110e v70f v110d v70e v110<a v70>d v110d v70<a
+v110a+ v70>d v110f v70<a+ v110>e v70f v110f v70e v110e v70f v110d v70e v110<a+ v70>d v110d v70c]
+(6)[y9 v61 o4 $EE $20
+@37 a+
+@45 <a+>a+
+@34 $EE $D0 g<g
+y11 @55 $EE $A0 o6g $EE $D0 @46 o4g
+y9 @46 o5g]8 y10
+@36 o2 l8 $EE $A0 v180 q6f
+[[ [g+]16[b]16>[c+]16<[g+]16 ]]2
+[g+]16[b]16>[c+]16 q7f 
+@54 $EE $20 o3 l16 y12
+(8)3(9)1(6)12
+
+#3
+r4
+/
+ l1 y7 q7f v60 ;Intro Vox echo 2/Melody/Bass switchoff/Metallic Rise switchoff 
+r4.@56
+$EE $80
+o1a16 $DD $00 $C0 $96 ^1 $DD $00 $C0 $9E ^1 $DD $00 $C0 $A6 ^1^2^4..
+o2a16 $DD $00 $C0 $9F ^1 $DD $00 $C0 $A6 ^1 $DD $00 $C0 $A9 ^1^2^4..
+$EE $00
+o2f16 $DD $00 $C0 $98 ^1 $DD $00 $C0 $A0 ^1 $DD $00 $C0 $A8 ^1^2^4..
+o3d+16 $DD $00 $C0 $A1 ^1 $DD $00 $C0 $A8 ^1 $DD $00 $C0 $AC ^1^2^16
+@44 $EE $60 l8 y7 v100
+[o3a+4>cd2^a+4>cd2^
+<d4ef2^>d4ef2^]
+<e4f8e4c4.>e4fe4.<cd1^1^
+* o4e4fe4c2.f{e4d4c4}
+a2.ga1^1^1^r1^1
+@57 $EE $A0 v180 y10 l8
+$EF $E3 $3C $3C
+[o2d+]48
+(5)[@58 o4 l16 q6e 
+$EE $00 v150y11f+ $EE $1F v110y9f+ $EE $3E v150y11f+ $EE $5D v110y9f+ 
+$EE $7C v150y11f+ $EE $9B v110y9f+ $EE $BA v150y11f+ $EE $D9 v110y9f+ 
+$EE $00 v150y11g $EE $1F v110y9g $EE $3E v150y11g $EE $5D v110y9g 
+$EE $7C v150y11g $EE $9B v110y9g $EE $BA v150y11g $EE $D9 v110y9g 
+$EE $00 v150y11g+ $EE $1F v110y9g+ $EE $3E v150y11g+ $EE $5D v110y9g+ 
+$EE $7C v150y11g+ $EE $9B v110y9g+ $EE $BA v150y11g+ $EE $D9 v110y9g+
+$EE $00 v145y11a $EE $1F v105y9a $EE $3E v145y11a $EE $5D v105y9a
+$EE $7C v140y11a $EE $9B v100y9a $EE $BA v140y11a $EE $D9 v100y9a]4
+@59 $EE $60 l8 y8 v110 q7f
+[o3a+4>cd2^a+4>cd2^
+<d4ef2^>d4ef2^]
+<e4f8e4c4.>e4fe4.<cd1^1^
+* o4e4fe4c2.f{e4d4c4}
+a2.ga1^1^1^[r2]32
+
+#4
+r4
+/
+ l1 y7 v83 q7f ;Intro Vox 1/Strings/Metallic Rise echo
+$EE $00 (1)[@56
+o2f16 $DD $00 $C0 $98 ^1 $DD $00 $C0 $A0 ^1 $DD $00 $C0 $A8 ^1^2^4..
+o3d+16 $DD $00 $C0 $A1 ^1 $DD $00 $C0 $A8 ^1 $DD $00 $C0 $AC ^1^2^4..
+o2a+16 $DD $00 $C0 $9C ^1 $DD $00 $C0 $A5 ^1 $DD $00 $C0 $AA ^1^2^4..]
+o3a+16 $DD $00 $C0 $A5 ^1 $DD $00 $C0 $AA ^1 $DD $00 $C0 $AE ^1^2^4..
+@32 o3 v110 y8
+[g1^1d1^1e1^1]f+1g1 * $EE $30 a1^1b1^1 r16.
+(3)[@58 o4 l16 q6e v100 $E8 $C0 $5A 
+$EE $00 y11f+ $EE $1F y9f+ $EE $3E y11f+ $EE $5D y9f+ 
+$EE $7C y11f+ $EE $9B y9f+ $EE $BA y11f+ $EE $D9 y9f+ 
+$EE $00 y11g $EE $1F y9g $EE $3E y11g $EE $5D y9g 
+$EE $7C y11g $EE $9B y9g $EE $BA y11g $EE $D9 y9g 
+$E8 $C0 $4E $EE $00 y11g+ $EE $1F y9g+ $EE $3E y11g+ $EE $5D y9g+ 
+$EE $7C y11g+ $EE $9B y9g+ $EE $BA y11g+ $EE $D9 y9g+
+$EE $00 y11a $EE $1F y9a $EE $3E y11a $EE $5D y9a]
+(4)[$EE $7C y11a $EE $9B y9a $EE $BA y11a $EE $D9 y9a]
+(3)(4)(3)(4)(3) o4v90$EE $7C y11a $EE $9B y9ar32
+$EE $00 q7f
+@32 o3 v110 y8 
+[g1^1d1^1e1^1]f+1g1 * f+1g1 * $EE $30 a1^1b1^1 r16.
+(3)(4)(3)(4)(3)(4)(3)(4)(3)(4)
+
+#5
+r4
+/
+ l1 y13 v60 q7f ;Intro Vox echo 1/Melody echo/Metallic Rise switchoff echo
+r4.(1)1
+o3a+16 $DD $00 $C0 $A5 ^1 $DD $00 $C0 $AA ^1 $DD $00 $C0 $AE ^1^2^16
+r8.@60 $EE $60 l8 y13 v68 ;D50
+[o3a+4>cd2^a+4>cd2^
+<d4ef2^>d4ef2^]
+<e4f8e4c4.>e4fe4.<cd1^1^
+* o4e4fe4c2.f{e4d4c4}
+a2.ga1^1^1^2^4..[r2]14 l16 $EF $42 $3C $3C
+r16.(3)(4)(3)(4)(3)(4)(3)o4v90$EE $7C y11a $EE $9B y9ar32
+$EF $62 $3C $3C
+r8.@60 $EE $60 l8 y12 v78 q7f
+[o3a+4>cd2^a+4>cd2^
+<d4ef2^>d4ef2^]
+<e4f8e4c4.>e4fe4.<cd1^1^
+* o4e4fe4c2.f{e4d4c4}
+a2.ga1^1^1^[r2]32
+
+#6
+r4
+/
+ l8 y10 q7f ;Ambience echo
+r.(11)[$EE $65 @39 v60o3g
+@35 v100o4d
+@40 v110o2a+
+@38 v80o4d+ $DD $00 $18 $AA
+@41 v50o4e $DD $00 $18 $AC
+$EE $50 @30 v60o6d
+$EE $65 @47 o4c
+@47 <a+
+@43 v90c
+@42 v70<g+
+@48 v90o3g
+@49 g+
+@33 >e
+@43 o2g+
+@50 v60o4g
+@51 v90o2d+]21
+[$EE $65 @31 v110o2g
+@35 v100o4d
+@40 v110o2a+
+@38 v80o4d+ $DD $00 $18 $A9
+$EE $65 @52 v100o2g+
+@41 v50o4e $DD $00 $18 $AC
+@42 v70o2g+
+@47 o3v60a+
+@43 v90c
+@31 v110o2g
+@48 v90o3g
+@49 g+
+$EE $65 @52 v100o2g+
+@43 v90o2g+
+@50 v60o4g
+@51 v90o2d+]12
+(11)4[r2]32
+
+#2 
+r4
+/
+l1 y13 v83 q7f ;Intro Vox 2/Strings 2/Metallic Rise
+@56
+$EE $80
+o1a16 $DD $00 $C0 $96 ^ $DD $00 $C0 $9E ^ $DD $00 $C0 $A6 ^^2^4..
+o2a16 $DD $00 $C0 $9F ^ $DD $00 $C0 $A6 ^ $DD $00 $C0 $A9 ^^2^4..
+$EE $00
+o2f16 $DD $00 $C0 $98 ^ $DD $00 $C0 $A0 ^ $DD $00 $C0 $A8 ^^2^4..
+o3d+16 $DD $00 $C0 $A1 ^ $DD $00 $C0 $A8 ^ $DD $00 $C0 $AC ^^2^4..
+@32 o3 v110 y12 $EE $30 
+b^^^>c+^<b^b^^^>c+^d^^^
+(5)4 $EE $00 q7f
+@32 o3 v110 y12 $EE $30 
+[o3b^b^>c+^<b^]2b^b^>c+^d^^^
+(5)5

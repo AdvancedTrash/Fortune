@@ -1,0 +1,475 @@
+#amk 2
+
+#SPC
+
+{
+	#title "Mechanical Base"
+	#game "Gradius III"
+	#author "Kazuki Muraoka, Kazuhiko Uehara"
+	#comment "ported by S1Z2"
+}
+
+#path "G3 - Mechanical Base"
+
+#samples
+{
+#default
+"00.brr"
+"01.brr"
+"02.brr"
+"04.brr"
+"05.brr"
+"08.brr"
+"0C.brr"
+"0F.brr"
+"13.brr"
+"14.brr"
+"15.brr"
+"18.brr"
+"1A.brr"
+}
+
+#instruments
+{
+"01.brr"			$AD $91 $7F $04 $02 ; @30
+"0F.brr"			$BC $AC $7F $01 $00 ; @31
+"08.brr"			$BF $8E $7F $03 $01 ; @32
+"14.brr"			$FF $E0 $7F $02 $00 ; @33
+"18.brr"			$9F $70 $7F $05 $A9 ; @34
+"04.brr"			$89 $AA $7F $07 $B8 ; @35
+"13.brr"			$89 $AA $7F $02 $19 ; @36
+"02.brr"			$FF $F6 $7F $03 $D0 ; @37
+"05.brr"			$FF $E0 $7F $03 $DD ; @38
+"0C.brr"			$FF $EA $7F $03 $83 ; @39
+"00.brr"			$CF $B1 $7F $03 $C3 ; @40
+"1A.brr"			$AF $72 $7F $05 $59 ; @41
+"15.brr"			$FF $E0 $7F $07 $22 ; @42
+}
+
+(!100)[$F4 $01 $F4 $01]
+"_Soff=$F4 $01 (!100,-1)"
+"_Son=$F4 $01 (!0,0)"
+
+"K=@33"
+"CR=@34"
+"T=@41"
+"S=@42"
+
+#0 w210 t32 ; w255
+v255 o4 y10 l16
+
+$F4 $02
+
+K q6f c=19
+
+v125 @30
+
+_Soff
+
+$ED $2B $91
+$EE $28
+
+q7f a+24 > c24 d24 c24 d24 e24 d24 e24 f24 e=5
+
+/
+
+v245 o4 q6a
+
+CR _Son c8 _Soff
+
+v160 @31 q7f
+
+$ED $3A $AC
+$DE $0A $1E $F0 $EA $18
+
+g=20 (00)[> e24 c24 < g24 > e12 f12 g12 a+6 a24 f24 f12 g12 a12]
+g8 f24 e24 c24 < g4
+
+@35
+
+$DE $0C $23 $F0 $EA $60
+
+a+4 g8 ^48
+
+v245 o4 q6a
+
+CR _Son c8 _Soff
+
+v160 @31 q7f
+
+$ED $3A $AC
+$DE $0A $1E $F0 $EA $18
+
+g=20 (00)
+(01)[o5 g6 e24 g24 > c6 d24 c24 < a+6 > c24 < a+24 a12] g16
+
+v255 o4 q7a
+
+CR _Son c8 _Soff
+
+v120 o5 q7f @32
+
+$DE $0A $1E $F0 $EA $18
+
+(02)[d24 f24 d24 e24 f24 e12 f12 g12] e12 c12 < g4. >
+(02) a+12 > c12 < a+12 a12 a+12 a8
+(02) e12 c12 < g4. >
+(02) (03)[g24 q79 g24 q7f
+> c24 q79 c24
+q7f d24 q79 d24 q7f]
+g24
+
+o4 @30
+
+$ED $3A $AA
+
+c12.. (04)[g24 > c24 d6 c24 d24 e6 c24 d24 f12 d24 e24 c24 d6 < g24 > c24 g24
+f8 < g24 > c24 f24 e8 e24 c24 < g24 
+a24 b24 > c24 d24 e24 c24 d24 e24 f24] e48
+
+v245 o4 q7a
+
+CR _Son c8 _Soff
+
+v120 o5 q7f @30
+
+$ED $3A $AA
+
+c12..
+(05)[< g24 > c24 d6 c24 d24 f12 d24 e24 c24 d6
+< g+24 > c24 d+24 g+4.
+< a+24 > d24 f24 a+4.
+< g24 > c24 d24 g8
+c24 d24 g24 > c8 <
+d24 g24 > c24 f8 <
+g24 > c24 f24]
+g12.. 
+
+#1
+v180 o4 @30 y10 l16
+
+_Soff
+
+a+24 > c24 d24 c24 d24 e24 d24 e24 f24 e24 f24 g24
+
+/
+
+v220 o4 @31
+
+$DE $0A $1E $F0 $EA $18
+
+g8 (00) >
+g8 f24 e24 c24 < g4
+
+y0 $DC $60 $14
+v240 $E8 $60 $D7
+
+c48 q7a c48 q7f f48 q7a c48 q7f
+g48 q7a f48 q7f > c48 q7a < g48 q7f
+a+48 q7a > c48 q7f f48 q7a < a+48 q7f
+> g48 q7a f48 q7f f48 q7a g48 q7f
+a+48 q7a f48 q7f > c48 q7a < a+48 q7f
+> f48 q7a c48 q7f g48 q7a f48 q7f
+
+y10 o4
+
+g8 (00)
+
+(01) > g12 a12 (!0,0) @32 o3 d=2 o4 d=6 (!100,-1)
+
+v170 o5 @32
+
+(02) e12 c12 < g4. >
+(02) a+12 > c12 < a+12 a12 a+12 a8
+(02) e12 c12 < g4. >
+(02)(03) > g8
+
+v180 o4 @30
+
+$ED $3C $AA
+
+c24 (04) > e24 f24 g24
+
+c6 (05)
+o6 g4 
+
+#2
+v140 o4 @30 y10 l16
+
+_Soff
+
+g24 a24 a+24 a24 a+24 > c24 < a+24 > c24 d24 c24 d24 e24
+
+/
+
+v170 o5 @35 y7
+
+$DE $0C $23 $F0 $EA $60
+
+c2 < a+2 > c2 y10 < a+4 g4 > y7
+c2 < a+2 > c2 < a+4 > c4 y10
+
+o4 @36 
+
+f2 g2 f2 a+4 a4
+f2 g2 f2
+g24 q79 g24 q7f
+> c24 q79 c24 q7f
+d24 q79 d24 _Son
+q6f g32. q69 g32. q65  g32. _Soff ^=21 q7f
+
+v150 o4 y7
+
+g4 > c4 < f4 a+4 a4. g8 f4
+
+v160 @30 y10
+
+$ED $3A $AA
+
+f24 g24 a24 g24 a24 b24
+
+v150 o4 @36 y7
+
+g4 > c4 < f4 a+4 d+2 f4.
+
+v160 @30 y10
+
+$ED $3A $AA
+
+$DE $0A $1E $F0 $EA $18
+
+e24 g24 a24 > d8 < g24 > c24 d24 g8 < a24 > d24 g24 > c8 < d24 g24 > c24 d4 
+
+#3
+v140 o4 @37 y10 l16
+
+_Soff
+
+e24 f24 g24 f24 g24 a24 g24 a24 a+24 a24 a+24 > _Son c24
+
+/
+
+
+v160 o4 @36 y13 $E8 $00 $00
+
+$DE $0C $23 $F0 $EA $60
+_Soff
+
+g2 f2 g2 f4 d4
+g2 f2 g2 f4 g4
+
+v120 o3 @32 y10
+
+$ED $0F $AA
+
+[
+[[f24 > f24 < f24 a+24 f24 > f24 <]]2
+[[g24 > g24 < g24 > c24 < g24 > g24 <]]2
+[[f24 > f24 < f24 a+24 f24 > f24 <]]2
+]
+
+v190 o4 @38
+
+a+24 q79 a+24 q7f
+> c24 q79 c24 q7f
+< a+24 q79 a+24 q7f
+a24 q79 a24 q7f
+a+24 q79 a+24 q7f
+a24 q69 _Son a24 _Soff q7f
+
+v120 @32
+
+$ED $0F $AA
+
+*
+
+v190 o4 @38
+
+g24 q79 g24 q7f
+> c24 q79 c24 q7f
+d24 q79 d24 q7f
+g24 q79 g24 q77 g24 ^8 q7f
+
+(30)[
+v190 o5 @38 y10
+
+c24 q7b c24 q67 _Son c24 _Soff
+
+v110 o5 @39 y13
+
+q7f c24 g24 c24 > c24 < c24 f24 c24 g24 q6f _Son c24 _Soff
+]
+$FA $02 $FE
+(30)
+$FA $02 $00
+
+v190 o4 @38 y10
+
+q7f a24 q7b a24 q67 _Son a24 _Soff
+
+v110 o4 @39 y13
+
+q7f a24 > f24 < a24 > a24 < a24 > c24 < a24 > f24 < q6f _Son a24 _Soff
+
+[v190 o4 @38 y10
+
+q7f f24 q7b f24 q67 _Son f24 _Soff
+
+v110 o5 @39 y13
+
+q7f f24 c24 q6f _Son < f24 > _Soff]
+$FA $02 $02
+*
+$FA $02 $00
+
+(30)
+$FA $02 $FE
+(30)
+$FA $02 $00
+
+[v190 o4 @38 y10
+
+q7f g+24 q7b g+24 q67 _Son g+24 _Soff
+
+v110 o4 @39 y13
+
+q7f c24 d+24 g+24 > c24 < d+24 g+24 > c24 d+24 q6f _Son g+24 _Soff]
+$FA $02 $02
+*
+$FA $02 $00
+
+v160 o4 @36
+
+$DE $0A $1E $F0 $EA $18
+$ED $3A $AA
+
+d4 g4 q6f > _Son c4 _Soff q7f
+
+v120 o4 @39 y0
+
+$DC $30 $14
+$E8 $60 $46
+
+g48 g+48 a48 a+48 b48 > c48 c+48 d48 d+48 e48 f48 _Son f+48
+
+#4
+v190 o4 @40 y10 l16
+
+_Soff
+
+$ED $7F $74
+
+[[c24]]12
+
+/
+
+v170 o4 @40
+
+(40)[
+[[c12 c24 q77 > c48 q79 < c48 q7f f24 g24]]2
+< a+12 a+24 q77 > a+48 q79 < a+48 q7f > e24 f24
+< a12 a24 q77 > a48 q79 < a48 q7f > e24 f24
+]
+(41)[c12 c24 q77 > c48 q79 < c48 q7f f24 g24]
+
+q7b f48 g48 q7f a+24 > c24 < f24 g24 c24
+< a+24 > a+24 < a+24 q77 > a+48 q79 < a+48 q7f > f24 g24
+< a24 > a24 < a24 > a24 f24 g24
+
+(40)
+(41)2
+
+< a+24 q7b > g24 q7f < a+24 a+24 > a+24 < a+24
+> c24 q7b < a+24 q7f > c24 c24 g24 > c24 < <
+
+[a+12 a+24 q77 > a+48 q79 < a+48 q7f a+24 a+24]2
+$FA $02 $FF
+*2
+$FA $02 $00
+*2
+
+v180
+
+$FA $02 $FD
+*
+$FA $02 $00
+
+> c12 c24 c24 c24 c24 <
+
+v170
+
+*2
+$FA $02 $FF
+*2
+$FA $02 $00
+*2
+
+g12 g24 g24 g24 g24 g4 >
+
+[c12 c24 f24 g24 c24
+c12 c24 f24 g24 c24
+
+< a+12 a+24 > e24 f24 < a+24]
+a+12 a+24 > e24 f24 < a+24
+
+a12 a24 > d24 e24 < a24
+a12 a24 > d24 e24 < a24
+
+f12 f24 > e24 f24 < f24 g24 > g24 < g24 g24 > d24 < g24
+
+*
+
+a+24 > f24 a+24 < a+24 > f24 a+24 <
+
+g+8 [[g+24]]9
+a+12 [[a+24]]10
+
+g8 ^24 g24 g24 g8 ^24 g24 g24
+g8 [[g24]]9
+
+#5
+v240 o4 y10 l16
+
+_Soff
+
+T q76 f48 f48 f48 f48 (50)[q79 c24 c24 c24 c24 q7b < a24 a24 a24 > S c24 c24 c24]
+
+/
+
+v250
+
+(51)[K q7f c12 q7d c24 S q7c c24 q77 c24 q74 c24]7
+T q74 f48 f48 q7a c24 c24 S q7c c24 c24 c24
+
+[[
+(51)
+K q7f c12 q7d c24 S q7c c24 q77 c24 K q7d c24
+]]3
+
+v255 T q76 f48 q77 f48 f24 (50) v250
+
+(51)3
+(52)[T q77 f48 q78 f48 f24 f24 q7a c24 c24 q7c < a24 >]
+(51)2
+S q7c c48 q7a c48 K q7f c24
+[[S q7c c24 K q7f c24]]5
+
+(51)3
+(52)
+(51)2
+
+[[S q7c c24]]7 q77 c24 q74 c24 ^8
+
+(51)7
+(52)
+(51)4
+
+[[CR q7a c24 q75 c24 q72 c24
+T q78 f24 f24 f24
+q7a c24 c24 c24
+q7c < a24 a24 a24 >]]2
+
+CR q7a c12 S q79 c48 q7c c48 [[c24]]9
+K q7f c12 S q79 c48 q7c c48 c24 c24 c24
+
+T q74 f48 q78 f48 f48 f48 f48 f48 q7a c24 c24 q7c < a24 >

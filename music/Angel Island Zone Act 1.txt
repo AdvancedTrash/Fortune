@@ -1,0 +1,230 @@
+#amk 2
+#spc
+{
+	#author "Ported by brickblock369"
+	#game	"Sonic 3"
+	#title	"Angel Island Zone (Act 1)"
+}
+#path "Custom"
+#samples
+{
+#optimized
+"Hi-Hat Closed.brr"
+"Hi-Hat Open.brr"
+"Crash Cymbal.brr"
+}
+
+#instruments
+{@27 $FF $41 $00 $01 $80
+@29 $FF $41 $00 $01 $80
+"Hi-Hat Closed.brr" $7F $00 $7F $03 $00 ;@32
+"Hi-Hat Open.brr" $7F $00 $7F $03 $00 ;@33
+"Crash Cymbal.brr" $8F $F2 $7F $03 $00 ;@34
+@3 $8F $E0 $00 $00 $C0 ;@35
+@6 $AF $60 $00 $03 $00 ;@36
+@13 $8F $C0 $00 $03 $00 ;@37
+@1 $8A $E0 $00 $03 $00 ;@38
+}
+
+$EF$FE$37$37
+$F1$02$F0$01
+
+#0 w175 t54
+@14 v255 o2
+
+(9)[c8 > l32 cr < cr a+8 l16 a a+ r a l32 a+r v150 c r v255 a+16 v100 l32 a+ r > v255 c8] <
+(10)[c8 > l32cr < cr a+8 a16 a+16 r16 < a+16 r16 a+16 > v150 a+32 r32 < v255 a+32 r32 b8]
+(9)
+> c8 > l32cr < cr a+8 a16 a+16 r16 < a+16 r16 a+16 > v150 a+32 r32 < v255 g32 r32 a8$dd$00$05g >
+(9)
+(10)
+c8 > l32 cr < cr a+8 l16 a a+ r a l32 a+r < a+ r l8 a g+
+[g16]4 r4. l8 a a+ b
+(1)[> c8. r16 c8 r16 c8^32. r64 < g16.. r64 > c16.. r64 < g16.. r64]
+(4)[f8. r16 f8 r16 f8 > v200 f32 r32 < v255 a16.. r64 a+16.. r64 b16.. r64]
+(1)
+(5)[f8. r16 f8 r16 f8 > v200 f32 r32 < v255 a16.. r64 a+16 v190 a+32. v255 r64 b16.. r64]
+(1)
+(4)
+(1)
+f8. r16 f8 r16 f8 > v200 f32 r32 < v255 a16 > v200 a32. v255 r64 < a+16 v200 > a+32. v255 < r64 b16 > b32. r64
+(1)
+(4)
+(1)
+(5)
+(1)
+(4)
+(1)
+< f8. > c8^16 f8^16 v200 f32 r32 v255 < f8 d8 d+8
+(2)[e4 e8. a8 v200 l32 a r v255 a8 > e8 < a8]
+(3)[> d4 d8 r16 < g8 > d32 r32 g8 < g8 f8]
+(2)
+> d4 d8 r16 < g8 > d32 r32 < g8 f+8 f8 
+(2)
+(3)
+(2)
+> d4 d8 r16 < g8 > d32 r32 < g8 f+8 f+8
+f8. v200 l32 f r v255 f8. > c8. v200 c16 l32 < a r v255 l8 f > e
+d8. v200 l32 d r v255 d8. < a8. v200 a16 l32 > c r v255 l8 d c <
+a+8. v200 l32 a+ r v255 a+8. f8. v200 f16 l32 f r v255 l8 a+ a
+g8. v200 l32 g r v255 g8. b8 v200 l32 b r v255 > c8 d4 $dd$20$0F<d
+
+#1 
+@35 o5 l24 $F4$03
+$DB$0Agev170[[ge]]8v210afv170[[af]]2v210a+gv170[[a+g]]8v210afv170[[af]]2 v210 a a+ a v170 e [ge]10<
+@0 l16 v198 c c > c < c a+ c a+ > c < f a+32. r64 > f32. r64 $DE$15$10$33 e16^4
+l24 $DF
+@35gev170[[ge]]8v210afv170[[af]]2v210a+gv170[[a+g]]8v210afv170[[af]]2 v210 a a+ a v170 e [ge]10
+@6 > v210 $DB$0A[c16]4 r4.
+<<< l8 v245 [fa+>f
+l16 er^cr^<$DE$20$0A$27a+8^2
+r2^8 l8 $DF fa+>f
+l16 er^cr^$DE$20$0A$27d8^2
+r2^8 l8 $DF]2
+r4
+@0 l16 v225 $DE$15$0D$20 e f g r^ c r^ a+4 a+8 a+8 g8
+a16 r8 f16 r8 c8^4. l16 ef
+g16 r8 c16 r8 a+4 l16 a+ra+r>cr< a2^8 r4
+l16 e f g r^ c r^ a+4 a+8 a+8 g8
+a16 r8 f16 r8 c8^4. l16 ef
+g16 r8 c16 r8 a+4 l16 a+ra+r>cr< a8. a+8. > c8. r4..
+@5 $DF (13)[l8 r v255 < g > c g f16 r8 e16 r8 l16 c r l24 < $E8$30$AA [[a]]9 > v255 c8
+< b16 r8 > c16 r8 l16 d r] l24 $E8$30$AA [[e]]12 v255
+< $E8$30$AA [[a]]12 v255
+> (14)[f16 r8 e16 r8 l16 d r < b16 r8 a16 r8 l16 g r]
+l8 (13) l24 $E8$30$AA >[[g]]12 v255
+$E8$30$AA [[e]]12 v255
+(14)
+@1 v190 $F4$03 < a4^16 r8. > c8. < b8. a8
+f4^16 r8. > e8. d8. c8
+d2$dd$80$40<a a2 $F4$03
+@6 > v220 l4 c < b > c d
+
+
+#2
+$F4$03
+v255 o5
+(6)[@21 c8. @30 f+16 @21 c8 @30 g+8]7
+@21 c8. @30 f+16 @21 c8 @29 v210 a8 v255
+[[(6)]]6
+@21 c4
+o5 v255 l16 @21 c @30 f < @31 g e @21 > c @30 e64 g32. r16 (7)[@30 e64 g32.] (7)(7) r8
+[@21 c8. @30 f+16 @21 c8 @30 g+8]14
+@21 [[c4]]2 @30 (7)(7) [r16 e64 g32.]2 e64 g16..
+[@21 c8. @30 f+16 @21 c8 @30 g+8]14
+@21 [[c4]]2 @30 (7)(7) e64 g16.. (7)(7) e64 g16..
+(8)[@21 c8. @30 f+16 @21 c8 @30 g+8 @21 c8. @30 e16 c8 f8] (8)(8)
+@21 c8. @30 f+16 @21 c8 @30 g+8 @21 c16 (7) r16 (7)(7) r16 (7) r16
+[[(8)]]7
+(7)(7)r16(7)r16@30f16 v210@29 a16 @21 c8 @21 c8 < @31 l32 g e @29 a4 
+
+#3
+$F4$03 $DB$0A
+@34 v200 o5
+c1^4^16
+@36 v178 o3 $DB$0C d32. r64 e32. r64 f32. r64
+r1.
+@1 $DB$0A v200 l16 > c c > c < c a+ c a+ > c < $DB$0C f a+32. r64 > f32. r64 $DE$15$10$33 e16^4
+@5 $DF v75 <
+l16 $DB$0A erer[[re]]3rrerer
+drdrr <
+@36 v178
+$DB$0C d32. r64 e32. r64 f32. r64
+> @5 v75
+l16 $DB$0A rdrrdrdrerer[[re]]3rrerer
+@6 > l16 v220 [[a]]4 l4 [[r]]3
+@0 <<< [v200 $DB$08 $DF r8 a+32 r16. > c32 r8.. < a+8. > c16 r4.
+l16 > v225 $DE$0C$0E$18 aa+r l32 a+ra+ra+ra+r32^16 a8^4
+<< r8 v200 $DF a+32 r16. > c32 r8.. < a+8. > c16 r4.
+l16 > v225 $DE$0C$0E$18 aa+r l32 a+ra+ra+ra+r32^16 > c16 < a+16^4]2
+< [v255 @3 r8 $DF $DB$09 l16 c r c r8. < a+8. > c16 r4
+l16 v200 @13 $DB$0C cf>c<a+ra+rararfc8r8]3 @3 $DB$09 r8 c16 r16 c16 r16^8 < a+8^16 > c16 r4
+l16 v200 @13 $DB$0C cf>c<a+ra+rar
+@4 > l32 v255 frgrar>cr<a+rgrar
+@2 l8 r $DB$08 $F4$03 v200 g > c g f8. e8. c8 < a4. > c8 < b8. > c8. d8 e2 < a2 > f8. e8. d8 < b8. a8. g8
+l8 r g > c g f8. e8. c8 < a4. > c8 < b8. > c8. d8 g2 e2 f8. e8. d8 < b8. a8. g8 $F4$03
+[@0 c8 r16 c16 r8 @14 v190 l16 d e f16 r8 g16 r8 a16 r16]2
+ @3 v255 < l16 $F4$03 f a > d f d f a > d < a > d f a f a > d f
+@2 l4 v200 < c < b > c $E8$30$70 d$dd$20$0F<d
+
+
+
+#4
+v100 o4
+$F4$03
+@5 l16 $DB$0A ererrerererrerer
+drdrr
+@36 v178 o2
+$DB$08 a+32. r64 > c32. r64 d32. r64
+@5 l16 v100 $DB$0A > rdrrdrdrererrerererrererererrdre
+@1 v200 $DB$09 d16 f32. r64 > d32. r64 $DE$15$10$33 c16^4
+$DF @2 v75 $DB$0A
+$F4$03
+c1 < a+4^16 <<
+@36 v178 $DB$08  $F4$03 a+32. r64 > c32. r64 d32. r64
+@2 v75 $DB$0A > $F4$03 a2 g1
+@6 v220 > l16 $F4$03 [[f]]4 l4 [[r]]3
+@0 << [r8 $DB$0C $DF v200 d32 r16. e32 r8.. d8. e16 r4.
+l16 > v225 $DE$0C$0E$18 f+gr l32 grgrgrgr32^16 f8^4
+< r8 v200 $DF d32 r16. e32 r8.. d8. e16 r4.
+l16 > v225 $DE$0C$0E$18 f+gr l32 grgrgrgr32^16 a16 g16^4]2
+[r8 < v255 $DF $DB$0B @3 l16 e r e r8. d8. e16 r4
+l16 v150 @2 >> $DB$08 $F4$03 c^ < a a+^ g^ > c^ < a a+^ g4 > $F4$03]3
+r8 << v255 @3 $DB$0B l16 e r e r8. d8. e16 r4
+l16 v150 @2 >> $DB$08 $F4$03 c^ < a a+^ g^ > c^ @6 l32 v170 l32 < $F4$03 ara+r>crerdr<a+r>cr
+@38 << v160 l2 $DB$0C $F4$03 $DE$00$0F$10 g e l6 a g f e f a l2 g e a l4 g f
+l2 g e l6 a g f e f a l2 g e a >d16 r8 c16 r8 < b16 r16 > $F4$03
+[@0 v200 $DF e8 r16 e16 r8 @14 v190 l16 f g a16 r8 b16 r8 > c16 r16]2
+@1 v255 < a2 f2 l4 a g a b
+
+#7
+@5 v75 o4
+$F4$03
+l16 grgr[[rg]]3rrgrgr
+frfr[[rf]]3rrfrfr
+grgr[[rg]]3rrgrgr
+grgrrfrgrfrrgrgr
+@13 o6 v75
+$F4$03
+c1 < a+2 a2 g1
+@31 v225 [[c16]]4 @1 r4. l8 << v200 [fa+>f
+l16 er^cr^<$DE$20$0A$27 a+8^2
+r2^8 $DF]4
+r4
+>> @1 v150 l16 $DE$15$0D$20 e f g r^ c r^ a+4 [[a+8]]2 g8
+a16 r8 f16 r8 c2 e16 f16
+g16 r8 c16 r8 a+4 l16 a+ra+r>cr< a4. r2
+l16 e f g r^ c r^ a+4 [[a+8]]2 g8
+a16 r8 f16 r8 c2 e16 f16
+g16 r8 c16 r8 a+4 l16 a+ra+r>cr< a8. a+8. > c8. r4..$F4$03
+@0 l32 v190 $DF [$DB$0C dr<brgrerdr<brgrer>>cr<brgrercr<brgrer>>cr<arfrdrcr<arfrdr>brarfrdr<brarfrdr]4
+$F4$03 [@3 r4. v255 l16< f g a16 r8 b16 r8 > c16 r16]2 v220 $F4$03 @0 $DB$0A d4. l16 d e f8. e8. d8 g1$dd$50$40<g
+
+#6
+$F4$03
+@5 o5 v75
+l16 $DB$0A (12)[crcrrcrcrcrrcrcr] <
+a+ra+rra+ra+ra+rra+ra+r >
+(12)
+crcrr<a+r>cr<a+>rrcrcr
+(12) <
+a+ra+rra+ra+ra+rra+ra+r >
+(12)
+[[f]]4r2.
+@34 v200 c1 [[r1]]7
+c1
+[l16 v140  @0 $DB$0C c^ < a a+^ g^ > c^ < a a+^ g4
+r1]3
+> c^ < a a+^ g^ > c^ r4..
+@34 v255 $DB$0A c1^1^8 @13 l8 $DB$08 v255  < g > d g f16 r8 e16 r8 c16 r16 < a2 > d16 r8 c16 r8 < b16 r16 v130 @37 $F4$03 e4 f8 g8 c4. g8 f8 e8 d8 c8 < b4 > f4 e8
+l8 v255 $F4$03 v255 @13 g > d g f16 r8 e16 r8 c16 r16 < a2 > d16 r8 c16 r8 < b16 r16
+@34 > v200 $DB$0A c4. @3 << l16 $DB$08 $F4$03 d e f16 r8 g16 r8 a16 r4.. d e f16 r8 g16 r8 a16 r16 > @1 $F4$03 f2 d2 d4 e4 f4 g4
+
+#5
+$F4$03
+o5
+(11)[@32v160b16v110b16 @33v130a+8]28
+@32v170b16 < @23 v175 c16 [l16v200cv125c]7 >
+[[(11)]]28
+@32v170b4 [r4]3
+[[(11)]]128

@@ -1,0 +1,375 @@
+#amk 2
+#path "TMNT-BigApple3AM"
+#samples
+{
+	"../default/00 SMW @0.brr"
+	"../default/01 SMW @1.brr"
+	"../default/02 SMW @2.brr"
+	"../default/03 SMW @3.brr"
+	"../default/04 SMW @4.brr"
+	"../default/05 SMW @8.brr"
+	"../default/06 SMW @22.brr"
+	"../default/07 SMW @5.brr"
+	"../default/08 SMW @6.brr"
+	"../default/09 SMW @7.brr"
+	"../default/0A SMW @9.brr"
+	"../default/0B SMW @10.brr"
+	"../default/0C SMW @13.brr"
+	"../default/0D SMW @14.brr"
+	"../default/0E SMW @29.brr"
+	"../default/0F SMW @21.brr"
+	"../default/10 SMW @12.brr"
+	"../default/11 SMW @17.brr"
+	"../default/12 SMW @15.brr"
+	"../optimized/13 SMW Thunder.brr"
+
+	"Slap Bass.brr"
+	"Orchestra Hit.brr"
+	"Distortion Guitar.brr"
+	"Wasp Synth.brr"
+	"Sine Wave.brr"
+	"Glockenspiel.brr"
+	"Brass Section.brr"
+	"Kick.brr"
+	"Closed Hi-hat.brr"
+	"Tom Drum.brr"
+	"Power Snare.brr"
+	"Open Hi-hat.brr"
+}
+#instruments
+{
+	"Slap Bass.brr"			$00 $00 $7F $04 $CB
+	"Orchestra Hit.brr"		$00 $00 $7F $03 $19
+	"Distortion Guitar.brr"		$00 $00 $3C $03 $DE
+	"Distortion Guitar.brr"		$00 $00 $7F $03 $DE
+	"Wasp Synth.brr"		$00 $00 $7F $03 $C3
+	"Sine Wave.brr"			$FF $ED $00 $04 $00
+	"Glockenspiel.brr"		$FF $EA $00 $03 $86
+	"Brass Section.brr"		$00 $00 $7F $03 $D9
+	"Brass Section.brr"		$89 $E2 $00 $03 $D9
+	"Brass Section.brr"		$89 $A2 $00 $03 $D9
+	"Kick.brr"			$00 $00 $7F $02 $00 ; o4 g
+	"Closed Hi-hat.brr"		$00 $00 $7F $04 $00 ; o4 a+
+	"Tom Drum.brr"			$00 $00 $7F $04 $00
+	"Tom Drum.brr"			$AF $72 $00 $04 $00
+	"Power Snare.brr"		$00 $00 $7F $04 $00 ; o4 b
+	"Open Hi-hat.brr"		$00 $00 $7F $04 $00 ; o5 d
+}
+#spc
+{
+	#author		"Kazuhiko Uehara, Harumi Ueko"
+	#game		"Teenage Mutant Ninja Turtles IV: Turtles in Time"
+	#title		"Big Apple, 3 A.M."
+	#length		"1:31"
+	#comment	"Ported by Milon Luxy"
+}
+
+
+; ------------------------------------- ;
+;	     Global Commands		;
+; ------------------------------------- ;
+
+;	Master Volume		Tempo (159 bpm)		Less Staccato
+	w150			t65			$F4$02
+
+;	Default Length
+	l16
+
+
+; ------------------------------------- ;
+;		 Macros 		;
+; ------------------------------------- ;
+
+"Bass		= @30"
+"Orch		= @31"
+"Dist		= @32"
+"Dist2		= @33"
+"Wasp		= @34"
+"Sine		= @35"
+"Glock		= @36"
+"Brass		= @37"
+"Brass2		= @38"
+"Brass3		= @39"
+"Kick		= @40"
+"CHat		= @41"
+"Tom		= @42"
+"Tom2		= @43"
+"Snare		= @44"
+"OHat		= @45"
+"!Detune	= $FA$02"
+"Off		= $00"
+"!Glissando	= $FB$81$06$01"
+"!Glissando_Off	= $FB$00$00"
+"!Vibrato	= $DE$18$18$38"
+"!Vibrato2	= $DE$48$10$90"
+"!Vibrato_Off	= $DF"
+
+
+; ------------------------------------- ;
+;		Channel 1		;
+; ------------------------------------- ;
+
+#0
+Sine q54 o1
+!Glissando
+a2^8...
+!Glissando_Off
+r64
+/
+
+; First section
+OHat v255 q56 o4
+f+8
+Brass q5F y11
+!Vibrato
+[v236 e g8 > d c+8] $E8$20$60 [[< a]]3
+* a > q6F f+32 $DD$06$06g ^4^32 q5F $E8$20$80 [[f+]]3
+[v236 < g b8 > f+ e8] $E8$20$80 [[d]]3
+* d q6F f32 $DD$06$06f+ ^4^32 q5F $E8$20$80 [[g]]3
+v236 < b [> d8 b a8] $E8$20$80 [[g]]3
+v236 d * d q6F g4^16 q5F $E8$20$80 [[a]]3
+v236 e g8 > d c+8 < a g8 $E8$20$60 [[e]]3
+v236 g8. $E8$20$60 [[g]]3 v236 a8. a
+
+; Second section
+(1)[ < e8 q55 e q5F f+8^32 q55 f+32 q5F e8 f+8^32 q55 f+32 q5F e8. e f+8. e8 q6F f+4 ]
+!Detune $03 * !Detune $08 * !Detune Off
+q5F r8 e g8 > d c+8 < a g8 $E8$20$60 [[e]]3
+v236 > g8. $E8$20$60 [[g]]3 v236 a4
+v255 * !Detune $03 * !Detune $08 * !Detune Off
+g8 $E8$20$60 [[g]]3 v255 g f+8 $E8$20$60 [[g]]3
+Sine v255 q34 o3
+r b > c c+ d d+ e f f+ g g+ a a+
+
+; Third section
+Brass v204 q6F
+!Vibrato2
+[b2. a+4. a4. r8 v236 a4 e8. f+8. g8. f+8. g8.] f+8. v248 * a8.
+
+; Final section
+!Vibrato
+> c+8 $DD$06$06d ^4 (2)[q5F d c < a > c8 d e2.
+q6F e8 $DD$06$06f ^4 q5F f d+ d d+ f f+ r8
+q6F g8. g g8.] b8 $DD$18$09d+ ^16
+v204 a8 a g8 a r8 > c8 $DD$18$09<d ^16 r8.
+<< a > c8 d g8 a4 > a8 a g8 a r8 a g8 a r4^16 b4..
+
+; ------------------------------------- ;
+;		Channel 2		;
+; ------------------------------------- ;
+
+#1
+Sine q72 o1
+a8 q52
+!Glissando
+a2^16..
+!Glissando_Off
+r64
+/
+
+; First section
+OHat v255 q56 o5
+d4
+Brass2 q5F v186 y9
+!Vibrato
+[< e g8 > d c+8] $E8$20$48 [[< a]]3
+v186 e g8 > d c+ q6F v236 e4^16 q5F $E8$20$60 [[d]]3
+[v236 < e g8 > d c+8] $E8$20$60 [[< b]]3
+* a q6F > d4^16 q5F $E8$20$60 [[e]]3
+[v236 < g b8 > f+ e8] $E8$20$60 [[d]]3
+* d q6F e4^16 q5F $E8$20$60 [[f+]]3
+* d < b8 $E8$20$60 [[g]]3
+v236 > e8. e r8 f+8. f+
+
+; Second section
+Brass3 q7F v186
+< e4^16 [ f+8. e8 f+8. e8. e f+8. e8 f+4 ]
+!Detune $03 e8. * !Detune $08 e8. * !Detune Off
+q5F v236 < g+ b8 > f+ e8 d < b8 $E8$20$60 [[g+]]3
+v236 >> e8. $E8$20$60 [[e]]3 v236 f+4
+Brass v224
+< c+8 q55 c+ q5F d8^32 q55 d32 q5F c+8 d8^32 q55 d32 q5F c+8. c+ d8. c+8 q6F d4
+(1) !Detune $03 (1) !Detune Off
+a8 $E8$20$60 [[a]]3 v224 a g+8 $E8$20$60 [[a]]3
+!Vibrato_Off
+Sine q66 v238 o3
+r b8. q36 > c c+ d d+ e f f+ g g+
+
+; Third section
+Brass v204 q6F
+!Vibrato2
+[g2. f+4. f4. r8 v236 e4 < a8. > c+8. e8. c+8. e8.] c+8. v224 * g8.
+
+; Final section
+!Vibrato v196
+> c+4 $DD$06$06d ^4 (2) b
+v204 f+8 f+ e8 f+ r8 a8 $DD$18$09c+ ^16 r8.
+<< f+ a8 a > e8 e4
+> f+8 f+ e8 f+ r8 f+ e8 f+ r4^16 f+4..
+
+; ------------------------------------- ;
+;		Channel 3		;
+; ------------------------------------- ;
+
+#2
+Glock q54 o1
+!Glissando
+g+2^8...
+!Glissando_Off
+r64
+/
+
+; First section
+Bass q6C o3 a8. r2^16
+Dist a4.
+Bass a4^16 g8 r2^8.
+Dist g4.
+[Bass g4^16 a8 r16] r2^8
+Dist a4.
+*
+q5C f g8 > d c+8 < a g8 e [[a8 a8. a]]2
+
+; Second section
+a8. g8. f+8. e8. a8. a8. e8 a e8 a
+[> c8. < c8. d8. d+8. e8. g8.] > c8 < c g8 c
+e8. f+8. a8. c8. d8 g f8 e < g8 > g4
+a8 e g8 > d c+8 < a g8 e g8 g8. g a8 a8. a
+a8. g8. f+8. e8. a8. e8. a8 a b8 b
+* > c8 c < g8 c d8. f+8. a8. > c8.
+q7C a g+ g f+ f e d+ d c+ c < b a+
+q5C a8 a r8 a g+8 a r2...
+
+; Third section
+c8. [e8. g8. > c8. < b8. b8. a+8. a+8. a8 a
+e8. f+8. g8. a8. b8. > c8.] < a8. > c8.
+* c+8.
+
+; Final section
+d8. c8. < a8. > d8 d+ e8. < e8. b8. > e8.
+f8. c8. < f8. > f8. < g8 g8. g g8. b8.
+a8. g8. f+8. e8. d8. c8. d8 > d+ < g8 a
+a8. g8. f+8. f8. q6C e4^16 e4..
+
+; ------------------------------------- ;
+;		Channel 4		;
+; ------------------------------------- ;
+
+#3
+r2.
+Orch q6D o3
+/
+
+; First section
+v255 a8. q63 a8. r2.
+q6D g4^16 f+8 q63 f+8 r2...
+q6D f+4^16 g8 q63 g8 r2...
+q6D g4^16 a8 q63 a8 r2^8.
+q6D g8. g8 q63 g q6D a4
+
+; Second section
+[Wasp q6B < a16. r16. Dist > a8.
+Wasp < a4^16 r4 Dist > a8. Wasp < a8. r8.
+Wasp > c16. r16. Dist > c8.
+Wasp < c4^16 r4 Dist > c8. Wasp < c r Dist > c4
+Wasp < g16. r16. Dist > d8. Wasp < g8. r8.
+f+16. r16. Dist > d8. Wasp < f+ r Dist > d4] r8
+Wasp q5B < e g8 > d c+8 < a g8 e r8
+Orch q6B g8. g r8 a8. a
+* Orch g8 g8. g f+8 g8 q62 g8
+Sine q34 o4
+a g+ g f+ f e d+ d c+ < b a+ a
+
+; Third section
+[Dist2 q6A v240 > c2. < b4. a+4.
+q6F a8 Orch a4 q6A e8. f+8. g8. f+8.] g8. f+8. * q6F g8. a8.
+
+; Final section
+Dist q6B v255 d2. e2. > c2. q6D d8
+Orch q7C < g8. g g8. b8. q5F v240 a8 a g8 a r8 > c4 r4.
+< g8 a4 a8 a g8 a r8 a g8 a r4^16 e4..
+
+; ------------------------------------- ;
+;		Channel 5		;
+; ------------------------------------- ;
+
+#4
+r8
+Sine q54 o1
+!Glissando
+c2^16..
+!Glissando_Off
+r64
+/
+
+; First section
+Wasp q5F v240
+a8
+Brass q54 v255 o4
+[e g8 > d c+8 < a] r8 * q64 > c+4^16 q54 $E8$20$50 [[< b]]3
+v255 g b8 > f+ e8 d r8 < g b8 > f+ e8 d q64 < b4^16 q54 > c+ r8
+* r8 * q64 c+4^16 q54 e r8
+v160 < e g8 > d c+8 < a g8 e e r
+v255 b8. b r8 > c+8. c+
+
+; Second section
+Wasp v204
+!Detune $F4 (1) !Detune $F7 (1) !Detune Off
+[q5F < c8 q55 c q5F d8 q55 d q5F c8 d8 q55 d q5F c8 q55 c q6F c d8. c8. d8.] r8
+q55 < e g8 > d c+8 < a g8 e r8
+Brass v255 q54
+>> d8. $E8$20$50 [[d]]3 v255 e4
+Wasp v204 !Detune $F4 (1) !Detune $F7 (1) !Detune Off *
+q5F e8 $E8$20$40 [[e]]3 v204 e d+8 $E8$20$40 [[e]]3
+Sine v204 q35 o2
+r b > c c+ d d+ e f f+ g g+ a a+
+
+; Third section
+Brass q64 v255
+!Vibrato
+[> c2. d+4. d4. r8 c+4 < e8. f+8. [[a8.]]3] a8. * > e8.
+
+; Final section
+< f+2. g+2. a2. b8 > b8. b b8. > d8.
+e8 e d8 e r8 g8 $DD$20$09c ^8 r8
+<< d f+8 f+ a8 a4 >> e8 e d8 e r8 e d8 e r4^16 d4..
+
+; ------------------------------------- ;
+;		Channel 6		;
+; ------------------------------------- ;
+
+#5
+Snare q4C v128 o4
+$E8$60$F8
+[[b]]12
+/
+
+; First section
+v255
+[[ Kick q5F g8. CHat q5D v255 a+8. v128 ]]3
+Kick q5F v255 g8. OHat q58 v248 > d8 Kick q5F v255 < g
+[[ Kick q5F g8. CHat q5D a+8. ]]2 Kick q5F g CHat q5D a+
+[[ CHat a+ a+8 a+ Kick q5F g8 ]]2
+r CHat q5A a+8. Kick q5D g8. CHat q5A a+8. Kick q5F g
+CHat q5D a+ a+ OHat q54 > d8. Kick q7F < g4^16 g r8
+Snare [[b b8]]3 b [[Kick g8 Snare b8. b]]2
+
+; Second section
+[[ [Kick g8 CHat q56 a+ Snare q7F b8 CHat q56 a+ a+8. Snare q7F b8] CHat q56 a+ ]]6
+Kick q5F g8 g Snare q7F b8 CHat q56 a+ Kick q5F g8 Snare q7F b Tom e32 e32 Tom2 c < a
+Kick q5F > g8 Snare b r8 Kick g g8 Snare b8. Kick g
+[[ * Kick q5D g ]]5
+Kick q5F g r g Snare q7F b8 Kick q5F g g8 g Snare b8. q7F b8 b8. b b8 b4
+Tom q3F e e e Tom c c c < a a a Snare > b b b
+
+; Third section
+Kick q5F g8 CHat q56 a+ Snare q7F b8. Kick q5F g CHat q66 a+
+[ Kick q5F g Snare q7F b8. Kick g8. Snare b8. Kick q5F g8 g Snare q7F b8.
+Kick g8 Snare b4 [[Kick g8. Snare b8.]]2 ] r8 CHat q56 a+ Snare q7F b8. v240
+Kick q5F g8 CHat q56 a+ Snare q7F b8. Kick q5F g8 * q7F b8. b8.
+
+; Final section
+Kick g8. Snare b8. CHat q56 a+8 Kick q5F g Snare q7F b8 Kick q5F g
+[[q7F g8. Snare b8. Kick]]3 r8 q5F g Snare q7F b Tom2 q4F e < a Kick > g8 Snare q7F b8. b
+Kick g8. Snare b8. Kick q5F g8 g Snare q7F b8 Kick q5F g CHat q56 a+8 Snare q7F b8. Kick q5F g
+[[Kick g8 CHat q56 a+ Snare q7F b8 CHat q56 a+8. Kick q5F g Snare q7F b8.]]2
+Tom q4F e e Tom2 c c < a Snare q7F > b4..

@@ -1,0 +1,218 @@
+#amk 2
+#spc
+{
+#game "Sonic Mania"
+#title "Press Garden Zone Act 2"
+#comment "Ported by Giftshaven"
+#length "1:58"
+}
+
+#path "Press Garden Zone Act 2"
+
+#samples
+{
+#optimized
+"p+24.brr"
+"p+17.brr"
+"Choir.brr"
+"String Ensemble 1.brr"
+"square.brr"
+"izu_kick.brr"
+"clap.brr"
+"brasso.brr"
+"organ_c.brr"
+"crashcym.brr"
+}
+
+#instruments
+{
+"p+24.brr" $8F $CA $7D $04 $8E
+"p+17.brr" $8F $CA $7D $06 $D6
+@0 $8A $C1 $B8 $03 $00
+"Choir.brr" $86 $E1 $FF $03 $D0
+"String Ensemble 1.brr" $95 $E0 $2E $03 $D2
+@4 $FE $D6 $AF $03 $00
+"square.brr" $FE $A2 $7F $04 $00
+"izu_kick.brr" $BE $AF $AF $04 $00
+"clap.brr" $CE $5F $9F $04 $80
+"brasso.brr" $AE $F4 $CE $07 $A0
+"organ_c.brr" $FE $F8 $FF $04 $92
+"crashcym.brr" $9F $00 $7F $03 $A0
+@22 $EF $1D $3F $07 $00
+}
+
+$EF $BE $CB $CB
+$F1 $06 $CF $01
+
+#0 v184 w216 t44 $ED$3F$E3 $F4$02
+@14o1f+16b16>c16c+16e16<
+/
+[f+16e16f+16r8>f+16e16f+16r8.c+16<b16>c+16<a16b16]
+f+16e16f+16r8>f+16e16f+16r8.<f+16b16>c+16e16f+16
+*
+<f+16e16f+16r8>f+16e16f+16r16e16r16c+16<a16r16g+16r16
+[f+16e16f+16r8>f+16e16f+16r8.c+16<b16>c+16<a16b16
+f+16e16f+16r8>f+16e16f+16r8.<f+16b16>c+16e16f+16
+<b16a16b16r8>b16a16b16r8.f+16a16b16f+16a16
+<a16g16a16r8>a16g16a16r8.<a16>d16e16g16a16
+f+16e16f+16r8<f+16e16f+16r8.>c+16<b16>c+16<a16a+16
+f+16e16f+16r8>f+16e16f+16r8.c+16<b16>c+16e16f+16
+<b16a16b16r8>b16a16b16r8.f+16a16b16f+16a16
+<a16g16a16r8>a16g16a16<a16>d16e16g16d16e16g16a16]2
+<c16c+16e16a16b16>c+16e16f+16
+[a16a16<a16>d16r16d16r16a16r16<a16r16a16>d16d16<a16a16e16e16r16>e16r16<e16r16e16r16>e16r16<e16b16>e16<b16>e16]3
+
+
+#1 v0 y7
+r4r16
+/
+o4c+8
+@35v152
+[q6Fc+16d+16r16c+16r16e16r16d+16r16c+16r16d+8.r8]
+c+16d+16r16c+16r16e16r16d+16r16c+16d+16d+16c+16r8.
+*
+c+16d+16r16c+16r16e16r16d+16r16c+16c+16r16<b16r8.>
+[c+16d+16r16c+16r16e16r16d+16r16c+16r16d+8.r8
+c+16d+16r16c+16r16e16r16d+16r16c+16<b16r16a16r8.
+>d16e16r16d16r16a16r16g+16r16f+16e16r16d16r8
+<b16r16>d16r16e16r16g16r16f+16r16e16f+16r16e16r8.
+c+16d+16r16c+16r16e16r16d+16r16c+16r16d+8.
+r8c+16d+16r16c+16r16e16r16d+16r16c+16d+16d+16c+16r8.
+d16e16r16d16r16a16r16g+16r16f+16e16r16d16r8.
+<b16>d16r16e16r16g16r16f+16r16e16f+16f+16e16r8.]2
+r4.
+v220@30
+[q7Fc+8d16c+8d8c+4^16]
+<a4b8>c+16<b8>c+8<b2^16
+*
+a4b8>c+16<b8>c+8d8.
+c+8<b8a8>c+8d16c+8d8c+4^16
+<a4b8>c+16<b8>c+8<b8
+g+8.a8b8
+
+
+#2 v0 y13
+r4r16
+/
+o3e8
+@35v152
+[q6Fa16b16r16a16r16>c+16r16<b16r16a16r16b8.r8]
+a16b16r16a16r16>c+16r16<b16r16a16b16b16a16r8.
+*
+a16b16r16a16r16>c+16r16<b16r16a16a16r16g+16r8.
+[a16b16r16a16r16>c+16r16<b16r16a16r16b8.r8
+a16b16r16a16r16>c+16r16<b16r16a16g+16r16f+16r8.
+b16>c+16r16<b16r16>f+16r16e16r16d16c+16r16<b16r8
+g16r16b16r16b16r16>e16r16d16r16c16d16r16<b16r8.
+a16b16r16a16r16>c+16r16<b16r16a16r16b8.r8
+a16b16r16a16r16>c+16r16<b16r16a16b16b16a16r8.
+b16>c+16r16<b16r16>f+16r16e16r16d16c+16r16<b16r8.
+g16b16r16b16r16>e16r16d16r16c16d16d16<b16r8.]2
+r4.
+v215@31
+[q7Fe8f+16e8f+8e4^16]
+c+4d8e16d8e8d2^16
+*
+c+4d8e16d8e8f+8.
+e8d8c+8e8f+16e8f+8e4^16
+c+4d8e16d8e8d8
+<b8.>c+8d8
+
+#3 v124 y15 $DE $00 $04 $0B
+r4r16
+/
+@34 
+o3c+1^1^1^4..
+@15>f+12r24e12r24c+16<a8g+8
+r1r1r1r1
+@34
+[c+2d+2
+e2d+2
+f+1]
+g1
+*
+e1
+*
+g1
+r2
+@33
+>c+2.
+e4<b1
+>c+2.
+e4e1
+c+2.
+e4<b1
+
+#4 v124 y5 $DE $00 $04 $0B
+r4r16
+/
+@34
+o2f+1^1^1^4..
+>v176@39>f+16r16e16r16c+16<a12r24g+12r24
+r1r1r1r1
+v124@34
+[<a2b2
+>c+2<b2
+b1
+>c1]3
+r2
+@33
+d2.
+f+4<b1
+>d2.
+f+4e1
+d2.
+f+4<b1
+
+#5 v128 y9 $DE $00 $04 $0D
+r4r16
+/
+@34
+o3f+2f2
+e2f2
+f+2f2
+e2r2
+@32>>>
+[c+4.e16e16c+4.e16f+16
+<b4.>c+16<b16f+4.a16b16
+>c+4.e16f+16c+4.<a16b16
+>c+16<f+8b2.^16]2
+v120@36<c+16e16f+16a16g+2$DD$30$30g<f+16g+16a16>e16
+c+8$DD$48$30$A4^2e32d32c+32c32<b16a16f+16a16
+>c+16e16f+16<b4..$DD$30$24$A2
+a+32a32b16>c16e16b16g2$DD$14$04f+$DD$00$04g^4.$DD$30$18f+
+d16e16a16
+g+4$DD$18$18ga16b16g+8$DD$0C$18g^16g32f+32e16f+16g+16a16b16>e16
+c+2$DD$14$04$B0$DD$00$04$B1$DD$3F$0C$B0^16c32c+32e16c+32c32<b16a16f+16a16
+>c32c+32e16f+16f+4$DD$24$18$B5^16a16g+16a16b16>c+16e16f+16f8$DD$01$02$C2$DD$0A$0A$C1
+e16c16<b16>c16<b16a16f+8e16c16<b16>c16<b16a16>c16
+<<f+16a16b16>c+16e16f+16a16b16@33<<[d1e1]3
+
+#6 v188
+r4r16
+/
+@37o4
+(0)[c16r16c16r16$F4$03@38d+16$F4$03@37c16r16c16r8.c16$F4$03@38d+16r8$F4$03@37c16]3
+@37c16r16c16r16$F4$03@38d+16$F4$03@37c16r16c16r4r16c16$F4$03@38d+16$F4$03@37c16
+[[(0)3
+c16r16c16r16$F4$03@38d+16$F4$03@37c16r16c16r8.c16$F4$03@38d+16r16d+16$F4$03@37c16 ]]3
+(0)4
+c16$F4$03@38d+16$F4$03@37c16r8.c16c16
+[c16r16c16r16$F4$03@38d+16$F4$03@37c16r16c16$F4$03@42r8q78c16$F4$03@37q7Fc16$F4$03@38d+16@42q78c16c16$F4$03@37q7Fc16]6
+
+
+#7 
+r4r16
+/
+o4
+(3)[v188@41q7Fd4]
+(2)[@42q78c16]51
+r4
+(2)5
+[[(3)
+(2)60 ]]4
+(2)8
+[@42q78c16c16@40q7Be16@42q78c16c16c16@40q7Be16@42q78c16c16c16@40q7Be16f+16a16f+16e16a16]6
+
+
+

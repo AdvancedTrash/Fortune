@@ -1,0 +1,396 @@
+﻿#amk 2
+
+#path "treetop"
+
+#spc
+{
+	#author "Evelyn Fischer"
+	#game	"Donkey Kong Country (SMW)"
+	#title	"Treetop Rock"
+	#length "2:51"
+}
+
+#samples
+{
+	#optimized
+	"harp.brr"
+	"voice.brr"
+	"vibra.brr"
+	"flute.brr"
+	"bass.brr"
+	"flute2.brr"
+}
+
+#instruments
+{
+	"harp.brr" $8E $FA $00 $03 $8A			;@30 \
+	"harp.brr" $8C $FA $00 $03 $8A			;@31  |
+	"harp.brr" $8D $FA $00 $03 $8A			;@32  | Harps
+	"harp.brr" $8B $FA $00 $03 $8A			;@33  |
+	"harp.brr" $8F $FA $00 $03 $8A			;@34  |
+	"harp.brr" $8E $FC $00 $03 $8A			;@35 /
+	"harp.brr" $86 $F8 $00 $03 $8A			;@36 \
+	"harp.brr" $87 $F8 $00 $03 $8A			;@37  |
+	"harp.brr" $88 $F8 $00 $03 $8A			;@38  | Echo harps
+	"harp.brr" $89 $F8 $00 $03 $8A			;@39  |
+	"harp.brr" $8A $F8 $00 $03 $8A			;@40  |
+	"harp.brr" $89 $F8 $00 $03 $8A			;@41 /
+	"voice.brr" $88 $A0 $00 $03 $8B			;@42 \  Voice Bass
+	"voice.brr" $88 $F9 $00 $03 $8B			;@43 /
+	"vibra.brr" $8A $FC $00 $07 $05			;@44 \
+	"vibra.brr" $8A $FD $00 $07 $05			;@45  |
+	"vibra.brr" $8A $FA $00 $07 $05			;@46  |
+	"vibra.brr" $8A $FE $00 $07 $05			;@47  | Vibraphone 1
+	"vibra.brr" $8A $EF $00 $07 $05			;@48  |
+	"vibra.brr" $8A $FB $00 $07 $05			;@49  |
+	"vibra.brr" $8A $F5 $00 $07 $05			;@50 /
+	"flute.brr" $89 $C4 $00 $07 $28			;@51	Flute 1
+	"vibra.brr" $8B $F3 $00 $07 $05			;@52 \
+	"vibra.brr" $8C $F5 $00 $07 $05			;@53  |
+	"vibra.brr" $8B $F7 $00 $07 $05			;@54  |
+	"vibra.brr" $8C $F9 $00 $07 $05			;@55  |
+	"vibra.brr" $8B $F9 $00 $07 $05			;@56  | Vibraphone 2
+	"vibra.brr" $8B $F6 $00 $07 $05			;@57  |
+	"vibra.brr" $8C $F3 $00 $07 $05			;@58  |
+	"vibra.brr" $8C $F7 $00 $07 $05			;@59  |
+	"vibra.brr" $8D $F9 $00 $07 $05			;@60 /
+	"flute.brr" $87 $E4 $00 $07 $28			;@61 	Flute 2
+	"bass.brr" $80 $E0 $00 $07 $05			;@62	Bass
+	"vibra.brr" $8C $F8 $00 $07 $05			;@63 \
+	"vibra.brr" $8C $F6 $00 $07 $05			;@64 /	Vibraphone 3
+	"flute2.brr" $8B $E2 $00 $07 $28		;@65
+	"flute.brr" $86 $E2 $00 $07 $28			;@66
+}
+
+
+; -----------------------
+
+$F1 $04 $34 $00
+$EF $00 $2E $2E
+$F5 $7F $08 $01 $01 $01 $01 $01 $01
+
+t30 w160 $F4 $02
+
+"HE=@30"
+"HC=@31"
+"HD=@32"
+"HB=@33"
+"HF=@34"
+"HX=@35"
+
+"J6=@36"
+"J7=@37"
+"J8=@38"
+"J9=@39"
+"JA=@40"
+"JX=@41"
+
+"Voice1=@42"
+"Voice2=@43"
+
+"VC=@44"
+"VD=@45"
+"VA=@46"
+"VE=@47"
+"VF=@48"
+"VB=@49"
+"VF5=@50"
+
+"Flute=@51 p30,20"
+"Flute2=@61"
+
+"PB3=@52"
+"PC5=@53"
+"PB7=@54"
+"PC9=@55"
+"PB9=@56"
+"PB6=@57"
+"PC3=@58"
+"PC7=@59"
+"PD9=@60"
+
+"Ha1=$ED $08 $BA"
+"Ha2=$ED $0F $F9"
+"Ha3=$ED $0D $F9"
+"Ha4=$ED $08 $BD"
+"Ha5=$ED $0C $FB"
+"Ha6=$ED $0E $F9"
+"Ha7=$ED $0D $FB"
+
+"K18=@63"
+"K16=@64"
+
+"Har1=$ED $0C $FA"
+"Har2=$ED $0A $FC"
+"Har3=$ED $0F $FB"
+"Har4=$ED $0F $F8"
+"Har5=$ED $0F $FA"
+
+"Vir1=$ED $0C $F4"
+"Vir2=$ED $0C $F6"
+"Vir3=$ED $0B $F4"
+
+"VE1=$ED $09 $F3"
+"VE2=$ED $09 $FA"
+"VE3=$ED $09 $FB"
+"VE4=$ED $09 $F7"
+"VE5=$ED $09 $FC"
+"VE6=$ED $09 $EC"
+"VE7=$ED $09 $F8"
+"VE8=$ED $09 $F5"
+"VE9=$ED $09 $F4"
+
+"HE1=$ED $0A $F8"
+"HE2=$ED $08 $FA"
+
+;eventually got bored of wasting instruments so fuck that im typing adsr directly
+
+
+#0 ; DONE
+
+r1
+r1
+r1 / p20,30 v255 $FA $03 $18
+Voice1
+o2c1^1^1^1^1^1^1^1^1
+(1)[f1^1^1
+g1^1^1]
+d4...^8.e16.
+f2^6r48r64a32.
+Voice2
+d2.
+r1
+r1
+r4
+Voice1
+(1)
+
+
+#1 v200 ; DONE
+
+o3
+(10)[HE c16 HC g32 HD >c16 HB <g32 HD c16 HB g32 HD >c16 HB <g32
+HE d32 HC c+32 HB c32 HD >c16 HB <g32 HD c16 HB >c+32 HF c16 HX f+32
+HE <c16 HC g32 HD >c16 HB <g32 HD c16 HB g32 HD >c16 HB <g32
+HE d32 HC c+32 HB c32 HD >c16 HB <c+32 HD c16 HB c+32 HD >c16 HB <c+32]2 /
+(10)6
+(11)[HE f16 HC >c32 HD f16 HB c32 HD <f16 HB >c32 HD f16 HB c32
+HE <g32 HC f+32 HB f32 HD >f16 HB c32 HD <f16 HB >f+32 HF f16 HX b32
+HE <f16 HC >c32 HD f16 HB c32 HD <f16 HB >c32 HD f16 HB c32
+HE <g32 HC f+32 HB f32 HD >f16< HB f+32 HD f16 HB f+32 HD >f16 HB <f+32]2
+o3
+(12)[HE g16 HC >d32 HD g16 HB d32 HD <g16 HB >d32 HD g16 HB d32
+HE <a32 HC g+32 HB g32 HD >g16 HB d32 HD <g16 HB >g+32 HF g16 HX >c+32
+HE <<g16 HC >d32 HD g16 HB d32 HD <g16 HB >d32 HD g16 HB d32
+HE <a32 HC g+32 HB g32 HD >g16 HB <g+32 HD g16 HB g+32 HD >g16 HB <g+32]2
+$F4 $03 y8 v170 >
+(13)[Ha1 a64 Ha2 a32 Ha1 a64 Ha3 a32r32. Ha4 a64 Ha5 a32r32. Ha4 a64 Ha7 a32r32. Ha1 a64 Ha6 a32]4
+>Ha1 c64 Ha2 c32 Ha1 c64 Ha3 c32r32. Ha4 c64 Ha5 c32r32. Ha4 c64 Ha7 c32r32. Ha1 c64 Ha6 c32<
+[[Ha1 b64 Ha2 b32 Ha1 b64 Ha3 b32r32. Ha4 b64 Ha5 b32r32. Ha4 b64 Ha7 b32r32. Ha1 b64 Ha6 b32]]2
+(13)2
+Ha1 g+64 Ha2 g+32 Ha1 g+64 Ha3 g+32r32. Ha4 g+64 Ha5 g+32r32. Ha4 g+64 Ha7 g+32r32. Ha1 g+64 Ha6 g+32
+[[Ha1 g64 Ha2 g32 Ha1 g64 Ha3 g32r32. Ha4 g64 Ha5 g32r32. Ha4 g64 Ha7 g32r32. Ha1 g64 Ha6 g32]]2
+$F4 $03 v200 y10
+(11)2 (12)2
+
+
+#2 $F4 $03 ; DONE
+
+r1
+r1
+r1 / v220 @62
+$ED $0F $F0
+o4f4 $DD $0D $19 g ^8..
+$ED $0C $F8 f16c32d+16
+$ED $0C $F6 f8
+$ED $0C $EF c4r1r1 $F4 $03
+Flute v130
+<<a+2.
+>c1^1^4
+r1
+r1
+r2.... v240 $F4 $03
+$ED$0C$F8 @62 > c32
+(20)[$ED$0C$FA d+16 $ED$0A$FC c32 $ED$0C$FA f16 $ED$0A$FC c32]2
+$ED$0C$FB g+16 $ED$0C$F8 g16. $ED$0C$F4 f8. $ED$0C$F8 c32
+(20)2
+$ED$0C$FB <a+16 $ED$0C$F8 >c16. $ED$0C$F4 <f8..
+v210 @30
+>[[Har1 d+16 Har2 c32 Har1 f16 Har2 c32]]2 Har3 g+16 Har4 g16.f8.c32
+[[Har5 b16 Har4 c32 Har5 >c16 Har4 <c32]]2 Har3 c16d32e16 Har4 f8..
+[[r2]]6
+r4.
+v198 @52
+Vir2 <a32.b32. Vir1 >c2^16
+Vir2 d32.e32. Vir1 <b8.a8.
+r2. Vir3
+g16.a4 r1...
+[[r2]]100
+
+
+#4 v0 $F4 $03	; DONE
+
+r1
+r1
+r1 / ^2^=45
+r96 v150 @44
+o4 VE1 c32
+[[VE2 d+16 VE3 c32 VE2 f16 VE3 c32]]4
+[[VE2 f+16 VE3 c32 VE2 g16 VE3 c32]]2
+VE4 a+16 VE5 >c16 VE6 <e32f32 VE5 f+16^192 VE7 f64^96d+16.
+o4 q79 @44 VE8
+(40)[ [[v190 c32 v175 c32 v180 c32]]4
+v185 c16 v175 <b32 v185 f+16 v175 b32 v185 a+16 v175 f32 v190 a+32 v180 a32 v175 e32
+v185 a16 v175 g+32 v185 d+16 v175 g+32 v185 g16 v175 d32 v190 g32 v180 f+32 v175 c+32 v185 f16 v175 c32]
+VE9
+(41)[v185 c16 v175 c32 v190 c32 v180 d32 v175 c+32 v185 c16 v175 c32]
+r4r32
+v185 c16 v175 c32 v185 c16 v175 c32 v185 c16. v190 c32 v180 d32 v175 c+32c16 v185 <c4..>r1r16.
+$ED $09 $F2 c16.r16. $ED $0B $F4 d+16.r16 $ED $09 $F6 c32
+$ED $0A $F8 f16 $ED $09 $F6 c32 $ED $09 $F8 f+16. $ED $09 $F5 g16.r16.
+$ED $0A $F2 c16.r16. $ED $0A $F4 d+16.r16 $ED $0A $F6 c32
+$ED $0B $F8 f16 $ED $0A $F6 g16^64c16^64<a+32>c16r64
+v130
+$ED $09 $F9 g48a+64^96
+$ED $09 $F7 >c8.d+8^64 $ED $09 $F9 d48d+64^96 $ED $09 $FC d16^192c64^96<a+16. $ED $09 $F9 g8^32
+g32 $ED $09 $FC f16.g16. $ED $09 $F9 c8^32 $ED $09 $FC g32f16g32r32. $ED $09 $F7 a+8...
+$ED $07 $B7 >c4.r4.
+r2.
+v160 @30 $F4 $03 q7f
+[[HE1 d+16 HE2 c32 HE1 f16 HE2 c32]]2
+$ED $0C $F8 g+16 $ED $0C $F4 g16. $ED $0C $F5 f8. $ED $0C $F4 c32
+[[$ED $0C $F8 b16 $ED $0C $F4 c32 $ED $0C $F8 >c16 $ED $0C $F4 <c32]]2
+$ED $0C $F8 c16 $ED $0C $F4 d32e16 $ED $0C $F5 f8. @44
+v150 VE1 <g32
+[[VE2 a+16 VE3 g32 VE2 >c16 VE3 <g32]]4 >
+[[VE2 c+16 VE3 <g32 VE2 >d16 VE3 <g32>]]2 f16g16.c32c+16c32<a+16
+g4..r1
+r16^192
+y12 v170 @30 $F4 $03>
+[[Ha1 d64 Ha2 d32 Ha1 d64 Ha3 d32r32. Ha4 d64 Ha5 d32r32. Ha4 d64 Ha7 d32r32. Ha1 d64 Ha6 d32]]9
+[[Ha1 c+64 Ha2 c+32 Ha1 c+64 Ha3 c+32r32. Ha4 c+64 Ha5 c+32r32. Ha4 c+64 Ha7 c+32r32. Ha1 c+64 Ha6 c+32]]3
+y10 v150 @44 r=5
+$ED $09 $F7 f8.g+8^64 $ED $09 $F9 g48g+64^96 $ED $09 $FC g16^192f64^96d+16. $ED $09 $F9 c8^32
+c32 $ED $09 $FC <a+16.>c16. $ED $09 $F9 <f8^32> $ED $09 $FC c32<a+16>c32r32. $ED $09 $F7 d+8...
+q79 @44 VE8
+(42)[ [[v190 f32 v175 f32 v180 f32]]4
+v185 f16 v175 e32 v185 <b16 v175 >e32 v185 d+16 v175 <a+32 v190 >d+32 v180 d32 v175 <a32
+v185 >d16 v175 c+32 v185 <g+16 v175 >c+32 v185 c16 v175 <g32 v190 >c32 v180 <b32 v175 f+32 v190 a+16
+v185 f32r32. v175 f24^96r24 v155 f24^96r24 v130 f32.]
+>$ED $07 $F7 v150 q7f f3^96 $ED $09 $FA a+32a16g32f16. $ED $09 $F9 d8^32
+$ED $09 $FA >d32c16<a+32g16.f16.f16g32d16.c32. $ED $09 $F7 <g=45
+v180 q79<
+<g16g32a+16g32>c32r64d8^64r6c48c+16c32<a+24r48g4.. q7f
+r1.
+
+
+#6 v0 $F4 $03 ; DONE
+
+r1
+r1
+r1 / q7f
+r1
+r1
+r4
+r2.
+@65 v95
+o1 a+2.
+>c1^1^4>
+q7f
+[[r2]]18 r=5
+@65 v100
+<<d4...^8.e16.
+f4...^8.a16.
+d4.r4. @66
+b2.
+a2.....^4...
+v150 @44 y10
+$ED $09 $F9 >>>c48d+64^96
+[[r2]]100
+
+
+#3 ; DONE
+
+r1
+r1
+r1 / ^2
+r8.. v200
+o4 VF5 c32
+[[VC d+16 VD c32 VC f16 VD c32]]4
+[[VC f+16 VD c32 VC g16 VD c32]]2 VA a+16 VE >c16< VF e32f32 VE f+16^96 VB f48d+16.
+K18 o4 q7e $FA $03 $E0 $F4 $03
+(40)
+K16
+(41) $FA $03 $00
+r4r32<
+v185 c16 v175 c32 v190 c32 v180 d32 v175 c+32c16. v190 c32 v180 d32 v175 c+32c16 v185 <c4..> r16.r1
+q7f
+$DF v170
+PB3 c16.r16. PC5 d+16.r16 PB7 c32 PC9 f16 PB7 c32 PB9 f+16. PB6 g16.r16.
+PC3 c16.r16. PC5 d+16.r16 PC7 c32 PD9 f16 PC7 g16^64c16^64<a+32>c16r64
+v185 VC g64^96a+48
+VA >c8.d+8^64 VC d64^96d+48 VE d16^96c48<a+16. VA g8^32 VE g32
+f16.g16. VA c8^32 VE g32f16g32r32. VA a+8...
+$ED $0A $9A >c4.r1
+r1
+r2
+r16. v200
+<VF5 g32
+[[VC a+16 VD g32 VC >c16 VD <g32]]4 >
+[[VC c+16 VD <g32 VC >d16 VD <g32>]]2 f16g16.c32c+16c32<a+16g4..
+r1
+r16. v150 Flute2
+<d4...^8.e16.
+f4...^8.a16.
+d4.c4.
+<b2.
+a2.....^4... v200
+VC
+>>>c64^96d+48
+VA f8.g+8^64 VC g64^96g+48 VE g16^96f48d+16. VA c8^32 VE c32
+<a+16.>c16.< VA f8^32 VE >c32<a+16>c32r32. VA d+8...
+K18 $FA $03 $E0
+(42) $FA $03 $00
+$ED $0A $9A v200 f3^96
+VC a+32a16g32f16. VA d8^32 VC >d32
+c16<a+32g16.f16.f16g32d16.c32. VA <g=45
+$ED $0D $F4 q7e v190
+<g16g32a+16g32>c32r64d8^64r6c48c+16c32<a+24r48g4.. $F4 $03
+r1
+
+
+#5 v150 $F4 $03		; DONE
+
+r=5 o3
+(60)[JA c16 J8 g32 J9 >c16 J7 <g32 J9 c16 J7 g32 J8 >c16 J6 <g32
+JA d32 J8 c+32 J7 c32 J9 >c16 J7 <g32 J9 c16 J7 >c+32 J8 c16 J6 f+32
+JA <c16 J8 g32 J9 >c16 J7 <g32 J9 c16 J7 g32 J8 >c16 J6 <g32
+JA d32 J8 c+32 J7 c32 J9 >c16 J7 <c+32 J9 c16 J7 c+32 JA >c16 JX] <c+32
+(60) o3 c+=1 /
+r=5 [[ (60) o3 c+32 ]]6
+(61)[JA f16 J8 >c32 J9 f16 J7 c32 J9 <f16 J7 >c32 J8 f16 J6 c32
+JA <g32 J8 f+32 J7 f32 J9 >f16 J7 c32 J9 <f16 J7 >f+32 J8 f16 J6 b32
+JA <f16 J8 >c32 J9 f16 J7 c32 J9 <f16 J7 >c32 J8 f16 J6 c32
+JA <g32 J8 f+32 J7 f32 J9 >f16 J7 <f+32 J9 f16 J7 f+32 JA >f16 JX <f+32]2
+(62)[JA g16 J8 >d32 J9 g16 J7 d32 J9 <g16 J7 >d32 J8 g16 J6 d32
+JA <a32 J8 g+32 J7 g32 J9 >g16 J7 d32 J9 <g16 J7 >g+32 J8 g16 J6 >c+32
+JA <<g16 J8 >d32 J9 g16 J7 d32 J9 <g16 J7 >d32 J8 g16 J6 d32
+JA <a32 J8 g+32 J7 g32 J9 >g16 J7 <g+32 J9 g16 J7 g+32 JA >g16 JX ] o3 g+32 (62) o3 g+=1
+v160 @30 >
+[[Ha1 f64 Ha2 f32 Ha1 f64 Ha3 f32r32. Ha4 f64 Ha5 f32r32. Ha4 f64 Ha7 f32r32. Ha1 f64 Ha6 f32]]11
+Ha1 e64 Ha2 e32 Ha1 e64 Ha3 e32r32. Ha4 e64 Ha5 e32r32. Ha4 e64 Ha7 e32r32. Ha1 e64 Ha6 e32
+v150 r=5
+(61)2 (62) o3 g+32 (62) g+16
+
+
+#7 [[r2]]6 $F4 $03 / @44
+
+[[r2]]4 r4 v140 VB o5 c2. [[r2]]24
+v140 <<
+r4.^=5 $ED $09 $F3 a32.b32. $ED $09 $F1 >c2^16
+$ED $09 $F3 d32.e32. $ED $09 $F1 <b8.a8.
+r2. $ED $08 $F2
+g16.a4r1
+r1
+r2...^=1
+r4.. > $ED $0A $9A v190 f4. [[r2]]100

@@ -1,0 +1,351 @@
+#amk 2
+
+#spc
+{
+    #title   "Technodrome ~ Let's Kick Shell!"
+    #game    "TMNT IV: Turtles in Time"
+    #author  "Kazuhiko Uehara, Harumi Ueko"
+    #comment "Ported by KevinM"
+}
+
+#path "technodrome"
+
+#samples
+{
+    #optimized
+    "00.brr"
+    "01.brr"
+    "02.brr"
+    "03.brr"
+    "04.brr"
+    "06.brr"
+    "07.brr"
+    "08.brr"
+    "09.brr"
+    "0a.brr"
+    "14.brr"
+    "15.brr"
+    "18.brr"
+    "19.brr"
+    "1a.brr"
+}
+
+#instruments
+{
+    "14.brr" $ff $e0 $00 $03 $c6 ; @30 kick
+    "19.brr" $ff $e0 $00 $07 $22 ; @31 snare
+    "18.brr" $ff $e0 $00 $05 $0c ; @32 tom
+    "18.brr" $af $72 $00 $04 $3d ; @33 tom
+    "18.brr" $af $72 $00 $03 $c6 ; @34 tom
+    "15.brr" $ff $e0 $00 $08 $7b ; @35 closed hi-hat
+    "1a.brr" $ff $e0 $00 $08 $00 ; @36 open hi-hat
+    "00.brr" $ff $e0 $00 $04 $cc ; @37 bass
+    "06.brr" $ff $ea $00 $07 $08 ; @38 vibraphone
+    "04.brr" $ff $e0 $00 $07 $85 ; @39 guitar 1
+    "01.brr" $ff $e0 $00 $06 $30 ; @40 tmnt synth
+    "0a.brr" $ff $e0 $00 $07 $aa ; @41 saw synth
+    "09.brr" $ff $e0 $00 $04 $00 ; @42 sine
+    "02.brr" $ff $e0 $00 $07 $be ; @43 dist guitar
+    "03.brr" $ff $f2 $00 $0a $0c ; @44 piano
+    "08.brr" $ff $e0 $00 $05 $c5 ; @45 dist guitar 2
+    "07.brr" $ff $eb $00 $0e $20 ; @46
+    "0a.brr" $ff $e0 $00 $03 $d2 ; @47 saw synth (bass)
+}
+
+;==================;
+; Volume  /  Tempo ;
+;==================;
+   w135       t22
+
+;==================;
+;      Macros      ;
+;==================;
+"I14  = @30 o3"
+"I19  = @31 o4"
+"I18  = @32 o4"
+"I17  = @33 o3"
+"I16  = @34 o3"
+"I15  = @35 o3"
+"I1a  = @36 o4"
+"I00  = @37"
+"I06  = @38"
+"I04  = @39"
+"I01  = @40"
+"I0a  = @41"
+"I09  = @42"
+"I02  = @43"
+"I03  = @44"
+"I08  = @45"
+"I07  = @46"
+"I0a2 = @47"
+
+"_16 = =11 q7f ^=1"
+"_32 =  =5 q7f ^=1"
+"_64 =  =2 q7f ^=1"
+
+"NoRest  = $f4$01 (!999,-1)"
+"ResRest = (!0,0) $f4$01"
+
+;==================;
+;     Commands     ;
+;==================;
+(!999)[$f4$01 $f4$01]
+
+;==================;
+;    Channel #0    ;
+;==================;
+#0 $f0
+I0a v225 y9 o3 l32 q7f p18,30,190
+r4 a4 $dd$00$08>f f e q79 e q7f f q79 f q7f e q79 e q7f g q7b g q77 g
+
+I02 o2 q7b
+f16 f16 f16 f e r f r g16.
+
+I0a o4 q7f
+f4 f e q79 e q7f f q79 f q7f e q79 e q7f d q79 d
+
+I03 v120 o1 q7f
+NoRest b > c c+ d f e d q75 d ResRest
+
+I01 v225 o2 q7b
+d16. d8
+
+/
+
+(00)[I0a v225 o4 q7f p18,30,190
+g < a+ b > g f e d g16 < a+ b > g f e d=5 q7f ^=1 a+16 $dd$00$04>c< r a+=29 q7f ^=1] a+16 $dd$00$04>c< r a+16. a f g
+
+v240 (03)[I08 o3 q7f
+NoRest c8 $dd$0c$0c d < f g a+ > c16 < g a+ > c d f g c16 $dd$06$06 d < a+16] q7f o2 g8 $dd$12$06<g ResRest
+
+I01 v210 o2 q7f
+f16 f f f16 f+16 g
+
+(00) q7f o5 c16 $dd$00$04 d r < a+16. a f g
+
+v255 (02)[I08 o2 q7f NoRest
+{f g a+ g a+ g f g a+ g a+ g f g a+}
+> c16 $dd$06$06 d < a+ g f c16 $dd$06$06 d < a+16 >
+$eb$0f$0f$f4 g=28 r=2 q79 g=28 r=2] q73 g16. $eb$00$00$00
+
+v225 o1 q7f
+[a+ a g f16 > c16 < d d+16 e f16 a+ a f]
+a+ a f d+16 > c16 < d d+16 d d+16 e16 f
+*
+ResRest
+
+I02 o2 q78 $df
+d+8.. f=54
+
+(01)[
+I01 v198 o2 q7f
+g8
+
+I0a v225 o4 q7f
+f16 f16 f16. g16
+
+I01 v198 o2 q7f
+c d g=30
+
+I0a v225 o4 q7f
+f16 f16 f16. g16
+
+I01 v198 o2 q7f
+f f g=30
+
+I0a v225 o4 q7f
+f16 f16 f16. g16
+]
+
+q7f f g a+16. g16. f g a+16. $dd$00$06>c< a+16. f f+ g
+
+(01)
+
+NoRest q7f o3 a+64 > c64 d64 e64 f64 f+64
+g g g g f q79 f q7f g q79 g q75 g q73 g
+q7f g g g q79 g q75 g q73 g64 ResRest ^64
+
+;==================;
+;    Channel #1    ;
+;==================;
+#1
+I0a v198 y11 o4 l32 q7f p18,30,190
+r4 c4 c c q79 c q7f c q79 c q7f c q79 c q7f d q7b d q77 d
+
+I09 q79 o1 l64
+$f4$01 f g > c f c f g > c < g > c d g d f g > c < f g > c d < g > c f g d f g > c $f4$01
+
+I0a o4 l32 q7f
+c4 c c q79 c q7f c q79 c q7f c q79 c q7f < a q79 a
+
+I07 o1 q7d NoRest
+b > c c+ d f e d q76 d
+
+I01 o3 q7d
+d16. d8 ResRest
+
+/
+
+(10)[I0a o4 q7d
+g16. < a+ b > g f e d g16 < a+ b > g f e d > c r16 < a+=30 > c r16 < a+16. a f g]
+
+v180 (03) q7f o2 g=30 $dd$18$06<g ResRest
+
+I01 v198 o2 q77
+f8 f f
+
+(10)
+
+v180 (02) q73 g $eb$00$00$00
+
+(11)[I0a v198 o2 q7d
+a+ a g f16 > c16 < d d+16 e f16 a+ a f] q7d o2 a+ a f d+16 > c16 < d
+
+I01 o2 q7d
+d+16 d d+16 e16 f
+
+(11) q7d o2 d+8.. f=54
+
+ResRest
+
+I01 o2 q7d
+d8.
+
+I0a o4 l16 q7d
+[f f f. g. <<< a+8. >>> f f f. g.] I0a2 << c8. >> I0a
+f f f. g f32 g32 a+. g. f32 g32 > c. < a+. f32 <<< g8. >>>
+* << c8. >> f f f. g f32
+
+I01 o2 l32 q7f
+NoRest g g g g f16 g8 g g g16 ResRest ^16
+
+;==================;
+;    Channel #2    ;
+;==================;
+#2
+I00 v228 y10 o4 l32 q7f
+r8. g=11 $dd$06$06<g q7f ^=1
+
+v214 o3
+f16 f16 f > f < c f16 f > f < f f c f g16 g d e f16 f e f f+ g a+16 f f+ g
+f16 f16 f16 > c < f16. f16 f16 f d q79 d q7f b_32 > c_32 c+_32 d_32 f_32 e_32 d_32 r < d r16 d16 r16
+
+/
+
+[g16 g g16 f c d g16 g g16 f g > c16. c c16 c < a+ g c16 g > c16 < c a+ > c <
+d+16 d+ d+16 d+16 f16. f f16 f16 g16 g g16 f g r f16 f] e f16 f+16 g
+* f g a+ g16.
+d+16. f16 f16 f d+16 d+ f16 d+ f16 d+16. f16 f16 f
+d+16 d d+16 e16 f d+16. f16 f16 f d+16 d+ f16 d+ f d+16 d+ d+ d+ d+ d+ d+ f16 
+f f f f f > f16 $dd$06$06<g g g g16 f16 e16 f16 f g16 > g < g16 a+ a+ a+16 a+16 a+16 
+a+16 a a+16 a+16 a+ > c c c16 < a+ > c16 < f16 f g16 a+16 > c16 < g16. f16. g16.
+e16. f > f < f+ > f+ < g g g16 f16 e16 f16 f g16 > g < g16 a+ a+ a+16 a+16 a+16 a+16 a a+16 a+16 a+
+> c c c16 < a+ > c16 < f16 f g16 a+16 > c16 < g g g g f16 g16 r16 g g g8
+
+;==================;
+;    Channel #3    ;
+;==================;
+#3
+I16 v180 y10 o3 q7f
+a+16 a+16. e64 e64 a+16
+
+I0a v195 o3 l32
+q7f a4 a g q79 g q7f a q79 a q7f a+ q79 a+ q7f b q79 b q73 b
+
+I09 v98 o1 l64 q7f
+$f4$01 f32. g > c f c f g > c < g > c d g d f g > c < f g > c d < g > c f g d f $f4$01
+
+I0a v195 o3 l32
+q7f a4 a a q79 a q7f a q79 a q7f a q79 a q7f > c q79 c < b c c+ d f e d q75 d
+
+I06 v140 o3 l64
+NoRest q7f g > c d f < q7b g > c d f q7f c c+ d e f f+ ResRest
+
+/
+
+I02 v160 o2 l32 q7f
+[g g g16. g16. g16. g16. g > c16. < a+=30 > c16. < a+16. a+ > c <]
+q7b d+4 f4 g8. r16 q7f f16 f f f16 f+16 g
+*
+q7b d+16 d+ d+ d+ d+ d+ d+ f16 f f f f f f > g16 < g g g g g r q7f f16 f f g a+ g16.
+
+NoRest
+[a+ a g f16 > c16 < d d+16 e f16 a+ a f]
+a+ a f d+16 > c16 < d d+16 d d+16 e16 f
+*
+ResRest
+
+v185 $e8$2a$e8 d+ d+ d+ d+ d+ d+ d+ v160 f16
+v185 $e8$2a$e8 f f f f f f f v160 g16
+
+[g16. g16. g16. g16. g g a+ a+ a+16. a+16. a+16. a+16. a+16 > c c
+c16. c16. c16. c16. c16 <] g16. f16. g16. e16. f16 f+16 g g
+* g g g g f16 g16 r16 g g g16 r16
+
+;==================;
+;    Channel #4    ;
+;==================;
+#4
+I1a v180 y10 o3 l48
+NoRest q7f e q7b e q75 e q7f e q7b e q77 e q76 e q75 e q74 e q73 e e e ResRest
+
+I06 v120 o3 l32 q7f
+[[a > c g < a > c f <]]2 f a > c g < g > d g < g > d f < g > c d < g > c d < g > b d g <
+[[a > c f < g > c f <]]2 f a > c f < d <
+
+I04 v180 o2 l32 q7f
+b c c+ d f e d q79 d
+
+I06 v100 o3 l64
+NoRest q7f g32. > c d f < q7c g > c d f q7f c c+ d e ResRest
+
+/
+
+I06 v140 o2 l32 q7f
+(40)[g > g > g < g > g << g g > g > g < g < g >> g << g > g > g << g]7
+g > g > g < g > g << g > g <
+
+I01 v218 o2 q7f
+NoRest f16 f f g a+ g q77 a+ g ResRest
+
+I06 v140 o2 q7f
+(41)[d+ a+ > d+ < f > c f <]2 d+ f a > c < d+ a+ > d+ < f > c f g+ a
+
+I01 v180 o3 q7f
+NoRest d+ d+ d d+16 e16 f ResRest
+
+I06 v150 o2 q7f
+(41) d+ g a+ f > c f a > c <<
+{a+ b c c+ d d+ e f f+ g g+ a a+ b > c c+ d d+ e f f+ g g+ a a+ b > c}
+
+v140
+(40)7
+
+o4 q7f g g g g f q78 f q7f g q78 g r16 q7f g g g q7b g q77 g q74 g
+
+;==================;
+;    Channel #5    ;
+;==================;
+#5
+v228 y10 l16 q7f
+I19 c+_32 I14 g+_32 I19 c+_32 I14 g+ g+_64 g+_64 I19 c+
+
+v214
+(50)[I14 g+ I19 c+ I14 g+32 g+32 I19 c+ I14 g+ I19 c+ I14 g+ I19 c+]3
+I14 g+ I19 c+ I14 g+32 g+32 I19 c+ I14 g+32 I19 c+ I14 g+32 I19 c+_32 I14 g+32 I19 c+
+
+/
+
+(50)7
+I14 g+ I19 c+ I14 g+ I19 c+ I14 g+ I19 c+ c+32 c+32 I18 c32 I16 a+32
+
+(51)[I14 g+32 I15 v190 a32 a32 v214 I14 g+32 I19 c+ I15 v190 a32 v214 I14] (52)[g+ g+32 I19 c+ I18 c32 c32 I17 b32 b32]
+(51) g+32 I19 c+_32 I14 g+32 g+32 I1a v120 d d_32 v214 I16 a+
+(51) (52)
+I14 g+ I19 c+ I14 g+32 g+32 I19 c+_32 I14 g+ g+32 I19 c+ I14 g+32 g+32 I19 c+
+
+(50)3
+I19 c+ I14 g+32 I19 c+ I14 g+32 I19 c+ I14 g+32 I19 c+ I14 g+32 I19 c+32 c+32 c+32 c+32
+
+(50)3
+I19 c+32 c+32 c+32 c+32 c+ c+ I14 g+ I19 c+ I14 g+32 g+32 I19 c+

@@ -1,0 +1,157 @@
+{
+	"style" : "groupbox",
+	"title" : "Block Wings Settings",
+	"layout": [
+		{
+			"control": "comboBox",
+			"name": "movement",
+			"title": "Movement",
+			"tooltip": "The movement pattern used by the block.",
+			"elements": ["Sit Still","Fly Straight Horizontal","Fly Straight Vertical","Fly & Turn Horizontal","Fly & Turn Vertical","Follow Player Horizontal","Follow Player Vertical"],
+			"value-default": 0,
+			"children": [
+				[],
+
+				[
+					{
+						"control": "spinBox",
+						"name": "straight_h_speed",
+						"title": "Speed",
+						"tooltip": "The speed that the block moves at (in pixels per frame).",
+						"type": "double",
+						"value-default": 1,
+						"value-min": 0,
+						"value-max": 8,
+						"single-step": 0.5,
+						"decimals": 2
+					}
+				],
+				[
+					{
+						"control": "spinBox",
+						"name": "straight_v_speed",
+						"title": "Speed",
+						"tooltip": "The speed that the block moves at (in pixels per frame).",
+						"type": "double",
+						"value-default": 1,
+						"value-min": 0,
+						"value-max": 8,
+						"single-step": 0.5,
+						"decimals": 2
+					}
+				],
+
+				[
+					{
+						"control": "spinBox",
+						"name": "turn_h_distance",
+						"title": "Distance",
+						"tooltip": "The maximum distance it can move (in pixels).",
+						"type": "int",
+						"value-default": 128,
+						"value-min": 0,
+						"value-max": 800,
+						"single-step": 32
+					},
+					{
+						"control": "spinBox",
+						"name": "turn_h_time",
+						"title": "Time",
+						"tooltip": "The time it takes for one complete cycle of movement (in frames).",
+						"type": "int",
+						"value-default": 320,
+						"value-min": 1,
+						"value-max": 2000,
+						"single-step": 32
+					}
+				],
+				[
+					{
+						"control": "spinBox",
+						"name": "turn_v_distance",
+						"title": "Distance",
+						"tooltip": "The maximum distance it can move (in pixels).",
+						"type": "int",
+						"value-default": 128,
+						"value-min": 0,
+						"value-max": 800,
+						"single-step": 32
+					},
+					{
+						"control": "spinBox",
+						"name": "turn_v_time",
+						"title": "Time",
+						"tooltip": "The time it takes for one complete cycle of movement (in frames).",
+						"type": "int",
+						"value-default": 320,
+						"value-min": 1,
+						"value-max": 2000,
+						"single-step": 32
+					}
+				],
+
+				[
+					{
+						"control": "spinBox",
+						"name": "follow_h_maxSpeed",
+						"title": "Max Speed",
+						"tooltip": "The maximum speed that the block can move at (in pixels per frame).",
+						"type": "double",
+						"value-default": 4,
+						"value-min": 0,
+						"value-max": 8,
+						"single-step": 0.5,
+						"decimals": 2
+					},
+					{
+						"control": "spinBox",
+						"name": "follow_h_acceleration",
+						"title": "Acceleration",
+						"tooltip": "How fast the block accelerates (in pixels per frame).",
+						"type": "double",
+						"value-default": 0.1,
+						"value-min": 0,
+						"value-max": 8,
+						"single-step": 0.5,
+						"decimals": 2
+					}
+				],
+				[
+					{
+						"control": "spinBox",
+						"name": "follow_v_maxSpeed",
+						"title": "Max Speed",
+						"tooltip": "The maximum speed that the block can move at (in pixels per frame).",
+						"type": "double",
+						"value-default": 4,
+						"value-min": 0,
+						"value-max": 8,
+						"single-step": 0.5,
+						"decimals": 2
+					},
+					{
+						"control": "spinBox",
+						"name": "follow_v_acceleration",
+						"title": "Acceleration",
+						"tooltip": "How fast the block accelerates (in pixels per frame).",
+						"type": "double",
+						"value-default": 0.1,
+						"value-min": 0,
+						"value-max": 8,
+						"single-step": 0.5,
+						"decimals": 2
+					}
+				]
+			]
+		},
+
+		{
+			"control": "checkBox",
+			"name": "flyAfterHit",
+			"title": "Fly Away After Hit",
+			"tooltip": "If ticked, the wings will fly away from the block when it gets hit.",
+			"value-default": true
+		}
+	]
+}
+

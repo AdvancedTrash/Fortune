@@ -1,0 +1,180 @@
+#am4
+;-- HEADER AUTOMATICALLY GENERATED --
+$ED $80 $6D $2B 
+$ED $80 $7D $00 
+$F0
+;-- END OF HEADER -------------------
+
+;Super Mario Sunshine - Bianco Hills ported by Tornado
+
+#0 @6 q7f v230 y10 w200 t59
+o4r2g8r16e16d8<b8
+a8g+8g2r4/
+o5[c8r16d16e16r16c8r8<g8r8g8
+f8r16e16f16r16>d2r8]2
+c8r16d16e16r16c8r8d8r8e8
+f8r16e16f16r16c8r8c8r8c8
+<b8r16>c16d16r16<b8r8a8r8b8
+>c2r2^4^8^16^32
+@0 $ED $6C $E5 v160
+d+32e8c8<g8e8
+[r4^8^16^32>c+32d8<a8f8d8
+r4^8^16^32>d+32e8c8<g8e8]2
+r4^8^16^32b32>c8<a8f8c8
+r4^8^16^32a+32b8a8g8b8
+>c8r4c8r2
+o4@5[f8r16g16a16r16f8a8f8>f8c8
+<f8r16g16a16r16f8a8f8>f8c8
+<c8r16d16e16r16c8g8e8>c8<g8
+c8r16d16e16r16c8g8e8>c8<g8]2
+f8r16g16a16r16f8a8f8>f8c8
+<f8r16g16a16r16f8a8f8>f8c8
+<e8r16g16a16r16>c8<d8f8a+8>d8
+<c+8r16e16f+16r16a8>c+8<a8>e8c+8
+[<c8r16d16d+16r16g+8>c8d+8g+8d+8]2
+<d8r16g16a16r16b8>d8g8b8g8
+<d8r16g16a16r16b8>g8d8b8g8
+@0 $ED $6C $E5
+r4^8^16^32d+32e8c8<g8e8
+[r4^8^16^32>c+32d8<a8f8d8
+r4^8^16^32>d+32e8c8<g8e8]2
+r4^8^16^32b32>c8<a8f8c8
+r4^8^16^32a+32b8a8g8b8
+>c8r4c8r2
+c8r4c8r4c8r2
+c8<a+8a+8g8r8
+>c8r4c8r4c8r2
+c8<a+8a+8>d8r8
+c8r4c8r4c8r2
+c8<a+8a+8g8r8
+@6v230c2^4c8r8
+<b1;
+
+#1 @4 q7f v160 y10
+r2o3g2
+<a8g+8g2r4/[r1]8 @4 $ED $5B $E4
+o4[c8r16d16e16r16c8r8<g8r8g8
+f8r16e16f16r16>d2r8]2
+c8r16d16e16r16c8r8d8r8e8
+f8r16e16f16r16c8r8c8r8c8
+<b8r16>c16d16r16<b8r8a8r8b8
+>c2r2
+o2[f2a4>f4
+<f2a4>f4
+<c2e4g4
+c2e4g4]2
+f2a4>f4
+<f2a4>f4
+e2d2
+c+2e2
+[<g+2>c4d+4]2
+[<g2b4>d4]2
+>[c8r16d16e16r16c8r8<g8r8g8
+f8r16e16f16r16>d2r8]2
+c8r16d16e16r16c8r8d8r8e8
+f8r16e16f16r16c8r8c8r8c8
+<b8r16>c16d16r16<b8r8a8r8b8
+>c2[r1]6 r2
+<@6c2^4c8r8
+<g1;
+
+#2 @6 q7f v230 y10
+r2o4d2
+f16r16f+16r16g2r4/[r1]16
+(2)[f4r8f8r8f8r8f8]2
+e1^1
+(2)2
+e1
+c1
+(2)2
+e2d2
+c+2r2
+d+4r8d+8r8d+8r8d+8
+d+4r8d+8r8f8d+8r8
+d1
+g1
+[r1]14
+g2^4g8r8
+g1;
+
+#3 @8 q7f v220 y10
+r1^1/
+o2
+[c8r4e8r8g4g8
+f8r4a8r4>d4
+<c8r4e8r8g4g8
+f8r4a8r4>d4
+<c8r4e8r8g4g8
+f8r4a8r8>c4c8
+<d8r4g8r4b4
+c8r4e8r8g4g8]2
+o4@6
+(3)[c4r8c8r8c8r8c8]2
+c1^1
+(3)2
+c1
+<g1
+>(3)2
+c2<a+2
+a2r2
+>(3)1
+c4r8c8r8d8c8r8
+<b1
+>d1
+o2@8c8r4e8r8g4g8
+f8r4a8r4>d4
+<c8r4e8r8g4g8
+f8r4a8r4>d4
+<c8r4e8r8g4g8
+f8r4a8r8>c4c8
+<d8r4g8r4b4
+c8r4e8r8g4g8
+[r1]8;
+
+#5 @6 q7f y10
+r1^1/o4v230
+[<c16r4^16c16r8^16c8<g4
+>f16r4^16f16r8^16f8>d4]2
+<c16r4^16c16r8^16c8<g4
+>f16r4^16f16r8^16c8c4
+<b16r4^16b16r8^16b8>d4
+c16r4^16c16r8^16c8<g4
+>(4)[c16r16c16r16g16r16g16r16c16r16c16r16g16r16g16r16
+f16r16f16r16a16r16a16r16f16r16f16r16a16r16a16r16
+c16r16c16r16g16r16g16r16c16r16c16r16g16r16g16r16
+f16r16f16r16a16r16a16r16f16r16f16r16a16r16a16r16
+c16r16c16r16g16r16g16r16c16r16c16r16g16r16g16r16
+f16r16f16r16a16r16a16r16f16r16f16r16a16r16a16r16
+g16r16g16r16b16r16b16r16g16r16g16r16b16r16b16r16
+c16r16c16r16g16r16g16r16c16r16c16r16g16r16g16r16]1
+[f4f4a4>c4
+f1
+<c4c4e4g4
+>c4<g4e4c4]2
+f4f4a4>c4
+f1
+<c2<a+2
+>e1
+[<g+4g+4>c4d+4]2 >
+[<d4g4b4>d4]2
+<(4)1
+o5c8r4c8r4c8r2
+c8<a+8a+8g8r8
+>c8r4c8r4c8r2
+c8<a+8a+8>d8r8
+c8r4c8r4c8r2
+c8<a+8a+8g8r8
+d+2^4d+8r8
+d1;
+
+#6 q7f v220 y10
+o3r2@27e8r16@27e16@27e8@21d8
+r8@27e16r16@21d8r2^8/
+[@27e8@21d16@21d16@21d16r16@27e8r8@27e8@21d8@27e8]48;
+
+#7 q7f v250 y10
+r2o3@23f+8^16r8^16@23f+8
+r4[@23f+32]16 @23f+8r8/
+(1)[@23f+8r4@23f+8r4@23f+8r8]16
+[@23f+8@22g+8@22g+8@23f+8@22g+8@22g+8@23f+8@22g+8]24
+(1)8;

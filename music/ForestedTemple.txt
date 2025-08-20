@@ -1,0 +1,314 @@
+#amk 2
+
+; SPC Generator Info
+#SPC
+{
+    #author  "Nobuo Uematsu"
+    #title   "Forested Temple"
+    #game    "Final Fantasy VII"
+    #comment "Ported by Ahrion"
+}
+
+#path "ForestedTemple"
+
+#samples
+{
+	#optimized
+	"AcousticBass.brr"
+	"Bassoon_small.brr"
+	"Bell_small.brr"
+	"Clarinet.brr"
+	"Flute.brr"
+	"Oboe_small.brr"
+	"Pizzicato.brr"
+	"SteelGuitar.brr"
+	"Strings.brr"
+	"Strings2.brr"
+}
+
+#instruments
+{
+	"AcousticBass.brr"	$FD $EA $B0 $0C $00 ; @30
+	"Bassoon_small.brr"	$FF $E2 $00 $05 $00 ; @31
+	"Bell_small.brr"	$8F $F0 $B0 $02 $3B ; @32
+	"Clarinet.brr"		$FE $E6 $00 $03 $02 ; @33
+	"Flute.brr"		$FB $E3 $00 $02 $00 ; @34
+	"Oboe_small.brr"	$FF $E3 $B0 $03 $0B ; @35
+	"Pizzicato.brr"		$FF $E0 $B0 $01 $68 ; @36
+	"SteelGuitar.brr"	$FF $EE $00 $03 $00 ; @37
+	"Strings.brr"		$F3 $E5 $B0 $03 $A8 ; @38
+	"Strings2.brr"		$FA $E0 $B0 $03 $65 ; @39
+}
+
+w192
+t46
+
+"Guitar = @37 y11 v170"
+"Flute = @34 y12 v155"
+"Clarinet = @33 y8 v170"
+"Oboe = @35 y14 v135"
+"Bassoon = @31 y6 v165"
+"Bass = @30 y9 v200"
+"Bell = @32 y7 v190"
+"Pizzi = @36 y10 v180"
+"Strings = v120"
+"Strings2 = v125"
+
+"Bend1 = ^16 $DD $00 $02 a"
+"Bend2 = ^16 $DD $00 $02 g"
+"Bend3 = ^16 $DD $00 $02 f+"
+"Bend4 = ^16 $DD $00 $02 e"
+
+"Fade1 = v70 $E8 $C0 $80"
+"Rel = $ED $7F $EC"
+"VIB = $DE $60 $14 $1E $EA $0C"
+
+(!101)[$E8 $C0 $46]
+
+; Echo
+$EF $FF $20 $20
+$F1 $03 $28 $01
+
+$F4 $02
+
+
+
+
+; +---------------------+
+; |     Channel #0	|
+; |     Guitar		|
+; +---------------------+
+
+#0
+o3
+Guitar
+(11)[
+r8 e4 b8 r8 e4 > c8 r8 < e4 > c+8 r8 < e4 > c8 <]2
+<
+(12)[
+a8 > e8 a8 > c8 << a8 > f8 a8 > c8 << a8 > f+8 a8 > c8 << a8 > f8 a8 > c8 <<]4
+>
+
+/
+
+(11)2
+(12)4
+
+
+[[r8 e4 > c8 r8 < f4 > c8 r8 < f+4 > c8 r8 < f4 > c8 <]]4
+
+(13)[
+< g8 > d8 g8 b8 < g8 > e8 g8 b8 < g8 > f+8 g8 b8 < g8 > e8 g8 b8]
+[[d8 a8 > d8 f+8 < d8 a+8 > d8 f+8 < d8 b8 > d8 f+8 < d8 a+8 > d8 f+8 <]]2
+(13)
+[[d8 a8 > d8 f8 < d8 a+8 > d8 f8 < d8 b8 > d8 f8 < d8 a+8 > d8 f8 <]]4
+
+
+
+; +---------------------+
+; |     Channel #1	|
+; |     Clarinet	|
+; |     Flute		|
+; |     Bassoon		|
+; |     Pizzi		|
+; |     Oboe		|
+; +---------------------+
+
+#1
+o3
+
+(20)[
+Guitar [[r4 g4]]8
+VIB
+Flute > a8 g+8 g8 f+8 f4 e16^32^96 r64^192 e16^32^96 r64^192 > c4 < a8 r8 a4^8^16^64^96 r32^192 > e4 < a8 b8 > c4 < b8 a8 f8 e8 > c8 r8 < a4... r32 a8 g+8 g8 f+8 f4 e16. r32 e16. r32 > c4 < a8 r8 a2 g8 r8 g+8 r8 a1 Rel ^2 <]
+
+/
+
+(20)
+
+r4
+
+(21)[
+>>> Pizzi e4 c4 < Flute e16 r8. c16 r8. Oboe e=13 r=35 c=13 r=35 < Bassoon e16 r8. c16 r8. >> Pizzi c4 < a4 Flute c16 r8. < a16 r8. > Oboe c=13 r=35 < a=13 r=35 <]
+
+Bassoon > c16 r8. < a16 r8. 
+
+(21)
+
+Bassoon $F4 $01 > a16 b16 > c16 c+16 d8 c8 < b8 > c8 < b8 a8 g8 a8 $ED $7F $E6 f+1^1 Rel $F4 $01 ^1
+
+Flute a8 g8 f+8 g8 a2 Rel ^1
+
+Clarinet d8 c8 < b8 > c8 < b8 a8 g8 a8 f+1 >
+
+Flute f8 e8 d8 < a8 f1. Rel ^1 r2. >
+
+Bassoon $F4 $01 d16 e16 f16 g16 a8 g8 b8 > c+8 $ED $7F $E6 d1^1^2 Rel $F4 $01 ^1 
+
+
+
+; +---------------------+
+; |     Channel #2	|
+; |     Bass		|
+; |     Bell		|
+; |     Clarinet	|
+; +---------------------+
+
+#2
+o4
+(30)[Bell d4 d+4 e2 r1 d4 d+4 e2 r1. < Bass a1. r1^1^2 a1. r1 Clarinet g8 r8 g+8 r8 a2 >]
+
+/
+
+(30)
+
+< Bass
+[[a1 r1]]4
+
+g1^1 > d1.. <
+
+a4 > d4. d8 d1. <
+
+g1^1 > d1.. <
+
+a4 > d4. d8 d1^4 <
+a4 > d4. d8 d1^4 <
+a4 > d4. d8 d1.
+
+ 
+
+; +---------------------+
+; |     Channel #3	|
+; |     Strings		|
+; |     Guitar		|
+; +---------------------+
+
+#3
+o5
+
+
+
+r1^1
+
+
+(41)[@39 Fade1 y13
+g16 Bend1 Bend2 Bend1 Bend2 Bend1 Bend2 Bend1 Bend2 Bend1 Bend2 Bend1 Bend2 Bend1 Bend2 Bend1 (!101,4) Bend2 Bend1 Bend2 Bend1 Bend2 Bend1 Bend2 Bend1 Bend2 Bend1 Bend2 Bend1 Bend2 Bend1 Bend2 Bend1]
+
+
+
+(42)[Strings $ED $74 $E0 < a1^1^1 $ED $74 $E8 ^1 $ED $74 $E0 a1^1^1 $ED $74 $E8 ^1 >]
+
+/
+
+r1^1
+(41)
+
+(42)
+
+<<
+Guitar
+[[r4 a4]]16
+>>
+
+@39 Strings $ED $74 $E0 d2 e2 f+2 e2 d1^1^1 $ED $74 $E8 ^1 $ED $74 $E0 d2 e2 f+2 e2 d1^1^1^1^1^1^1 $ED $74 $E8 ^1 
+
+
+
+; +---------------------+
+; |     Channel #4	|
+; |     Strings		|
+; +---------------------+
+
+#4
+o5
+
+
+(51)[@39 Fade1
+e16 Bend3 Bend4 Bend3 Bend4 Bend3 Bend4 Bend3 Bend4 Bend3 Bend4 Bend3 Bend4 Bend3 Bend4 Bend3
+(!101,4) Bend4 Bend3 Bend4 Bend3 Bend4 Bend3 Bend4 Bend3 Bend4 Bend3 Bend4 Bend3 Bend4 Bend3 Bend4 Bend3]2
+
+
+(52)[Strings $ED $74 $E0 < c1^1^1 $ED $74 $E8 ^1 $ED $74 $E0 c1^1^1 $ED $74 $E8 ^1 >]
+
+/
+
+Fade1
+(51)2
+
+(52)
+
+[[r2]]16
+
+< $ED $74 $E0 g1^1 f+1^1^1 $ED $74 $E8 ^1 $ED $74 $E0 g1^1 f1^1^1^1^1^1^1 $ED $74 $E8 ^1 
+
+
+
+; +---------------------+
+; |     Channel #5	|
+; |     Strings		|
+; |     Guitar		|
+; +---------------------+
+
+#5
+o2 
+
+(61)[
+[[Guitar e2]]8
+y7
+[[@38 Strings2 e2 f2 f+2 f2]]4
+]
+
+/
+
+(61)
+
+Guitar
+[[a2]]16
+
+@38 Strings2 y7
+b1^1 a2 a+2 b2 a+2 a2 a+2 b2 a+2 b1^1
+[[a2 a+2 b2 a+2]]4
+
+
+
+; +---------------------+
+; |     Channel #6	|
+; |     Clarinet	|
+; +---------------------+
+
+#6
+o3
+[[r2]]24
+
+/
+
+[[r2]]44
+
+VIB
+Clarinet a8 g8 f+8 g8 a1^1^1^2
+
+r1^1
+
+a8 g8 f8 e8 d1^2 Rel ^1
+
+[[r2]]10 
+
+
+
+; +---------------------+
+; |     Channel #7	|
+; |     Bassoon		|
+; +---------------------+
+
+#7
+o4
+[[r2]]24
+
+/
+
+[[r2]]56
+
+VIB
+Bassoon d8 e8 f8 e8 d1^2 Rel^1
+
+[[r2]]10 

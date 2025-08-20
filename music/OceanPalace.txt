@@ -1,0 +1,125 @@
+"gain1=30"
+(!gain1)[$F6 $15 $7F]
+"reset1=31"
+(!reset1)[$F6 $15 $FF]
+"gain2=32"
+(!gain2)[$F6 $25 $7F]
+"reset2=33"
+(!reset2)[$F6 $25 $FF]
+"gain3=34"
+(!gain3)[$F6 $35 $7F]
+"reset3=35"
+(!reset3)[$F6 $35 $FF]
+"gain6=36"
+(!gain6)[$F6 $65 $7F]
+"reset6=37"
+(!reset6)[$F6 $65 $FF]
+"reset1-1=38"
+(!reset1-1)[$F6 $15 $9F]
+"reset3-1=39"
+(!reset3-1)[$F6 $35 $9F]
+"gain5=40"
+(!gain5)[$F6 $55 $7F]
+"reset5=41"
+(!reset5)[$F6 $55 $FF]
+#samples
+{
+	#optimized
+	"Ocean Palace Snare.brr"
+	"BMFM/Bass Drum.brr"
+	"BMFM/SynthBrass.brr"
+	"BMFM/Cymbal Crash.brr"
+	"BMFM/Ride Cymbal.brr"
+	"BMFM/Bass.brr"
+	"BMFM/Dist Guitar.brr"
+	"BMFM/Guitar.brr"
+	"DKC2 Harpscord.brr"
+	"BMFM/Tom.brr"
+}
+#instruments
+{
+	"Ocean Palace Snare.brr" $FF $E0 $7F $05 $00
+	"BMFM/Bass Drum.brr" $8F $F6 $B8 $04 $01
+	"BMFM/SynthBrass.brr" $FF $E9 $BA $03 $6A
+	"BMFM/Cymbal Crash.brr" $FF $F0 $B8 $04 $00
+	"BMFM/Ride Cymbal.brr" $FF $F2 $BB $04 $00
+	"BMFM/Bass.brr" $FF $EA $B8 $03 $C1
+	"BMFM/Dist Guitar.brr" $8F $CC $B6 $03 $67
+	"BMFM/Guitar.brr" $9F $C8 $B6 $04 $08
+	"DKC2 Harpscord.brr" $FF $F0 $BC $03 $1A
+	"BMFM/Tom.brr" $8F $F6 $B8 $04 $00
+}
+$EF $FE $26 $26
+$F1 $04 $41 $01
+#amk 2
+w230
+#0t65r24$F4 $02 v220@31o4q78g24q7Bg24$F4 $03 @30q7Ec4$F4 $03/(3)[@31q7Co4g4@30q7E$F4 $03 c4$F4 $03 
+@31q7Cg8<@30q76g24q74f24q76g24>$F4 $03 q7Ec4$F4 $03]7
+@31q7Co4g4@30q7E$F4 $03 c4$F4 $03 @31q7Cg8g8$F4 $03 @30q7Fc6c12$F4 $03 (3)7
+(10)[@31q7Fg8q78g8q7Fg8y13$F4 $03 @39d4y10q78@30c16c16q79c16q7Ac16q7Fc8$F4 $03 ]
+(3)3
+(14)[@31q7Cg4@30q7E$F4 $03 c4c4c4$F4 $03] 
+(3)3$F4 $03 @30q7Ec4c4<(15)[q76g16g16q78g16g16q7Ag16g16q7Cg16q7Dg16$F4 $03 ]
+(3)7(10)(3)7(14)
+[[(3)3(14)]]4
+[[q7C@31o4g16$F4 $03 @30q76<g16q78g16q7Ag16>q7Ec8$F4 $03 ]]3q7C@31g4g8$F4 $03 @30q7Ac8q7Cc8q7Ec8c8$F4 $03 (3)3
+@31q7Co4g4@30q7E$F4 $03 c4$F4 $03 @31q7Cg8<@30q76g24q74f24q76g24>$F4 $03 q7Fc8c8$F4 $03
+@31q7Co4g4g4g4g4g4g4g4g8g8g4g4g4g4$F4 $03 @30[[q7Ec8q76c16q78c16]]2(15)
+
+#1r4.(!gain1, 3)(!reset1, -1)/
+(6)[@32o4y11v110q2Ff4q7Fe8q2Fd4a4g4f4q7Fe8c8d8e8c8<q7Af2^2^2^2>q2Ff4q7Fe8q2Fd4a4g4f4q7Fe8d8e8f8e4]q7Fc2^2^2^4.
+(!reset1-1, -1)y10 $DE $30 $0C $60 v120@37o3g1r8(4)[$DF f16g16a+8a8f+8g8d+8e8c4.$DE $30 $14 $50 <a+1^4.$DD $30 $30 $91r8
+c2$DD $00 $24 $9F^2^8r8>$DF f16g16a+8a8f+8g8d+8e8]$F4 $01 c2$EB $03 $12 $02<a+8.a+8.a+8a+2$F4 $01 ^4^8$DD $00 $30 $93 ^8r8
+$EB $00 $00 $00
+(!reset1, -1) (5)[@38v150q7Fy7o3g8>c8e2^4y12<g8>c8f2^4y7<g8>c8]g2^1^4(5)g2^1
+(!reset1-1, -1) $DE $30 $0C $60 y10v120@37o2c2$DD $00 $24 $9F^2^8r8(4)o3$F4 $01 c2$EB $03 $12 $02<a+8.a+8.a+8a+2$F4 $01 ^4$DD $30 $30 $93 ^4 $EB $00 $00 $00
+(!reset1, -1)(6)q7Fo4c2^2^2^4.(!reset1-1, -1)y10 v120@37 (21)[$DE $30 $0C $60 o4[[$F4 $01 c8<a16$F4 $01^16]]3
+>g8$DD $02 $06 $AD ^8$DD $00 $09 $AB ^8g8g8$DD $02 $06 $AD q1Fe4q7Fd8$DD $02 $06 $A8 d8<a8>q1Fc4
+$DE $18 $0A $F0 $F4 $01 d8e8f2^8$F4 $01 $DE $18 $0B $F0^4.r4.$DE $30 $0C $60 q7F e8f8r8g8a8r8a8>c8<b8r8b8g8d8r8d8g8e4.
+$DD $18 $30 $9F <g8>]c1^4.r4(21)$DE $30 $0A $50 (22)[c1^4.d8c8d4$DD $00 $18 $A7 d8c2^4.f4$DD $00 $18 $AB 
+$F4 $01 f8e8f8e16$F4 $01^16f1^2^2]v125$F4 $01 <f8e8c8<g4.$EB $00 $14 $02 f4.f4f8f4$DD $30 $24 $8C $F4 $01^4
+$EB $00 $00 $00 $DFr1y10@12[[o4q7Fa32q7Aa32]]16[[^2]]4
+
+#2r4.(!gain2, 3)(!reset2, -1)/@32y9,1,0v90(9)[o4q2Fc4q7Fc8q2F<a+4>d4c4<g4q7Fg8g8a+8>c8<v95a+8^2^2^2^2v90q2Fa+4q7Fa+8q2Ff4
+>c4<a+4a+4q7Ff8g8a8a+8>c4<]g2^2^2^4.>q7D(8)[g1r8f16g16a+8a8f+8g8d+8e8c4.<a+1^4r4.>g1r8f16g16a+8a8f+8g8d+8e8]q7Cc1^1r4.
+@38v140q7Fy7o4c1y13c1y7c1^1c1y13c1y7c1^2^8
+@32y9,1,0v90(8)q7Cc1^1
+(9)o3q7Fg2^2^2^4.y11[[r1^1^1^2^4.v90$DE $30 $10 $30 @37o3g8a8r8b8>c8r8c8e8d8r8d8<b8g8r8g8b8a4.$DD $18 $30 $98 c8e1^4.r4]]2$DF ^8.
+y9v90@32(19)[o4c2^4$EB $00 $12 $03 c4$EB $00 $00 $00 d2^4.r8$FA $03 $20 q3Fc4.c4.c4.c4q7Fc8q3Fc2e4.e4.e4.e4e8q7Fe8
+$FA $03 $00 ]q7Fe4r16[[^2]]8
+
+#3r4./(!gain3, 3)(!reset3, -1)v170@33y12o4q5Bc2^2^2^2@32y11v95(1)[o5q2Ff4q7Fe8q2Fd4a4g4f4q7Fe8c8d8e8]o4q7Da+8^2^2^2^2(1)q4Fa+8r2
+[[^2]]15@13$ED $7F $E0 o4y9v90q7Ee1d2f2e1c2d6c6<a+6>c1e2d4f4e1^2^4.(!reset3-1, -1)
+q7Fy10@37v96 o3c2$DD $00 $24 $A4^2^8r8a+16>c16g8f+8d+8e8<a+8>c8<a4. g1^4.$DD $30 $30 $98r8
+o3g2$DD $00 $24 $A4^2^8r8a+16>c16g8f+8d+8e8<a+8>c8<$F4 $01 g2$EB $03 $12 $02f8.f8.f8f2$F4 $01 ^4$DD $30 $30 $98 ^4 $EB $00 $00 $00
+v170@33y12o4q5Bc2^2^2^2@32y11v95(1)o4q7Da+8^2^2^2^2(1)q4Fa+8r1^1^4y13(18)[v100o3q7Ff8q79f8q7Fg8>c8q79c8<q7Fb8q79b8q7Fg8q79g8q7Fd8
+q79d8q7Fg8q79g8r8e1^2r2^8[[q7Fg8q79g8]]4q7Fg8a8g8>c4<a8]g8r1^1^4(18)g8v110(19)q7Fo4e4r4
+v120(!reset3, 0)@39y12,1,0(20)[o4q7Be16q7Fe16q78e16q7Be16q7Fe16q78e16q7Fe16q78e16]4v130(20)2v140(20)v150(20)
+
+#4r24o3v160@35g24g24>$EB $06 $2A $F5 d+4/ $EB $00 $00 $00 (7)[ [[c8c8>c8<a+8<a+8>c8<a+8g8]]3o4c8<e8f8f+8g8f+8g8a+8]2
+[o4c8.g8.>c4<c8f8g8c8.g8.a+4a8f8g8c8.g8.>c4<c8f8g8c8.g8.a+8<a+4b4]6(7)2 [>d4d4d4d4d8$DD $0C $0C $A8^8e4e8d8e8<e8f4f4f4f4
+g4g4g4g4>d4d4d4d4d8$DD $0C $0C $A8^8e4e8d8e8<e8>f4f4f4f4g4g4g4g4 ]2<g+4.>g+4.a+8$DD $00 $18 $B0^4a+4.f4<a+4>v180c1^1c1^1
+$F6 $45 $7F^1^1^1^8v100$F6 $45 $FF $EB $00 $24 $F2>c4$E8 $60 $A0 c4.^4
+
+#5r4./$FA $02 $00 (!gain5, 3)(!reset5, -1) y13v110@36(12)[o4c2^4r4]8(!reset5, 0)
+v90(13)[@13$ED $7F $E0 o4y8q7Cg1f2a2g1g8q7Ea8>c8d8f2q7Ce1d2<a+2>c1^1]
+o4g1f2a2g1e2f6e6d6e1g2f4a4g1^1(13)y13v110(!reset5, -1)(!gain5, 3)@36(12)8^1^1^4@32$FA $02 $0C y7(18)q7Fo3g8r1^1^4
+(18)g8v110(19)>e4r4
+(!reset5, 0)v120 $FA $02 $03 @39y8,0,1(20)4v130(20)2v140(20)v150(20)
+
+#6r8@33o4y8v170q7Cc4(!gain6, 3)(!reset6, -1)/y12@34[[q08b8r8]]30^16y10v200q7A@31g8g8^=4@30q7Fc6@33y12v170q7Cd2@34
+[[q08b8r8]]25(11)[@33y10q7Cy9d4.y10c8r8y12<b8^2]y8b2y9@34[[q68o4e4]]12q7C@33y12d4y8c4y10c2@34y9[[q68o4e4]]10q7C
+@33y12d4y8c4y12@34q5Ae4e4q7C@33d2@34[[o4q08b8r8]]25(11)@34[[q67o4g4]]30(16)[@33q7Co4y8d4y12c4y9c2]
+(17)[@34y11q68o4f4f8@33q7Cc4.q68@34[[f4]]6f8@33q7Cy9c4.y11q68@34f4](16)
+(17)(16)(17)(16)(17)@33q7Co4y8d4y12c4[[q7Dy8d4.y12c4.]]2y8d4y12c4y9d2@34y11[[q68f4]]6@33q7Cy9d2@34y11[[q68f4]]5f4.
+y8[[q1Aa4]]11a8@33q7Dy9c4y11d4@34y12q7Aa4r4
+
+#7r4./^8.v70y9@32q7Ff4e8d4a4g4f4e8c8d8e8c8>(2)[q7Bf4e8d4a4g4f4e8c8d8e8]o4a+8q7Ff4e8d4a4g4f4e8d8e8f8e8(2)
+o4a+8$F6 $75 $7F^2 [[^2]]15^8.@38v90[[q7Fy8o3g8>c8e2^4y12<g8>c8f2^4y8<g8>c8g2^4^1]]2$F6 $75 $7F [[^2]]14^2^=60
+v70y9@32q7Ff4e8d4a4g4f4e8c8d8e8c8>(2)o4a+8q7Ff4e8d4a4g4f4e8d8e8f8e8(2)o4a+8
+v70@37(21)o4c1^4.^4(21)$DF(22)v85$F4 $01 <f8e8c8<g4.$EB $00 $14 $02 f4.f4f8f4$DD $30 $24 $8C $F4 $01^4$EB $00 $00 $00 r=60[[^2]]7
+
+#SPC
+{
+	#game "Sonic Heroes"
+}

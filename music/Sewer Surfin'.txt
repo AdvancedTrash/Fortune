@@ -1,0 +1,117 @@
+#amk 2
+
+
+#spc
+{
+#author "Mutsuhiko Izumi"
+#game "TMNT IV: Turtles in Time"
+#title "Sewer Surfin'"
+#comment "Ported by DanTheVP"
+}
+
+#path "tmnt4"
+
+#samples
+{
+	#default
+	"tmnt4_0a.brr"
+	"tmnt4_01.brr"
+	"tmnt4_02.brr"
+	"tmnt4_04.brr"
+	"tmnt4_00.brr"
+	"tmnt4_03.brr"
+	"tmnt4_0509.brr"
+	"tmnt4_08.brr"
+	"tmnt4_07.brr"
+	"tmnt4_14.brr"
+	"tmnt4_15.brr"
+	"tmnt4_161718.brr"
+	"tmnt4_19.brr"
+}
+
+#instruments
+{
+	"tmnt4_0a.brr"		$FF $E0 $B8 $03 $D7	;30 lead
+	"tmnt4_01.brr"		$FF $E0 $B8 $01 $F1	;31 orc hit
+	"tmnt4_02.brr"		$FF $E0 $B8 $03 $D2	;32 dist guitar
+	"tmnt4_04.brr"		$FF $E0 $B8 $03 $C3	;33 melody filler
+	"tmnt4_00.brr"		$FF $E0 $B8 $04 $CC	;34 bass 
+	"tmnt4_03.brr"		$FF $F2 $B8 $04 $FF	;35 melody filler
+	"tmnt4_0509.brr"	$FF $E0 $B8 $04 $00	;36 melody filler
+	"tmnt4_08.brr"		$FF $E0 $B8 $01 $EC	;37 dist guitar filler
+	"tmnt4_07.brr"		$FF $E0 $B8 $03 $82	;38 chromatic run 
+	"tmnt4_14.brr"		$FF $E0 $B8 $04 $00	;39 bass drum o3a o3g
+	"tmnt4_15.brr"		$FF $E0 $B8 $02 $3E	;40 high hat o5g+
+	"tmnt4_161718.brr"	$FF $E0 $B8 $04 $00	;41 toms o4e d c 
+	"tmnt4_19.brr"		$FF $E0 $B8 $04 $00	;42 snare drum
+}
+
+
+#0 w140 t86
+$f4 $02
+@30 l8 y8
+[o2g4o5 f$DD$00$09$B7^4. g$DD$00$05$B2 $DE$3B$09$C4 f1^8 $DF o2g4o5 d$DD$00$09$B4^4. e$DD$00$05$B0 $DE$3B$09$C4 d+1^8 $DF]2 
+/v255 $DE$3B$0C$73 (1)[@30o5dg. v180g16v255 dg4d  f2^8 f16g16a+ a+16g16f] 
+eee4d+d+4 $DE$3B$0C$73 g1^8 $DF (1) eee4gg4 $DE$3B$0C$73 g2^8rf v150fv255 g 
+(2)[o4  rf$DD$00$06$AB a$DD$00$06$AF f$DD$00$06$AB b$DD$00$06$B0 a$DD$00$06$AF f$DD$00$06$AB f4g 
+v150f4gv255 @31 o4 c+c+d+4 
+@30 o4 f$DD$00$06$AB a$DD$00$06$AF f$DD$00$06$AB b$DD$00$06$B0 a$DD$00$06$AF f$DD$00$06$ABf4g v150f4gv255]
+(3)[o4 g>g $DE$28$0A$56 f2.<f>f  $DE$28$05$56 e2.<e>ed4<gg $DE$27$0B$5E g2^4]^8 v180 l16 >c+dd+ev255 l8 freg
+(2)(3)o4 ga+b>dff+g
+o2g4o5 a+4.a v150av120av255a+4.av150av255a+a $DE$26$15$54 g1^8 @36 o2 v180rl16grbr>drfr<gr>frgrv255
+@30 l8 o6 r4d4.cv150cv120cv255d4.cv150cv255dc $DE$28$05$5D d1^8rcrv150c+v255d v180o3@39g+16g+16 o4@42g4
+
+#1
+@30 l8 v180 y12
+[o4 r4 a$DD$00$06$AF^4. f$DD$00$09$AB $DE$28$07$96 a+1^8 r4 b$DD$00$06$B0^4. <c$DD$00$06$A6 >a+1^8]2
+/$DE$3B$0B$71 (4)[@30o4b>d. v120d16v180 <b>d4<b>d2^8 o4 f16g16a+ a+16g16f] 
+o5 ccc4<a+8a+4  b1^8 $DF (4)o5 ccc4d+d+4 $DE$3C$0B$73 d2^8rc v120cv180 d v130
+r4 (5)[@30 o4 f$DD$00$06$AB a$DD$00$06$AF f$DD$00$06$AB b$DD$00$06$B0 a$DD$00$06$AF f$DD$00$06$AB f4g]
+(6)[v160@32 o3 g16r16v130]2 ffg4g32r16.
+(5)(6)3 (7)[@30 o4 g4>gf2.<f>fe2.<e>ed4<ggg2]^8 l16 gaa+b l8 >crcd
+(6)2(5) v160@32 o3 [g]7 v130(5)(6)3 v180(7) o3 ga+b>dff+g
+o5 r4f4.f v120fv100 f v180f4.fv120 f v180ff $DE$3B$0B$75 d1^8 $DF
+@33 o3 l16 frfrer v150erv180 dr<grarbr
+@30 l8 o5 r4a+4.a v120av100 a v180 a+4.av120 a+ v180a+a $DE$3C$08$71 a1^8 rgr v120g+v180 ar4.
+
+#2
+@34 l16 v180 $DE$40$06$C6
+o3 g1..deg8g1^2^16rd+8f4 [r4g4]6 l8 d+d+d+d+d+d+ff 
+/(10)[o3 gg>g<ggg>g<a+4a+a+a+ @30 o3 f16g16a+ a+16g16f @34]
+(11)[o4 cccc<d+d+>d+<g4]>g<e>e<f>f<f+>f+ (10) (11)v160 ggggfrg 
+(12)[o4 g<g>fg<g>g<g>g<fg>g<gg]ffg (12)g>fg
+(13)[o3 f>f<ff>g2 o3 c>c<cc>c2]o4 g<g>fg<g>g<g>g<gg>g<g>freg
+(12)ffg(12)<g>fg(13)o4 g<g>fg<g>g<g>g4<ga+b>dff+g v200
+(14)[o3 g4a+4.f r4 a+4.f r a+ f]g4gb>dfferfferf<gaa+ (14)agaba>c<a>c+drcrc+dr4.
+
+#3 y7 v140 l8
+@33 o3 g @35g>e<g>d<g>ed4 [<<f>>e<<f>>d]2 <e>e<e>d<e>ed+4<d+>f<d+>d+<d+>f<d+
+>d<g>g<g>f<g>ed4<f>e<f>d<f>e<f>d<e>e<e>d<e>e @31 o3 b4bbbb4>d4 
+/(30)[@30 o4 gb v80bv140 gb4g $DE$28$11$8D a+2^8
+@33 o3 f16g16a+ a+16g16f
+@30 o4 ggg4] gg4 $DE$28$09$90 b1^8 (30) a+a+4 $DE$28$0E$90 b2^8r
+@31 o4 c+4d+ v110r(31)[@36 o2 g>ggg<gg>c4d<ggg>ffgrg<gg>g<gg>c4d<gggggg
+@36 l16 o2fgaa+>cdefgaa+>cdefg o2efgaa+>cdefgaa+>cdef o2gaa+>cdefgaa+>cdefga] 
+o3defgab>cdefgab>cde o3 l8 g (31)
+@33o3rl16v120gv80gv140a+v80a+v120bv80bv120o4dv80dv120fv80fv120f+v80f+v120o3gv80gv120 
+@30 v140 l8 o2g4o5 d4.cv100cv80c v140d4.cv100cv140dc<b4v140 @37 o3 gb>d l16 frfrerv100erv140 frfrerv100erv140 l8 d<gab
+@30 o5r4 $DE$26$15$88 f4.ev100ev80e v140f4.ev100ev140fe<f+4v140 @37 o3 a>c<a>c<a>c+d @30 o5rerff+ r4. $DF
+
+#4 y13 v130 l16
+[@36 o3gaa+>cdefgaa+>cdefgagfedc<a+agfedc<a+agfgaa+>cdefgaa+>cdefgao3efgaa+>cdefgaa+>cdef]2
+/(40)[@35 o3 l8 gg>d<gg>d<ga+4a+a+a+ f16g16a+ a+16g16f o2 cc>c<cd+d+>d+]<g4>g<e>e<f>f<f+>f+
+(40)g2.e r gv80gv140 (41)[@35o2g>ggg<gg>a4b]<ggg>>ccdr(41)<gggggg
+(42)[@31 o4 c+g+4.g+2 d+g+4.g+2] @35 o2 g>g<gg>g<gg>g<g>g<gg @31 o4 c+4cd+
+@35o2g(41)ggg>>ccdr(41)<gggggg (42) @35o3ggggggggrga+b>dff+g
+@32 l16 o3 grgra+4.a8arara+4.a8arararg4. [@38 l16 o3 {c+dd+eff+gg+aa+b>cc+dd+eff+]gg+aa+b>cc+dd+eff+gg+aa+b>cc+dd+eff+}
+@32 l16 o3 grgra+4.a8arara+4.a8ararard4. @38 l16 o5 {c+dd+eff+gg+aa+b>cc+dd+eff+} @31 o3 r8g+4a8a+4r4
+
+#5 v225 l8
+(50)[o3@39g o5[[v140@40g+]]12]@40g+ v225o4@41e16c16 o3@39g (50) v225o3@39g8o4@42g4 
+(51)[o3@39gro4@42g4]2 (54)[ro3@39go4@42g4](51)3 [o4@42g]8
+/(52)[o3@39gro4@42g4o3@39ggo4@42g4](53)[ro3@39go4@42g4o3@39ggo4@42g4]
+(52)(53)(52)(53)(52) [o4@42g16g16@41c]2 o3@39go4@42g4o4@42g 
+(51)2(53)(51)2(54) o3@39go4@41e8o4@42go4@41c8 (55)[o3@39ggo4@42g4o3@39g4o4@42g4]4
+(51)o3@39gro4@42go3@39g(54)o3@39ggo4@42g4(51)2(54) o3@39go4@41e8o4@42go4@41c8
+(55)3 o3@39g8 [o4@42g]7(56)[o3@39g4o4@42g4](57)[o3@39ggo4@42g4](56)
+[ro3@39go4@42g4]2 (56)2(57)(56)(57)3 r[o4@42g]3 l16 o4@41[e]3[d]3[c]2 l8 o3@39go4@42g4ggo3@39g+16g+16o4@42g4

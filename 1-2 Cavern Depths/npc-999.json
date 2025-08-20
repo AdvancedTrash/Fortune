@@ -1,0 +1,10 @@
+{
+    "style": "groupbox",
+    "title": "Luigi Coin Display",
+    "layout": [
+        {
+            "control": "label",
+            "title": "This object displays the total number of Luigi Coins collected."
+        }
+    ]
+}

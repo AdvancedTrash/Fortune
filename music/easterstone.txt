@@ -1,0 +1,338 @@
+#amk 2
+
+#spc
+{
+	#title          "Easter Stone"
+	#game           "Gradius III"
+	#author         "Kazuki Muraoka & crew"
+	#comment        "ported by Teows"
+}
+
+#path "easterstone"
+
+#samples
+{
+	#default
+	"bass.brr"
+	"kick.brr"
+	"ooh.brr"
+	"orchhit.brr"
+	"organ.brr"
+	"saw1.brr"
+	"saw2.brr"
+	"snare.brr"
+	"tom.brr"
+	"wave1.brr"
+	"wave2.brr"
+	"wave3.brr"
+	"wave4.brr"
+}
+
+#instruments
+{
+	"bass.brr"      $8F $7F $7F $03 $C4   ; @30
+	"saw1.brr"      $A9 $E5 $7F $04 $00   ; @31
+	"wave1.brr"     $EF $E6 $7F $05 $00   ; @32
+	"tom.brr"       $AF $72 $7F $03 $60   ; @33
+	"ooh.brr"       $B8 $E8 $7F $07 $B6   ; @34
+	"kick.brr"      $FF $E0 $7F $02 $00   ; @35
+	"snare.brr"     $FF $E0 $7F $07 $20   ; @36
+	"wave2.brr"     $B8 $E8 $7F $07 $87   ; @37	
+	"organ.brr"     $FF $EC $7F $03 $CE   ; @38
+	"orchhit.brr"   $8F $E7 $7F $03 $DD   ; @39
+	"wave3.brr"     $FF $F0 $7F $03 $00   ; @40
+	"wave4.brr"     $CD $EC $7F $03 $83   ; @41
+	"saw2.brr"      $FF $E9 $7F $00 $FC   ; @42
+}	
+
+;___________________ 
+;                   |
+;  Global Commands  |
+;     & Macros      |
+;___________________|
+
+t24 w170
+
+$F4 $02 /
+
+"@TO = @33"
+"@KK = @35"
+"@SN = @36"
+"' = q7F ^=1"
+
+;__________________
+;                  |
+;  Channel 1 (#0)  |
+;__________________|
+
+#0
+
+@31 v110 $EE $00 y8
+$ED $27 $E6
+$DE $54 $18 $16
+$E5 $54 $15 $12
+$EC $02 $02 $FE
+o4 q7Fb2 ^=106 > c2 ^2 < b2 ^2
+$EB $00 $00 $00
+> c2 g=86 
+
+[@34 v130 y10
+$DE $0C $1C $34
+$EE $1E
+o4 q7Fb=88 > d8 c+4 c+12 < b12 a12 b8 > f+6..
+
+@31 v100 q5F
+$ED $7F $F4
+< c+24 c+48 r4.. 
+
+@34 v130
+o4 q7Fb=88 > d8 c+4 c+12 < b12 a12 g4. > c24]
+
+@39 v110 y9
+o3 a32. q79a32. > q7Fd24 q79d24 q7Fe24 q79e24 >
+q7Fb24 > e24 f+24 c+24 f+24 g+32 
+
+y8 *
+
+@34 v130
+o5 q7Ff2 
+
+@39 v140 y11
+
+(10)[o5 g24 q79g24 q75g8
+q7Fg24 f+24 q79f+24 q75f+6]2
+
+$FA $02 $03 *2
+$FA $02 $06 *2
+$FA $02 $00
+
+@39 v140 o5 y10
+q77d12.. q7Fd+8 e8 f8 f+12 g24...
+g+24.. a=13 a+=13 b16 > c32. 
+
+
+
+;__________________
+;                  |
+;  Channel 2 (#1)  |
+;__________________|
+
+#1
+
+@31 v160 l24 y11
+$DE $24 $18 $24
+$E5 $24 $15 $18
+$EC $02 $02 $FF
+o4 q7Fb2 ^2 > c2 ^2 < b2 ^2
+$EB $00 $00 $00
+> c2 g2 
+
+[@34 v160 q7F
+$DE $0C $1C $34
+< b4. > d8 c+4 c+12 < b12 a12 
+o4 b8 > f+6..
+
+@39
+< f+24 f+24 f+16 q79f+16 q75f+16 q73f+8 r8. 
+
+@34 v160
+q7Fb4. > d8 c+4 c+12 < b12 a12 
+o4 g4. > c8]
+
+@40 v140
+<< q7Fa24 q79a24 > q7Fd24 q79d24 q7Fe24 q79e24 
+v130 < q7Fb24 > e24 f+24 c+24 f+24 g+24 
+
+*
+
+@34 v170 q7F
+> f2
+
+@39 v180 y10
+$FA $02 $F4 (10)2
+$FA $02 $F7 (10)2
+$FA $02 $FA (10)2
+$FA $02 $00
+
+q7Fd q79d q77d
+q7Fd+ q79d+ q77d+
+q7Fe q79e q77e
+q7Ff q79f q77f
+q7Ff+32 q79f+=5 q77f+=5
+q7Fg=5 q79g=5 q77g=5
+q7Fg+=5 q79g+=5 q77g+48
+q7Fa48.. q79a32
+q7Fa+48.. q79a+32
+q7Fb32 q79b32 >
+q7Fc48.. q79c32 
+
+
+
+;__________________
+;                  |
+;  Channel 3 (#2)  |
+;__________________|
+
+#2
+
+@31 v140 y9
+$FA $02 $00
+$ED $29 $E6
+$DE $30 $18 $24
+$E5 $30 $15 $18
+o4 q7Ff+2 ^2 g2 ^2 f+2 ^2 $EB $00 $00 $00
+g2 > d2
+
+[@34 v140
+$DE $0C $1C $34
+< q7Ff+4. a8 g+4 g+12 f+12 e12 f+8 > c+6..
+
+@39 v170 y10
+f+24 f+24 f+16 q79f+16 q75f+16 q73f+8 r8. 
+
+@34 v140 y8
+< q7F f+4. a8 g+4 g+12 f+12 e12 d4. g8]
+
+@40 v140 <
+q7Fd24 q79d24 q7Fa24 q79a24 q7Fb24 q79b24
+q7Ff+24 b24 > c+24 < g+24 > c+24 d+24 
+
+*
+
+@34 v150
+> q7Fc2 
+
+@41 y10 v110 l64 q7F < <
+[[$FA $02 $00
+  [a' d' > g' < d' > g' a' g' a' > d' < a' > d' g']
+  $FA $02 $FF * ]]2
+
+[[$FA $02 $03 *
+  $FA $02 $02 * ]]2
+
+[[$FA $02 $06 *
+  $FA $02 $05 * ]]2
+  $FA $02 $00
+
+@38 v100 q7F
+[< a+' b' > e' < a' > d' g' < b' > c' f' < a+' > d+' g+']
+$FA $02 $01 *
+$FA $02 $02 *
+$FA $02 $03 *
+
+
+
+;__________________
+;                  |
+;  Channel 4 (#3)  |
+;__________________|
+
+#3
+
+@32 v140
+o1 b2 ^2 > c2 ^2 < b2 ^2 > c2 g2 
+
+[@37 v90
+>> f+4. a8 g+4 g+12 f+12 e12 f+8 > c+6..
+
+@31 v140
+$ED $7F $F4
+< q5Fc+24 c+24 c+16 r4.. 
+
+@37 v90
+q7Ff+4. a8 g+4 g+12 f+12 e12 d4. g8]
+
+@39 v180
+
+q7Fa24 q79a24 > q7Fd24 q79d24 q7Fe24 q79e24 <
+q7Fb24 > e24 f+24 c+24 f+24 g+24
+
+* 
+
+@38 v90 $ED $7F $F6
+< q7Fb8 > c=5' c+=5' d=4' d+=4' e=4'
+f=3' f+=3' g=3' g+=3' a=3' a+=3'
+b=2' > c=2' c+=2' d=2' d+=2' e=2' f=2'
+
+@32 q7F v110 o1
+g4 f+4 g4 f+4 
+a+4 a4 a+4 a4 
+> c+4 c4 c+4 c4 
+
+@42 v120
+> e=7' a=7' > d=7' < f=7' a+=7' > d+=7' < f+=7' b=7' > e=7' < g=7' > c=7' f=7'
+< g+=5' > c+=4' f+=4' < a=4' > d=4' g=4' < a+=4' > d+=4' g+=3' < b=4'
+> e=3' a=3' c=4' f=3' a+=3' c+=3' f+=3' b=3' d=4' g=3' > c=4
+
+
+
+;__________________
+;                  |
+;  Channel 5 (#4)  |
+;__________________|
+
+#4
+
+@30 v146
+q7F l24
+[[o3 [e b e b a b]3 e b e a b > e]]4
+
+[v146
+[[< e b e b a b]]3 e b e a b > e
+< e b e b a b e b e b > f+ f+ f+8 < b a b e b e a b > e 
+v140
+[[< e b e b a b]]3
+e b e a b > e < a > d < a > d < g a a > d < a a > d g]
+
+< e12 a12 > d12 < f+ b > c+ g+ c+ d+ 
+
+* $ED $0F $E2 < q7Fg2
+
+@30
+[a > d g < a > d g < g+ > c+ f+ < g+ > c+ f+]2
+$FA $02 $03 *2
+$FA $02 $06 *2
+$FA $02 $00
+
+$ED $6F $E9
+< f+8 g8 g+8 a8 a+12 b=14' > c=13' c+=12' d=12' d+=11' e=12' 
+
+
+
+;__________________
+;                  |
+;  Channel 6 (#5)  |
+;__________________|
+
+#5
+
+v195 l24 o4
+@TO (60)[ [[c8 c c c]]3 c r c r c r]3
+(61)[ [[c8 c c c]]3 > v134 e48 e48 c+ c+ < v167 g+ g+ v195 f]
+(60) (61) (60)
+
+[[c8 c c c]]2
+@SN [[q7Fc q7Ac]]3
+@TO v134 q7Fg+ g+ v167 d+ d+ v195 c c 
+
+(60) (61) (60)
+[[c8 c c c]]2
+@KK c @SN c @KK c c @SN c c >
+@TO v134 e48 e48 e48 c+48 c+48 c+48 <
+v167 g+48 g+48 g+48 v195 f48 f48 f48
+
+[[
+@SN q7Fc q7Ac 
+@KK q7Fc @SN c @KK c @SN c c
+q7Ac q7Fc q7Ac q7Fc q7Ac
+]]6
+
+[[
+@SN q7Fc32 q7Ac32
+@KK q7Fc48 @TO c48 c48
+]]4
+
+@SN c32 q7Ac=5 
+[[@KK q7Fc=5 @SN c=5 q7Ac=5]]2 c48 >
+@TO v134 q7Fe=5 e48 e48 c+=5 c+48 c+48 <
+v167 g+48 g+48 g+48 v195 f=5 f48 f48

@@ -1,0 +1,454 @@
+;==========================================;
+;	SPC Generator
+;==========================================;
+
+#SPC
+{
+	#title "Hit Or Miss" ; ~ Break The Targets (SNES Remix)
+		; I guess they never miss, huh? :)
+	#game "Final Dest., No Items, Fox Only"
+	#author "Shogo Sakai"
+	#comment "arr. Hooded Edge"
+	#length "auto"
+}
+
+;==========================================;
+;	THIS RIGHT HERE IS DEFINITELY IMPORTANT!!
+;==========================================;
+
+; To change the pitch of the song, replace the number after
+; ''PITCH'' to any number between whatever's included below.
+; This won't affect the percussion / sfx by this at all.
+
+; this allows for awesome customization to fit your needs or your
+; preferences... but if you know your stuff, then you should be able
+; to go way beyond the limits I gave you here.
+
+;==========================================;
+;	Song Pitch
+;==========================================;
+
+	#define PITCH 1 ; Choose between 1 - 2
+
+;=================| Pitch |==================;
+
+; 1 = Pitch will be on the a minor (Original)
+
+; 2 = Pitch will be on the b minor (Custom)
+
+;==========================================;
+;	Samples
+;==========================================;
+
+#path "A-NEW-RECORD"
+
+;==========================================;
+
+#SAMPLES
+{
+	"../default/00 SMW @0.brr"
+	"../optimized/01 SMW @1.brr"
+	"../optimized/02 SMW @2.brr"
+	"../optimized/03 SMW @3.brr"
+	"../default/04 SMW @4.brr"
+	"../optimized/05 SMW @8.brr"
+	"../optimized/06 SMW @22.brr"
+	"../optimized/07 SMW @5.brr"
+	"../optimized/08 SMW @6.brr"
+	"../EMPTY.brr"
+	"../optimized/0A SMW @9.brr"
+	"../optimized/0B SMW @10.brr"
+	"../optimized/0C SMW @13.brr"
+	"../optimized/0D SMW @14.brr"
+	"../optimized/0E SMW @29.brr"
+	"../optimized/0F SMW @21.brr"
+	"../optimized/10 SMW @12.brr"
+	"../optimized/11 SMW @17.brr"
+	"../default/12 SMW @15.brr"
+	"../EMPTY.brr"
+
+	"MM7 Pulse 50%.brr"
+	"Top Piano.brr"
+	"Chorded String Ens.brr"
+
+	"HGB Piano Mid.brr"
+	"Cool String Ens.brr"
+	"Custom FM Perc Organ.brr"
+	"S3 Slap Bass II.brr"
+
+	"Yasui Snare.brr"
+	"DNB Bass Drum.brr"
+	"S-550 LA Tom.brr"
+	"Ultima Hi-Hat.brr"
+	"R-8 Crash Cym.brr"
+}
+
+;==========================================;
+;	Instruments
+;==========================================;
+
+#INSTRUMENTS
+{
+	"Yasui Snare.brr" $9F $F5 $B8 $15 $00 ; @30 snare
+	"DNB Bass Drum.brr" $FF $F4 $B8 $08 $00 ; @31 bass drum
+	"S-550 LA Tom.brr" $FF $F2 $B8 $0D $00 ; @32 tom
+	"Ultima Hi-Hat.brr" $FF $BB $B8 $0A $A0 ; @33 closed hi-hat
+	"Ultima Hi-Hat.brr" $FF $F4 $B8 $0A $A0 ; @34 open hi-hat
+	"R-8 Crash Cym.brr" $9F $F2 $B8 $0A $00 ; @35 crash cymbal (c+1)
+	"R-8 Crash Cym.brr" $9F $F3 $B8 $0A $00 ; @36 crash cymbal (c+4)
+
+	; Square
+	"MM7 Pulse 50%.brr"  $FE $EA $B8 $04 $00 ; @37 square
+	@0 $FF $E0 $B8 $03 $00 ; @38 square
+	@15 $8F $E0 $B8 $01 $E4 ; @39 orchestra hit
+	@4 $AE $B6 $B8 $03 $00 ; @40 brass
+	"Top Piano.brr" $FF $F1 $B8 $04 $00 ; @41 high piano
+	"Chorded String Ens.brr" $FC $E4 $B8 $01 $E8 ; @42 strings
+
+	"HGB Piano Mid.brr" $FF $EC $B8 $05 $10 ; @43 piano chord
+	"Cool String Ens.brr" $FA $E0 $B8 $03 $05 ; @44 saw chord
+	"Custom FM Perc Organ.brr" $FE $EC $B8 $0B $80 ; @45 square chord
+	"S3 Slap Bass II.brr" $FF $EB $B8 $05 $C0 ; @46 slap bass
+}
+
+;==========================================;
+;	Main Macros
+;==========================================;
+
+	"@e = $F4 $03"
+	"%l = $F4 $01"
+
+	"($FA-3X) = $FA $03 $00"
+	"$XR-X = $FA $02 $00"
+		"$XR- = $FA $02 $"
+
+;==========================================;
+;	Remote Commands
+;==========================================;
+
+	(!800)[ $F4 $09 ]
+	(!810)[ $ED $7F $F8 ]
+
+	"@cmd_main = (!800, -1) (!810, 3)"
+	
+	"@cmd_main_off = (!800, 0) (!810, 0)"
+
+;==========================================;
+;	Instrument Macros
+;==========================================;
+
+		"(F00) = $ED $7F $F4 ^8"
+		"(F10) = $ED $7F $F2 ^4"
+		"(F20) = $ED $7F $F1 ^2"
+		"(F30) = $ED $7F $EF ^1"
+
+	"@square = @37 v185 | $DE $10 $0A $2F"
+	"@0square = @38 v255"
+		"(V10) = v150"
+	"@orchHIT = @39 v255 | $FA $03 $EF"
+	"@brass = @40 v195 | $DE $0A $0A $32"
+	"@HIpiano = @41 v255 | $DE $0A $0A $26 | $FA $03 $2F"
+	"@HIstr = @42 v255 | $DE $16 $0C $2F | $FA $03 $6F"
+
+	"@pianoCHD = @43 v225"
+	"@strCHD = @44 v160"
+	"@Porgans = @45 v180"
+	"@SLAPbass = @46 o3 v225"
+
+;==========================================;
+;	Percussion Macros
+;==========================================;
+
+	"@p = $FA $03 $30"
+
+	"@snare = @30 v255 y10"
+	"@kick = @31 v200 y10"
+		"u = < @p c ($FA-3X) >"
+		"u16 = < @p c16 ($FA-3X) >"
+		"u8 = < @p c8 ($FA-3X) >"
+	"@tom = @32 v255 | $FA $03 $1F"
+
+	"@closed = @33 v250 y9"
+	"@open = @34 v217 y11"
+	"@crash = v255 y10 | $FA $03 $DF"
+		"@crash+ = @35 | @crash"
+		"@crash- = @36 | @crash"
+
+;==========================================;
+;	Echo Values
+;==========================================;
+
+	$EF $BE $42 $BD ; OFF - #0, #6
+	$F1 $05 $AA $01
+	$F4 $02
+
+;==========================================;
+;	DON'T MESS WITH THIS
+;	IF YOU DON'T KNOW WHAT YOU'RE DOING!!!
+;==========================================;
+
+#if PITCH == 1 ; Original
+;	$E4 $00 ; a minor
+	"@falco = "
+	"@marth = "
+#endif
+
+#if PITCH == 2 ; Custom
+	$E4 $02 ; b minor
+	"@falco = h-2"
+	"@marth = h0"
+#endif
+
+;==========================================;
+;	Extras
+;==========================================;
+
+	"TARGET # = #"
+
+;==========================================;
+;	Global Volume / Tempo
+;==========================================;
+	w100 t60
+;==========================================;
+
+;==========================================;
+	TARGET #0 | @falco @p r1^1^16
+;==========================================;
+
+o3 | l8
+[ @kick c r ]4 @snare (000)[ c32 c32 [[ c16 ]]7 ]2 /
+
+(010)[ @kick c r @snare c4 ]7 (011)[ @kick c r @snare c. c16 ]
+(010)7 @kick c16 @snare c. c. c16
+
+@kick c16 c16 c16 c c @snare c @kick c c16 @snare c16 c16 @kick c
+
+(010)7 (011)
+(010)6 (000) c32 c32 [[ c16 ]]6 c16 
+
+> @e @crash+ c+1^1 @e <
+
+@p
+[ @kick c r ]4 @snare (000)2
+
+;==========================================;
+	TARGET #6 | @falco r1^4^16
+;==========================================;
+
+@closed o4 | l16
+(600)[ [[ c8 r4. ]]3 c8 r8 ]
+(601)[ @kick u @closed q7E c q7F c q7E c q7F]2
+@kick u (602)[ @tom y13 d y12 d y11 d @kick u < @tom y9 b+ y8 b y7 a > ] / 
+
+@e @crash- c+4 ($FA-3X) @e (610)[ @kick u @closed q7E c q7F @open c8 @closed ]
+[[ (611)[ c q7E c q7F @open c8 ] (610) ]]7
+
+@e @crash- c+4 ($FA-3X) @e (610)
+[[ (611) (610) ]]6
+c (602)
+
+@e @crash- c+4.. ($FA-3X) @e @tom y13 d y11 d y10 c32 c32 < y9 b4 y7 a8 > @closed 
+
+@e @crash- c+4 ($FA-3X) @e (630)[ @kick u @closed c @open c @closed c ]
+[[ (631)[ c q7E c q7F @open c @closed c ] (630) ]]7
+
+@e @crash- c+4 ($FA-3X) @e (630)
+[[ (631) (630)  ]]5
+(630)2
+
+@kick u (602)
+
+r4 @closed c8 r4. c8 r4. (600) (601)2 @kick u (602)
+
+;==========================================;
+	TARGET #1
+;==========================================;
+
+@pianoCHD o2 | l8
+q79 f=2 %l ^=1 q7A f+64 q7B g64 q7C g+=2 %l ^=1 q7D
+(100)[ a. a. a. a. a4 ]4 /
+
+@SLAPbass | @e
+q7F [[ [ a ]8 > [ d ]8 <
+[ g ]8 > c c c c e e e e ]]2
+
+@orchHIT o3 | @e | l16
+(120)[ a b > c d8 e8 g2^ ($FA-3X)
+$DF ]
+
+@SLAPbass | @e
+[ a a a a > a8 < a > a8 < a > a8
+d e g a d d d d > d8 < d > d8 < d > d8
+< a b+ g a < g g g g > g8 < g > g8 < g > g8
+c d f g c c c c b+8 c e8 e e8 e8 e8 ]2
+
+@pianoCHD | @e
+(100)4
+
+;==========================================;
+	TARGET #2 | r1^1..^16
+;==========================================;
+
+(200)[ @square o5 | l16
+ a2 q39 a q3A a q3B a q3C a q3D a q3E a q3F a a
+ a48 %l ^48 q3E e24 q3D c24 < q3C a24 q3B e24 q3A c48 %l ^48 > ] /
+ 
+ @0square | $DF
+ [[ (210)[ q3F e q3C c q3F a q3C c q3F e q3C a q3F c q3C e ]2
+(211)[ q3F f+ q3C d q3F a q3C d q3F f+ q3C a q3F d q3C f+ ]2
+(212)[ q3F d q3C c- q3F g q3C c- q3F d q3C g q3F c- q3C d ]2
+(213)[ q3F e q3C c q3F g q3C c q3F e q3C g q3F c q3C e
+q3F e q3C c- q3F g+ q3C c- q3F e ] q3C g+ q3F c- q3C e ]]2
+
+@orchHIT
+$XR-0C (120) $XR-X
+
+@HIpiano y9 | @cmd_main | l16
+q7F g+ a g e d+ e d c < a > c d c c d g a 
+[ g+ a q7C a q7F ]4 q79 a q76 a q73 a q71 a q7F
+
+f+ g f d c+ d c < a+ g f b+ a+ > d c f g 
+c8 r e8 r g8 r a+8 r g+8 a8
+@cmd_main_off
+
+@HIstr o4 y10,1,2
+> g1 f+1 f1 e1^1.^8 (F20) r8 ($FA-3X) <
+
+y10
+r2 (200)
+
+;==========================================;
+	TARGET #3
+;==========================================;
+
+@pianoCHD o4 y8 | l8
+r (300)[ c. c. c. c4 d. c. c. c. c e ] d.
+(300) d8 /
+
+@strCHD y7 | l1
+q7E < a f+ g e2 g+2
+a^ g. g+2 >
+
+@orchHIT y10
+$XR-F4 (120) $XR-X
+
+@Porgans y13 | l16
+q7F (330)[ a8. r q4F a q49 a q4F a a q49 a q4F a q49 a q4F a q7F a. r32 q4F a a q7F ]2
+$XR-FE (330)
+$XR-X g8. r q4F g q49 g q4F g g q49 g q4F g+ q49 g+ q4F g+ q7F g+. r32 q4F g+ g+ q7F
+
+a16 @pianoCHD y11 | l8
+(310)[ q7D e. e. e. e4 c. c. c. c. c c d.
+c-. c-. c-. c-4 c. e. e. e. c e ] e.
+
+y8
+q7F (300) d.
+(300) d
+
+;==========================================;
+	TARGET #4
+;==========================================;
+
+@pianoCHD o3 y11 | l8
+q7D r (400)[ a. a. a. a4 a. a. a. a. a b+ ] a.
+(400) a > /
+
+@strCHD
+q7F e1 d1^1 c2 e2
+; e1 f+1 f1 e2 e2
+
+e16 @pianoCHD y8
+(410)[ g. g. g. g4 f+. f+. f+. f+. f+ f+ f+.
+f. f. f. f4 f. g. g. g. e g+ ] g+
+
+@brass y10
+(120)
+
+@Porgans y7 | l16
+(430)[ g8. r q4F g q49 g q4F g g q49 g q4F g q49 g q4F g q7F g. r32 q4F g g q7F ] ; g
+$XR-FF (430) ; f+
+$XR-FE (430) ; f
+$XR-X e8. r q4F e q49 e ; e
+
+@square y10
+> q3A e q3B e q3C e e q3D e e e48 %l ^48 q3C c-24 < q3B g24 q3A e24 q39 c-24 < q38 g48 %l ^48 >
+ 
+ @Porgans y7
+q7F g
+
+@pianoCHD y8
+(410) g+8. <
+
+y11
+q7D (400) a8.
+(400) a8
+
+;==========================================;
+	TARGET #5
+;==========================================;
+
+@pianoCHD o3 y10 | l8
+q79 c=2 %l ^=1 q7A c+64 q7B d64 q7C d+=2 %l ^=1 q7D
+
+(500)[ e16 > e. e. e. e4 f+. e. e. e. e g f+.
+e. e. e. e4 f+. e. e. e. e g f+ < ] / 
+
+@strCHD y13 | l1
+q7F b+  a b g2 b2
+> c d^ c2 c-2
+
+@brass y10
+$XR-0C (120) $XR-X
+
+@Porgans y11 | l16
+(530)[ e8. r q4D e q47 e q4D e e q47 e q4D e q47 e q4D e q7D e. r32 q4D e e q7D ] ; e
+$XR-FE (530)2 ; d
+$XR-X
+
+@HIpiano y12 | @cmd_main
+q7C g8 r > q7D c8 r e8 r f8 r d8 e8 < q7F ($FA-3X)
+@cmd_main_off
+
+@Porgans y11 | $DF | l16
+(530) ; e
+$XR-FE (530)2 ; d
+$XR-X c8. r q4D c q47 c q4D c c q47 c q4D d q47 d q4D d q7D d. r32 q4D d d q7D ; c d
+
+@pianoCHD y10
+(500)
+
+;==========================================;
+	TARGET #7
+;==========================================;
+
+@pianoCHD o3 | l8
+q79 f=2 %l ^=1 q7A f+64 q7B g64 q7C g+=2 %l ^=1 q7D a16
+(700)[ e. e. e. e4 f+. e. e. e. e g f+.
+e. e. e. e4 f+. e. e. e. e g f+ ] /
+
+ @0square (V10) | l16
+r8.. (210)2 (211)2 (212)2 (213) > > q3C g+32 <
+
+@pianoCHD y11
+q7F (310) e8
+
+@brass y10
+$XR-F4 (120) $XR-X
+
+@Porgans
+q7D (730)[ < b+8. r q4D b+ q47 b+ q4D b+ b+ q47 b+ q4D b+ q47 b+ q4D b+ q7D b+. r32 q4D b+ b+ q7D ]2
+$XR-FF (730) ; b
+$XR-X a+8. r q4D a+ q47 a+ q4D a+ a+ q47 a+ q4D b q47 b q4D b q7D b. r32 q4D b b q7D ; a+ b
+b+
+
+@pianoCHD | l8
+q7C b+. b+. b+. b+4 a. a. a. a. a
+a a. g. g. g. g4 a. b+. b+. b+. g+ > c d. <
+
+(700)
+
+;==========================================;
+;	MML by Hooded Edge
+;==========================================;
+
+#amk 2

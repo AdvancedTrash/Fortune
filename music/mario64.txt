@@ -1,0 +1,325 @@
+#spc
+{
+	#author 	"Koji Kondo"
+	#game		"Super Mario 64"
+	#title		"Bob-Omb Battlefield"
+	#comment	"Ported by Pinci"
+}
+#amk 2
+#path "mario64"
+#samples 
+{ 
+	"../optimized/00 SMW @0.brr"
+	"../optimized/01 SMW @1.brr"
+	"../optimized/02 SMW @2.brr"
+	"../optimized/03 SMW @3.brr"
+	"../optimized/04 SMW @4.brr"
+	"../EMPTY.brr"
+	"../optimized/06 SMW @22.brr"
+	"../optimized/07 SMW @5.brr"
+	"../optimized/08 SMW @6.brr"
+	"../EMPTY.brr"
+	"../optimized/0A SMW @9.brr"
+	"../optimized/0B SMW @10.brr"
+	"../optimized/0C SMW @13.brr"
+	"../EMPTY.brr"
+	"../optimized/0E SMW @29.brr"
+	"../EMPTY.brr"
+	"../optimized/10 SMW @12.brr"
+	"../EMPTY.brr"
+	"../optimized/12 SMW @15.brr"
+	"../EMPTY.brr"
+		"Rock & Roll Horn Sus Stereo Im.brr"
+		"Oz Land (Stereo).brr"
+		"Les Paul Reggae lm.brr"
+		"JP 6-Str Funk a.brr"
+		"Tama SN GBRLTR LNG AMB.brr"
+		"Tite Room Hydra Kick 4.brr"
+		"PEARL TOM DRY HI.brr"
+		"RIMSHOT S14.brr"
+		"Hat 15 Tip Closed 3.brr"
+		"HAT 15 TIP LNG OP 3.brr" 
+		"Ride Med 22 Bell Rock 1.brr"
+}
+#instruments 
+{ 
+		"Rock & Roll Horn Sus Stereo Im.brr" $7F $E0 $7F $05 $00	
+		"Oz Land (Stereo).brr" $7F $E0 $7A $04 $6A	
+		"Les Paul Reggae lm.brr" $7F $E0 $50 $08 $50	
+		"JP 6-Str Funk a.brr" $FF $E6 $B8 $0B $00	
+		"Tama SN GBRLTR LNG AMB.brr" $00 $17 $7F $0C $22	
+		"Tite Room Hydra Kick 4.brr" $7F $E0 $60 $07 $90	
+		"PEARL TOM DRY HI.brr" $7F $E0 $7F $05 $00		
+		"RIMSHOT S14.brr" $7F $E0 $7F $09 $10	
+		"Hat 15 Tip Closed 3.brr" $Ff $FA $B8 $0A $B0	
+		"HAT 15 TIP LNG OP 3.brr" $FF $F3 $B8 $08 $A0
+		"Ride Med 22 Bell Rock 1.brr" $FF $F3 $B8 $0C $E0
+		"Hat 15 Tip Closed 3.brr" $Ff $F7 $B8 $0A $B0	
+}
+(!100)[$FA $01 $BB]
+(!101)[@30]
+(!102)[$FA $01 $B9]
+(!103)[@31]
+(!104)[$FA $01 $BC]
+(!105)[@32]
+(!106)[@33]
+(!107)[$FA $01 $40 $FA $01 $C6]
+(!108)[$FA $01 $4D $FA $01 $C7]
+(!109)[$FA $01 $52 $FA $01 $C7]
+(!110)[$FA $01 $BC]
+(!113)[$FA $01 $7F]
+(!114)[$FA $01 $B7]
+(!115)[y13 $DC $2A $0A]
+$EF $37 $20 $E0
+$F1 $04 $5A $01
+$F5 $59 $19 $f8 $02 $ff $00 $00 $00
+t46
+#0 w200 $F4 $02 (!101, -1)(!100, 3) v230 
+ o5 q7D y8 c24r8.r64 q7D c8r16r192 q7E c32.r4 q7D <f16r8.r192 q7E g16
+r6r8 q7C <g24r16 q7E >g24r2r96
+ /r32(10)[r2]14
+r8..
+r48
+ q7D <g16r64 q7C a32r12 q7D >c24r1
+r4
+r64
+ q7C g8r64 q7B e96r64r96 q7C c96r64r96 q7C <a96r32
+ q7B f96r2r8.r192 q7D >f8r64r96 q7C d96r32 q7C <b96r64r96 q7C g96r192 q77 a192r96 q7B e64
+r2 q7E (!107, 1, 12 ) g2 (!100, 3) 
+ q7C a32r6r64 q7D >c32r16..r24 (!108, 1, 12 ) q7E d3^48^64 (!100, 3) q7B <b96r32 q7D g96r192 q7C f96r96 q7B e64r4...
+r3
+ q7C >c32r16r64 q7C d16^96 q7C e24r16r192 q7D c24
+r2r8r64 q7C c24r16r192 q7C d+16r64 q7B d32r12r192 q7D c24^96
+r2<g24r16..r24 q7C g24r8r48r64 q7D g24r6
+r32
+ q7D >c32r16. q7D <a+=11 q7D ^=1 q7C b24r12(!109, 1, 12 )q7E >c4^32. (!100, 3) q7D e16r16g16r16r192
+ q7E (!109, 1, 12 ) a3 $FA $01 $BA ^24 (!100, 3) q7D g+24r12r192 q7E (!109, 1, 12 ) g3 $FA $01 $BA ^48r64 (!100, 3) q7C f+24r12
+ q7E f16r8r192 q7D g16r8 q7E (!109, 1, 12 ) e3^32 (!100, 3) q7D e12r24 q7D g12r24 q7E (!109, 1, 12 ) a3
+ $FA $01 $BA ^32. (!100, 3) q7C g+24r12r192 q7E (!109, 1, 12 ) g3 $FA $01 $BA ^48^64 (!100, 3) q7C f+32r16.
+ q7E f16r8r192 q7E e16r16..r96 q7E (!109, 1, 12 ) c4... $FA $01 $BA ^16..^24 (!100, 3) q7D a24
+r12a24r12 q7D g+24r12r192 q7C g+24r12r192 q7D g24r12 q7C g24r16r64 q7C f+24r12 q7B f+24r12
+ q7E f24r16..r24 q7D g24r8r48r64 q7E (!109, 1, 12 ) e4.. $FA $01 $BA ^8^48r64 (!100, 3) q7C a24
+r12 q7C a24r12 q7C g+24r12r192 q7C g+24r12r192 q7D g24r12 q7C g24r16r64 q7C f+24r12 q7B f+24r12
+ q7E f24r16..r24e24r8r48 q7E (!109, 1, 12 ) c2^96 $FA $01 $BA ^16..
+ (!100, 3) q7E c16^192r8 q7D <a+16^96r4 q7E >c16r8 q7D <a+12r8..
+r192
+ q7D a16r16..r96 q7D d+16r4 q7E a16r8r96 q7E d+16r8...
+>c16^192r8 q7D <a+16r4r96 q7E >c16r8 q7D <a+16^96r8...
+ q7D a24r12 q7D a24r12 q7C a24r16r64 q7C a16r16 q7D g+32.r8. q7A g24^96^64 q7D e192^64r96 q7D c64 q7D ^=2 q7A c96^=1 q7A ^=1 q7D <g192^192^64 r16.
+ q7E >>c16r8 q7D <a+24r4r32 q7E >c12r12r48 q7D <a+16r8...
+r96
+ q7E a12r12r64 q7D d+16r4 q7D a16r8r96 q7C d+16r8...
+ q7E >c12r16.. q7D <a+16r4r96 q7E >c12r12r48 q7D <a+16r8...
+r96
+ q7D a24r12 q7D a24r12 q7C a16r24r64 q7D >c24r12 q7D d+24r6r32. q7D e24r64r96 q7C c96r32 q7B <a96r48 q7B f96r64 q7C d96r64 q7A <b96r24
+#1 (!101, -1)(!100, 3) v230 
+r12r32o4 q7D y8 a24r6r32. q7D >d24r6r192 q7D <e6r12r32 q7D f+24^96r3
+ q7E g16r2r24r64 v200 (!103, -1)(!102, 3)  
+o4 q7C y9 d12r32.
+/ q7B e12r32. q7B e16r8r48a16r12r32 q7B c16r6r8r64 q7C <g16r16
+ q7B a12r24a16^192r8 q7C >d12r16. q7B <a16r4. q7B g+16
+r16 q7A f+24r12 q7D >g24r16..r24 q7C <g16r16r192 q7B g16r6r96g16r16r192 q7C g16r8.
+ q7B >g32r16. q79 a12r12r32 q7C d16r3r64 q7B d12r32.
+ q7B e16^192r16e16r8r48a24r8r96 q7B a+16r6r8r64 q7A g+32r16.
+ q7B a16r16 q7B a16r8r192 q7C >d16r12r32<a16r8..r12 q7B g+24r12r192
+ q7C g16^192r16 q7C g24r6r32. q7C g16^192r16 q7B g16r8 q7C <g24r8r64 q7B >e16r16
+ q7C c2r4r16..d12r32.
+ q7B e16r16r192e16r8r48 q7B a12r16. q7B c12r4r48r64<g16^=1 q7B ^=1 q7A g+24^=1 q7A ^=1 q7A
+ q7B a12r24 q7A a16r8r192 q7C >d16r12r32 q7B <a16r8..r12 q7C g+16r16r192
+ q7C g12r32. q7B g16r8.r192 q7A g16r16r192 q7B g16r6r96 q7B g16r16r192 q7B g16r4
+r16
+ q7C >a16.r12r48 q7C d16r3r64 q7C d12r32.
+ q7B e16r16r192 q7B e16r8r48a16r12r32 q7B a+16r6r8r64 q7B g+24r8
+r48
+ q7A g+24r16r64 q7C >c24r8r48 q7C c16r2 q7C <g+16
+r16 q7B f+24r12 q7C <g24r6r16 q7A >f+24r16r64 q7B <g24r8r192 q7B >e16r16r192 q7C e16r2
+r3
+r32 (!101, -1)(!100, 3) y8 v230 
+f16r16r192 q7D g+24r64
+ y9 (!109, 1, 12 ) q7E c3r24 (!100, 3) q7C c24r12r192 (!109, 1, 12 )q7E <b3 $FA $01 $BA ^48^64 (!100, 3) q7B b32r16.
+ q7E a16r8r192 q7E b16r8 (!109, 1, 12 )q7E g4. $FA $01 $BA ^8..^48>(!109, 1, 12 ) c3
+ $FA $01 $BA ^32. (!100, 3) q7B c24r12r192 (!109, 1, 12 )q7E <b3 $FA $01 $BA ^48^64 (!100, 3) q7B b24r12
+ q7E a16r8r192 q7D g16r16..r96 q7E r192 (!109, 1, 12 ) e4.. $FA $01 $BA ^6r96 (!100, 3) q7C >c16
+r16 q7D c32r16.c32r12r64 q7C c24r12r192 q7C <b24r12 q7C b24r16r64 q7C a+24r12 q7A a+24r12
+ q7E a24r16..r24 q7D b32r8r32 (!109, 1, 12 ) q7E g4. $FA $01 $BA ^8..^48 (!100, 3) q7C >c24
+r12 q7C c24r12 q7C c24r12r192 q7A c32r12r64 q7C <b24r12 q7C b24r16r64 q7B a+24r12 q79 a+24r12
+ q7E a24r16..r24g32r8r32 (!109, 1, 12 ) q7E e2 $FA $01 $BA ^8.
+ y8 (!100, 3) q7D e32.r4... q7C e16r3r16.
+ q7C c32.r3r8 q7D c16r3r16.
+ q7D e32.r4...e24^96r2.....
+r6
+ q7B f96^64r96 q7D d192^48 q7C <b192^96 q7D a192^48r64 q7A f32r16..
+r48
+ q7D >e24r4...r192 q7C e24^96r4..
+ q7D c32.r3r8 q7C c16r3r16.
+ q7D e24r4...r192 q7D e16r1
+r8
+r48
+ q78 >d32r32 q7C <b96r192 v200 y9 (!103, -1)(!102, 3) q7C >d16^96 q7A r24^48
+#2 (!101, -1)(!100, 3) v230 
+  r8r192o3 q7C y8 a24r8.r192 q7C >d16r6 q7E <e8r6 q7D f+16r6
+r8
+r64
+ q7E g12r8 q7E g16r4...r192/
+r96 v170 (!105, -1)(!104, 3) 
+o3 q78 y14 g16.r32 q76 g64r64r96 q74 g32r24r96 q78 g24r64r96 q73 g64r32. q78 g16r96 q74 g64r12r32 q75 g64r32. q79 g24r192 q73 g64r16 q79 g8 q78 g64r12
+r32
+ q77 a48^64 q74 a32r24 q77 a64r24 q73 a64r6r64 q78 a24r64 q74 a64r12r48 q73 a64r24r64 q78 a32r48 q74 a64r24r64 q79 a12r48r64 q78 a32r48 q73 g+64r24
+r64
+ q79 g24^96 q74 g32r32. q77 g64r64r96 q73 g64r8.r192 q78 g16r16 q77 g64r32 q74 g64r24r96 q78 g16r16 q77 g16r16r192 q76 g64r32 q74 g64r16
+r192
+ q78 f16r16 q76 f64r48r64 q73 f64r24r96 q77 f64r32 q72 f64r24r64 q78 f16r24r64 q78 g64r32 q74 g64r24r96 q78 g24r192 q73 g64r16 q78 g16r24r64 q76 g64r32 q73 g64r16r192
+ q77 g16r16r96 q75 g64r32 q74 g64r24r64 q76 g64r48r64 q74 g64r12 q79 g16r24r64 q73 g64r48r64 q74 g64r24r64 q77 g32r64 q74 g64r16 q79 g16.r64r96 q76 g64r48r64 q74 g64r16
+ q78 a16r24r96 q78 a64r24 q74 a64r16 q77 a64r24r96 q74 a64r32. q78 a64r48r64 q74 a64r12 q77 a64r96 q74 a64r24r64 q78 a64r32 q74 a64r24r64 q78 a24 q75 a64r24r64 q77 a64r64r96 q74 a64r16
+ q78 g24^96 q74 g64r16 q77 g64r48r64 q74 g64r8.r192 q79 g16r12r64 q74 g64r24r64 q79 g24^96 q75 g32r32. q77 g24r64 q75 g64r16 q76 f+64r64r96 q74 g64r24
+r64
+ q77 g12r32. q75 g64r8r48 q74 g64r16r192 q74 g16r16r96 q76 g64r16. q75 g64r24 q73 g64r24r64 q79 g8r8
+ q78 g24r16r64 q78 g16r16 q77 f+64r24r96 q74 g64r32. q79 g12r64r96 q76 g64r24r96 q74 g64r32. q79 g24^64 q74 g24r48r64 q78 g24^64 q74 g16r96 q78 g64r48r64 q73 g64r16
+ q78 a64r12r48 q77 g+64r16.a64r12r32 q78 a64r12r64 q74 g+64r16..r96 q77 a24^64 q74 a64r24 q78 a16r192 q74 a24r64r96 q79 a64r24r96 q74 g+64r24
+r96
+ q77 g32r12r192 q78 g64r16.. q78 g32r12r192 q78 g16r64 q72 g64r32 q76 g64r24r96 q73 g64r32. q78 g32r64 q73 g64r24r96 q79 g16 q76 g32r64r96 q78 g64r32. q74 g32r32
+ q77 f64r16.. q75 f32r16. q78 f32r8r32 q72  q79 f64r16.. q74 g64r32. q73 g64r32. q78 g24r48 q78 g32r16. q78 g24r48 q73 g64r16
+r96
+ q78 g32r12 q78 g16r16 q76 g64r12r32 q78 g64r24 q73 g24r32 q78 g64r24 q72 g64r24r96 q75 g64r32 q75 g64r32. q77 g64r32. q74 g16r16 q74 g+64r16
+ q79 a24r16r64 q77 a64r12r64 q78 a64r16.. q78 a64r24 q74 a64r24r96 q77 a64r12r64 q77 a16r24r64 q78 a16.r64r96 q78 a64r12r32 q79 g16
+r16 q78 g16r16r192 q78 g24r12 q77 g64r32. q74 g16 q78 g64r24r96 q74 g64r24r64 q77 g24^64 q74 g64r24r96 q79 g12r48r64 q77 g64r24r96 q74 g64r24
+r96
+ q79 g24r16r64 q78 g16r24r96 q75 g64r12r32 q79 g16r16r192 q77 g64r32. q74 g32r64r96 q79 g32r48 q73 g64r24r64 q79 g16r192 q76 g16 q79 g24^96 q74 g24r1..
+r16
+r64 (!101, -1)(!100, 3) y8 v230 
+ q7C >f16r16r192 q7C g+24r1
+(10)10
+r64 v170 y14 (!105, -1)(!104, 3) 
+ q7C c16^192 q7B <e24r12 q7B a+16r4r96 q7C >c16^192 q7B <e24r16r64 q7B a+16r8...
+r96
+ q7A  q7B a16 q7B c24r16r64 q7B d+24r4r48 q7B a16r96 q7B c32r16. q7B d+24r4r192
+ q7C >c16^192 q7A <e24r12a+24r4r32 q7C >c16^192 q7B <e24r16r64 q7A a+16r8...
+r96
+ q7C a24r12 q7B a24r12a24r16r64a24r12 q7B g+24r4..r64
+ q7B >c16^192 q7A <e24r12 q7B a+16r4r96 q7C >c16^192 q7B <e24r16r64 q7A a+16r8...
+r96
+ q7B a16 q7B c24r16r64 q7A d+24r4r48 q7B a16r96 q7B c24r12 q7A d+32.r4
+ q7C >c16r192 q7A <e24r12 q7B a+24r4r32 q7B >c16^192 q7A <e24r16r64a+16r8...
+r96
+ q7B a24r12 q7B a24r12 q7A a24r16r64 q7B >c24r12d+24r16r64 q76 <d24r24 q76 d24r192 q77 d8r8
+#3 v200 (!106, -1)(!110, 3)  
+ o3 q7C y11 c24r12r192 q7C <a24r12r192 q7C >c8 q7B d24r48r64 q7C c32r12r192 q7C <e6r192 q7C f32.r12f+24r16r96
+ q7C g8r16r192 q7C <g8^192r16 q7C >g6r16..r24 q7C g192r48r64 q7C <g6r12r192/
+ q7C >c4r96 q7E >c64r16.. q7B <c32r32. q7C c24r6r32 q79 >c64r48r64 q7E <c64r24r64 q79 >c64r24 q7B <e8
+ q7B f4 q7E >f64r12r48 q7C <f24r48r64 q7C f24r8.r64 q79 >f64r64r96 q7E <f64r24 q79 >f64r24r96 q7C <f16..r48
+ q7C e4r96 q7E e64r16.. q7B >e24r48r64 q7C <d+3r32 q7E >d+64r24 q7C <d+24r12
+ q7C d24r8r64d24r8r48 q7D g6^8^32 q7C >g64r64r96 q7C <<g4r192
+ q7B >c4r96 q7E >c96r12r32 q7B <c24r48r64 q7C e16r4r16..e8
+ q7C f4 q7E >f96r16.. q7B <f32r32. q7C f+16r3r64 q7C f+16.r48r64
+ q7C g8.r16r96 q7B g6r12r192 q7B <g8..^48 q7A >g8..r48r64
+ q7B c12r24 q7C >c96r32. q7C <<a+16r16r96 q7D >a+96r24 q7C c12r6r96 q7A c32r12 q7C >c16^96 q7B <c6r64
+ q7C c12r6r192 q7A >c64r12r48 q7C <c24r48r64 q7B c24r3r32. q7B d+16r96 q7B e32r48
+ q7C f6r16r64 q7B >c64r16.. q7C <f16r64 q7C f24r2
+ q7C e8^192r8 q7B >c64r12r32 q7C <e16^64 q7C d+8.r12r64>c96r8 q7B <d+16.r48
+r64
+ q7C d24r8r48d16r16..r96 q7C g4r16r192 q7E >g32r48 q7C <<g8..r48r64
+ q7B >c8.r24r64 q7B >c64r12r32 q7C <c32r32. q7B c16r6r16 q77 c64r12r32 q7C e8
+ q7B f8.^192r16 q7B >c64r12r64 q7C <f24r48r64 q7B f16^192r8.. q7C f+8..r48r64
+ q7C g4...r32. q7B <g8..^48 q7C >g8...r48
+ q7B c24r12 q7B >c64r24<<a+16r16r192 q7A >a+32r64r96 q7C c24r8.r64 q77 c24r16r64 q7B c32r64r96 q7B c6^32
+ q7C f2^192e4...^48 q7B d24
+r8r48d24r16..r24 q7B c2r8
+ q7B f2^192 q7C e4...^48 q7B d16
+r8 q7B d24r16..r24 q7B c2r8
+f32r12r192f32r12r64 q7C f32r12r64 q7B f32r16. q7B e32r16. q7A e32r12 q7B d+32r16. q7B d+32r16. q7B d32
+r8r32 q7B d32r8r48r64 q7B c4..r8.
+ q7C f32r12r192 q7B f32r12r64 q7B f32r12r64 q7B f32r16. q7B e32r16. q7B e32r12 q7B d+32r16.d+32r12 q7B d24
+r16..r24d32r6r96c2r8
+ q7C c8..r8r32 q7C c32r24 q7A >c16r16..r96 q7B <c64r12r64 q7C c32r24 q7C c6r192
+ q7B f4^96r8 q7C f32r32. q78 >f24r8r96 q7C <f32r12 q7C f32r24 q7A f6r64
+ q7C c4r16..r96 q7C c32r32. q7A >c24r8 q7C <c32r12r192 q7C c24r64 q7A c6r32
+ q7C f4r8r96 q7C f32r32. q78 >f32r8r48 q7C <f32r12 q7B f96r16 q7C g6^64
+ q7C c8..r16..r24 q7C c32r32. q7A >c16r12r48 q7B <c64r12r48 q7C c6r12r192
+ q7B f4r8r96 q7B f32r32. q79 >f32r8r48 q7B <f32r12 q7B f32r24 q7B f6r64
+ q7A c8.r6r64 q7B c24r24 q79 >c32r8r192 q7B <c64r12r48 q7C c32r64r96 q7B c8^96r16
+ q7C f32r12r64f32r12r64 q7B f32r16. q7C f+24r12r192 q7B g24r6r32 q7C <g4
+#4 v230 (!101, -1)(!100, 3)
+ o4 q7D q7E y8 c16r8.c8r16r96 q7D c24r4r64 q7D <f16r8.
+g16r4r32 q7C <g24r3r8..  (!103, -1)(!102, 3) y9 v200 q7A >>d+48 $FA $01 $B7 ^64^48/
+r16^192 (!103, -1)(!102, 3) y9 v200 d+16r16g24r16..r24 q7C g24r2r32 q7A <g+16
+r24r96g+24r16r64 q7C >c24r8r48 q7C c16r2r24r64
+ q7B <g16r16r192 q7B g16r4r48 q7B f+24r16r64 q7D >g24r8.r64 q7A <f+24r12r192 q7D >g24
+r8...r16. q7A g24r2r16r96 q7A d+16
+r16 q7A d+24r12 q7C g24r16..r24g16r2r8
+ q7A g+24r16r64 q7B >c24r8r48c24r2r8
+r48
+ q7A <f+24r12 q78 <g32r8..r48 q7A >f+16r24r64 q7A <g32r8r64 q7C >e24r1
+r8
+r48
+ q7A d+24r12
+d+24r12 q7C g24r16..r24 q7C g24r4..r64 (!101, -1)(!100, 3) y8 v230 q79 f32r48 q7C d96r64r96<b96r64r96
+g96r64r96 q7B e64r64 (!103, -1)(!102, 3) y9 v200 q7B g+24r16r64 q7C >c24r8r48 q7C c16r8...r6 (!101, -1)(!100, 3) y8 v230 q79 e32r32 q7B c96r64r96 q7A <a96r48 q7B f96r12
+ (!103, -1)(!102, 3) y9 v200 q7A f+24r12 q7D >g24r6r16 q7A <f+24r16r64 q7C >g24r8.r64 q7A <f+24r12r192 q7D >g24
+r8r96 q7C g16r8r192 q7C g24r3r32 (!101, -1)(!100, 3) y8 v230 q77 c24r64 q7C <a96r48 q78 a192r96 q7A g96r16. (!103, -1)(!102, 3) y9 v200 q7A >d+24r12
+d+24r12 q7C g24r16..r24 q7B g24r3r4
+ q7B a16r16 q7B a16r8r192 q7C >d16r12r32<a16r4r6r64
+g16r16r192 q7C g16r8.r192 q7C g12r32. q7B g16r8 q7B <g24r96 q7B >d+32r8..
+r192
+ q7C c2.r8..r48 y13 v210 (!101, 0) @40 <
+ (5)[q7A d+8 q79 d+16^64 q77 d+8 q79 d+24^64 q7B d+16..^96 q7A d+16..^96 q78 d+8 q78 d+8 q7C d+8
+ q7A d+16..^96 q78 d+12^192 q78 d+8 q78 d+24^96 q7D d+8 q7B d+12^32 q77 d+16^64 q79 d+8^192 q78 d+24^96 q7C d+12^32]3
+ (6)[q7A d+8 q77 d+16^64 q7A d+8 q76 d+24^64 q79 d+8 q79 d+12^32 q79 d+16..^96 q7A d+16..^96 q7B d+16..^96 q79 d+8
+ q76 d+16^64 q7A d+8^192 q76 d+24^64 q7A d+8 q7A d+8]1 (!115, -1) q7A d+4.
+  q7C [d+1]6
+ q79 d+1
+ q7C d+2^8^64 v170 (!105, -1)(!104, 3) y14 q76 g24r192g24r192 q76 g8^96r64 (!101, -1) v230 y8 q7D g96r64 q7C e96r64 q7C c64r24r96
+#6 v230 
+ @38 o3 q7B y3 f+16..^96 q78 f+8^96 q7C f+8^96 q7A f+16^96 q76 f+32. q7C f+8^192 q79 f+16.. q7B f+8 q78 f+8^192
+ q7C f+8^192 q77 f+16..^96 q7C f+8^192 q7A f+16^64 q77 f+32. q7A f+12^32 q78 f+8^192 q7A f+8 $F4 $03 @39 q7C a+16..^=1 q7C ^=1/ $F4 $03 
+ @41 (3)[q7B f+8^192 @38q7A f+4^96f+16^192 q75 f+16 q79 f+16..^96 q79 f+8...^96 q7B f+16..^96
+ q79 f+8 q79 f+8^192 q7B f+8 q7C f+12^32 q78 f+8 q78 f+8 q79 f+8 q7C f+8]3
+ (4)[q7B f+16..^96 q78 f+8^96 q7C f+8^96 q7A f+16^96 q76 f+32. q7C f+8^192 q79 f+16.. q7B f+8 q78 f+8^192
+ q7C f+8^192 q77 f+16..^96 q7C f+8^192 q7A f+16^64 q77 f+32. q7A f+12^32 q78 f+8^192 q7A f+8]1 $F4 $03 @39 q7C a+16..^=1 q7C ^=1 $F4 $03 
+ @41 (3)3
+(4)1 $F4 $03 @39 q7C a+16..^=8 q7C ^=1 
+@40 $ED $7E $F3 v120 y10 (5)3 (6)1 q7A d+32^=3 q7A ^=1 v255 y10 @36 
+ q78 f+6 q7C f+16..^=3 $F4 $03 v230 y3 
+ @38 [q73 f+8 q78 f+16^64 q75 f+8 q75 f+24^96 q7B f+8 q73 f+16..^96 q73 f+8^64 q7A f+12^32 q7E f+8
+ q73 f+8^96 q7C f+12 q7A f+16..^96 q77 f+32. q7E f+16..^96 q7E f+8 q7A f+12^32 q7A f+8^192 q7C f+16..^96]3
+ q70 f+8 q79 f+16^96 q7C f+8^192 q79 f+24^64 q7C f+8^192 q7C f+16.. q79 f+8 q7C f+8 q7B f+12^32 q78 f+8^192
+ q7B f+8^192 q7B f+8^192 q79 f+8^192 q7C f+12^32 q79 f+8^192 q7A f+16..^96 $F4 $03 @39 q7B a+=23 q7B ^=1
+#5 v255  
+ @34 (!113, -1) (!114, 1, =2) r4r192o3 q7C y10 e8...^16. q77 e16..^96 q76 e32. q7C e2^192
+ q7D e3 q77 e16..^96 q78 e24 q7D e4  / ^4^64  @34 (!113, -1) (!114, 1, =2) y10 v250
+e8.^192 q77 e8 q79 e8^192 q76 e32. q7C e6^32 q73 e32.
+ (1)[q75 e12 q73 e48^64 q75 e8^96 q7A e6^32 q74 e16..^96 q7A e8 q74 e24 q7D e2^48
+e8.^192 q77 e8 q79 e8^192 q76 e32. q7C e6^32 q73 e32.]2
+ (2)[q75 e12 q73 e48^64 q75 e8^96 q7A e6^32 q74 e16..^96 q7A e8 q74 e24 q7D e2^96
+ q7C e8...^16. q77 e16..^96 q76 e32. q7C e2^192
+ q7D e3 q77 e16..^96 q78 e24]1 q7D e2^64
+e8.^192 q77 e8 q79 e8^192 q76 e32. q7C e6^32 q73 e32.
+(1)2
+(2)1 q7D e3
+ [q73 e24 q73 e8^96 q7D e8.^192 q78 e16..^96 q7A e8^192 q78 e32. q7D e6^32 q74 e8
+ q72 e24 q75 e8^96 q7D e6^24 q79 e12^32 q7A e6^96 q7D e8.^64 q78 e8^192]2
+ q73 e24 q73 e8^96 q7D e8.^192 q78 e16..^96 q7A e8^192 q78 e32. q7D e6^32 q74 e8
+ q72 e24 q75 e8^96 q7D e6^24 q79 e12^32 q7A e6^96 q7D e8.^64 q78 e8..^12
+ q7D e8.^64 q76 e12^32 q7B e16..^96 q75 e24^96 q7C e8 q79 e16^192 q7A e6^8^64
+ q7D e8.^64 q74 e8^192 q7B e8r32. (!100, 0) @36 q7B a8^192 q78 @37 q79 c+4.
+ @34 (!113, -1) (!114, 1, =2) [q7D e6^32 q75 e=2 q65^=1 q73 e16.. q7B e6^96 q7C e6^32 q77 e12 q77 ^192
+ q72 e64^96e8.^192 q7C e8.^64 q75 e12^32 q7A e8^192 q76 e32. q7C e2]3
+ q7D e6^24 q75 e12^32 q7B e8^192 q76 e24 q7C e2
+ q7D e8^192 q7C e16^96 q74 e8 q79 e6^192 q7D e8.^192 v200 y9 (!103, -1)(!102, 3) q7A >d+24 $FA $01 $B9 ^48 
+#7  v255  
+ @35 o3 q7E y10 c16..^96 q7E c2^192 q7D c8.^192 q7E c8^192 q79 c32. q7E c8
+ q7D c2^192 q7E c4. $F4 $03 / $F4 $03 v240 y10 (!100, 0) @35 
+[q7D c8^192 q7D c2^192c8.^192 q7D c8^192 q79 c32.
+ q7D c8c4....^96 q7E c4.]3
+ q7E c16..^96 q7E c2^192 q7D c8.^192 q7E c8^192 q79 c32. q7E c8
+ q7D c2^192 q7E c4.
+*3
+ q7E c16..^96 q7E c2^192 q7D c8.^192 q7E c8^192 q79 c32. q7E c8
+ q7D c2^192 q7E c4.
+ [q7D c8 q7E c2 q7D c8.^192 q7E c8^192 q79 c32. q7E c8
+ q7D c2^96 q7E c3^48^64]3
+c8 q7E c2 q7E c8. q7D c6^192 q7E c8
+ q7D c2^64c4.
+ [q7E c2^8 q7D c3^32.
+ q7E c2^8c6^32 q7E c8^192 q7B c24]3
+ q7E c2^8c8.^192 q7E c8^192 q7A c24 q7E c8^192
+ q7D c2^192 q7E c8^96 v170 $F4 $03 (!105, -1)(!104, 3) y14 q76 <g8...^96

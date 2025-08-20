@@ -1,0 +1,427 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;Donkey Kong Country 2 - Forest Interlude
+;;;;;Artist: Dave Wise
+;;;;;Ported by: Slash Man (amk2 conversion by KevinM)
+;;;;;Song Duration: 2:10
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+#amk 2
+
+#spc
+{
+    #title "Forest Interlude"
+    #game  "Donkey Kong Country 2"
+    #author "David Wise"
+    #comment "Ported by Slash Man"
+}
+
+#path "forest-interlude"
+
+#samples
+{
+    #default
+    "09.brr"
+    "0b.brr"
+    "0f.brr"
+    "10.brr"
+    "11.brr"
+    "12.brr"
+    "13.brr"
+    "14.brr"
+    "15.brr"
+    "16.brr"
+    "17.brr"
+    "18.brr"
+    "19.brr"
+    "1a.brr"
+    "1b.brr"
+    "1c.brr"
+    "1d.brr"
+    "1e.brr"
+    "1f.brr"
+    "20.brr"
+    "21.brr"
+    "22.brr"
+    "23.brr"
+    "24.brr"
+    "25.brr"
+    "26.brr"
+    "27.brr"
+    "28.brr"
+    "29.brr"
+    "2a.brr"
+    "2c.brr"
+    "2d.brr"
+    "2e.brr"
+    "2f.brr"
+    "30.brr"
+    "31.brr"
+    "32.brr"
+    "33.brr"
+    "34.brr"
+    "35.brr"
+    "40.brr"
+}
+
+#instruments
+{
+    ; David Wise you need to calm down wtf
+    "09.brr" $8f $e0 $00 $06 $00 ; @30 tom
+    "0b.brr" $8f $e0 $00 $06 $00 ; @31 tweet
+    "0f.brr" $8d $e0 $00 $06 $00 ; @32 \ pitch envelope 1
+    "10.brr" $8d $e0 $00 $06 $00 ; @33 |
+    "11.brr" $8d $e0 $00 $06 $00 ; @34 |
+    "12.brr" $8d $e0 $00 $06 $00 ; @35 |
+    "13.brr" $8d $e0 $00 $06 $00 ; @36 |
+    "14.brr" $8d $e0 $00 $06 $00 ; @37 |
+    "15.brr" $8d $e0 $00 $06 $00 ; @38 |
+    "16.brr" $8d $e0 $00 $06 $00 ; @39 |
+    "17.brr" $8d $e0 $00 $06 $00 ; @40 |
+    "18.brr" $8d $e0 $00 $06 $00 ; @41 |
+    "19.brr" $8d $e0 $00 $06 $00 ; @42 |
+    "1a.brr" $8d $e0 $00 $06 $00 ; @43 |
+    "1b.brr" $8d $e0 $00 $06 $00 ; @44 |
+    "1c.brr" $8d $e0 $00 $06 $00 ; @45 |
+    "1d.brr" $8d $e0 $00 $06 $00 ; @46 |
+    "1e.brr" $8d $e0 $00 $06 $00 ; @47 |
+    "1f.brr" $8d $e0 $00 $06 $00 ; @48 /
+    "20.brr" $8f $e0 $00 $06 $00 ; @49 snare
+    "21.brr" $8f $d6 $00 $04 $00 ; @50 conga
+    "22.brr" $d5 $e5 $00 $02 $00 ; @51 \ strings
+    "22.brr" $ce $af $00 $01 $00 ; @52 / strings
+    "23.brr" $af $f5 $00 $06 $00 ; @53 triangle
+    "24.brr" $8f $d0 $00 $06 $00 ; @54 vibraslap
+    "25.brr" $8f $b5 $00 $06 $00 ; @55 whistle
+    "26.brr" $8f $f5 $00 $06 $00 ; @56 clank
+    "27.brr" $ef $fa $00 $06 $00 ; @57 hi-hat
+    "28.brr" $9c $ab $00 $07 $00 ; @58 harmonica
+    "29.brr" $8f $f1 $00 $07 $00 ; @59 pan flute
+    "2a.brr" $c1 $a8 $00 $04 $00 ; @60 choir
+    "2c.brr" $dc $8b $00 $06 $00 ; @61 \ pitch envelope 2
+    "2d.brr" $dc $8b $00 $06 $00 ; @62 |
+    "2e.brr" $dc $8b $00 $06 $00 ; @63 |
+    "2f.brr" $dc $8b $00 $06 $00 ; @64 |
+    "30.brr" $dc $8b $00 $06 $00 ; @65 |
+    "31.brr" $dc $8b $00 $06 $00 ; @66 |
+    "32.brr" $dc $8b $00 $06 $00 ; @67 |
+    "33.brr" $dc $8b $00 $06 $00 ; @68 |
+    "34.brr" $dc $8b $00 $06 $00 ; @69 |
+    "35.brr" $dc $8b $00 $06 $00 ; @70 /
+    "40.brr" $8f $f8 $00 $06 $00 ; @71 cowbell
+}
+
+w225 t39
+
+; Orig: w255
+
+$EF $2B $44 $44
+$F1 $03 $37 $01
+
+#0
+q7f y8 ;Enveloping/Conga
+/ v95 $EE $C0  (1)[o4 l8 
+@37 f+ $DD $00 $0A $A8 y12] (2)[@38 f+ $DD $00 $0A $AC
+@39 a $DD $00 $0A $AF @40 a+ $DD $00 $0A $AC
+@41 >c+ $DD $00 $0A $B3 @42 c+ $DD $00 $0A $B3
+@32 c+ $DD $00 $0A $AF @43 <b $DD $00 $0A $B1
+@33 o4 f+ $DD $00 $0A $A8 @44 f+ $DD $00 $0A $AC
+@34 a $DD $00 $0A $AF @45 a+ $DD $00 $0A $AC
+@35 >c+ $DD $00 $0A $B3 @46 c+ $DD $00 $0A $B3
+@36 c+ $DD $00 $0A $AF @47 <b $DD $00 $0A $B1]
+(7)[@48 o4 f+ $DD $00 $0A $A8 @47 f+ $DD $00 $0A $AC
+@36 a $DD $00 $0A $AF @46 a+ $DD $00 $0A $AC
+@35 >c+ $DD $00 $0A $B3 @45 c+ $DD $00 $0A $B3
+@34 c+ $DD $00 $0A $AF @44 <b $DD $00 $0A $B1
+@33 o4 f+ $DD $00 $0A $A8 @43 f+ $DD $00 $0A $AC
+@32 a $DD $00 $0A $AF @42 a+ $DD $00 $0A $AC
+@41 >c+ $DD $00 $0A $B3 @40 c+ $DD $00 $0A $B3
+@39 c+ $DD $00 $0A $AF @38 o4b $DD $00 $0A $B1]
+v90 (1)(2)(7) v85 (1)(2)(7)
+l16 q6f $EE $B0 y10
+[@50 v121 o2c8g8>c8 v67c $ED $0F $FA v121 f]78
+y12 $EE $C0 v96 (7)
+
+#1
+q7f y8 ;Enveloping echo/Ambience
+/ r8 v70 $EE $C0  (3)[o4 l8 
+@37 f+ $DD $00 $0A $A8](2)(7)
+v65 (3)(2)(7) v60 (3)(2)(7) r1^1^1^2..
+$EE $20 l16  y10
+@49 o3 v160 g+
+@57 o3 v100 a+ v90 b
+@71 o2 v140 b v110 e $DD $00 $0A $98
+@31 o3 v250 c64c64c64c64
+@57 $ED $0F $D2 o3 v120 a+ $DD $00 $0A $A4
+@56 o3 v80 g $DD $00 $0A $A1
+@55 o4 v90 d $DD $00 $0A $A8 v60 $ED $0D $B5 d $DD $00 $0A $A8
+@54 o3 v170 f $DD $00 $0A $A1
+@31 o2 v210 e64e64e32 $ED $0D $E0 v194 e
+@30 o4 v120 a
+@53 o5 v150 c
+@71 $ED $0E $E0 o3 v130 f
+[l16 $EE $30 @49 o3 v160 e
+@57 o3 v100 a v90 a
+@71 o2 v120 c v100 c
+@31 o2 v250 a64a64a64b64
+@57 $ED $0F $D2 o3 v80 a16
+@56 o3 v80 e16
+@55 $ED $0D $B5 o4 v80 c+ v60 $ED $0C $B5 c+
+@54 o3 v150 e $DD $00 $0A $A1
+@31 o2 v210 e64e64e32 $ED $0D $E0 v194 e
+@30 o4 v120 a
+@53 o5 v130 c
+@71 $ED $0E $E0 o3 v130 f]20
+[l16 $EE $30 @49 o2 v170 e
+@57 o2 v130 a v120 a
+@71 o1 v150 c v130 c
+@31 o1 v255 g64g64g64g+64
+@57 $ED $0F $D2 o2 v110 a16
+@56 o2 v110 e16
+@55 $ED $0D $B5 o3 v90 c+ v70 $ED $0C $B5 c+
+@54 o2 v180 g $DD $00 $0A $98
+@31 o1 v255 c+ $ED $0D $E0 v224 c+
+@30 o3 v150 a
+@53 o4 v160 c
+@71 $ED $0E $E0 o2 v160 f]12 
+r1^1^8 y8 v70 $EE $C0 (7)
+
+#2
+q7f y10 ;Low Strings
+/ l1 v252
+[@51 $ED $58 $E5 $EE $B0 o1 d+ c f^]4
+$ED $4E $AF l8 v230
+[cc16c4c16cc4.cc16c4c16ccd+e
+ff16f4f16ff4.ff16f4f16ff4.]3 
+[d+d+16d+4d+16d+d+4.cc16c4c16ccd+e
+ff16f4f16ff4.ff16f4f16ff4.]2
+ff16f4f16ff4. 
+[v230 @51 $ED $4E $AF $EE $A0 
+aa16a4a16aa @52
+ab @51 $ED $4E $AF $EE $B0
+cc16c4c16ccc4 $EE $90
+ee16e4e16ee4g16a16
+gg16g4g16gg4.]2
+aa16a4a16aa4a
+g+g+16g+4g+16g+g+4g+
+gg16g4g16gg4g
+ff16f4f16fffe
+d+d+16d+4d+16d+d+4. $EE $B0
+cc16c4c16cc4. $EE $90
+ff16f4f16ff4.ff16f4f16ff4.
+
+#3
+q7f y10 ;Choir/Melody/Counter Melody
+/ l1 v120
+@60 $EE $40 o4 d f c^ d f^^2. 
+@59 $EE $70  l16 y8 o4cdd+f 
+g4f8d+4.cdd+f
+g4f8d+4f8g8f2^32c32d32c32<a+4 
+$EE $00 v96 y12
+@62 $ED $5C $8B o3 a+ > c
+@63 $ED $5C $8B o3 g a+
+@64 $ED $5C $8B o4 c < g a+ >c
+@65 $ED $5C $8B o3 g a+
+@66 $ED $5C $8B o4 c < g 
+@68 $ED $5C $8B o3 a+ > c
+@70 $ED $5C $8B o3 g a+
+@59 $EE $70 v110 l16 y8 o4cdd+f 
+g4f8d+2^d+32f32
+g4f8d+2a+>c<
+a+4..f32g32f4^8^32c32d32c32<a+4
+$EE $00 v96 y12 l32
+@70 o4 d+ d <a+
+@69 o4 d+ d <a+
+@68 o4 d+ d <a+
+@67 o4 d+ d <a+
+@66 o4 d+ d <a+
+@65 o4 d+ d <a+
+@64 o4 d+ d <a+
+@63 o4 d+ d <a+
+@62 o4 d+ d <a+
+@61 o4 d+ d <a+[r]26[r1]3 l8 ;1D50
+@58 $EE $10 o5 r y9 v100 [cc+ $DD $00 $0A $B3 c16 c+. $DD $00 $0A $B3] 
+y11v80 * y9v70 cc+ $DD $00 $0A $B3 c16 c+16 $DD $00 $0A $B3 
+v100y9 [c+ $DD $00 $0A $B3 d+ d+ f16d16] y11v80 * y9v70 * r
+$EE $00 v96 y12 l16 
+@61 $ED $5A $86 o4 d d+ a+
+@62 $ED $5A $86 o4 d d+ a+
+@63 $ED $5A $86 o4 d d+ a+
+@64 $ED $5A $86 o4 d d+ a+
+@63 $ED $5A $86 o4 d d+
+@62 $ED $5A $86 o4 a+ d
+@58 $EE $10 l8  y9 v100
+[o5cc+ $DD $00 $0A $B3 f16 f8. $DD $00 $0A $B7] y11v80 * y9v70 o5cc+ $DD $00 $0A $B3 f16 f16 $DD $00 $0A $B7
+v100 y9 c+ $DD $00 $0A $B3 d+d+f16d4^16d+d4.c<a+4.> v70 y11 c<a+4.
+@59 $EE $70  v120 l16 y8 o4cdd+f 
+g4f8d+4.cdd+f
+g4f8d+4f8g8f2^32c32d32c32<a+4 
+$EE $00 v96 y12
+@62 $ED $5C $8B o3 a+ > c
+@63 $ED $5C $8B o3 g a+
+@64 $ED $5C $8B o4 c < g a+ >c
+@65 $ED $5C $8B o3 g a+
+@66 $ED $5C $8B o4 c < g 
+@68 $ED $5C $8B o3 a+ > c
+@70 $ED $5C $8B o3 g a+
+@59 $EE $70 v110 l16 y8 o4cdd+f 
+g4f8d+2^d+32f32
+g4f8d+2a+>c<
+a+4..f32g32f4^8^32c32d32c32<a+4
+$EE $00 v92 y12 l32 
+@70 o4 d+ d <a+
+@69 o4 d+ d <a+
+@68 o4 d+ d <a+
+@67 o4 d+ d <a+
+@66 o4 d+ d <a+
+@65 o4 d+ d <a+
+[@64 o4 d+ d <a+
+@63 o4 d+ d <a+
+@62 o4 d+ d <a+
+@61 o4 d+ d <a+]y8 o4a+
+v70 * o4y12a+ v62 y8 * 
+[v92 y12 l16
+@61 $ED $6B $6B o4 d e f a
+@62 $ED $6B $6B o4 d e f a
+@63 $ED $6B $6B o4 d e f a
+@64 $ED $6B $6B o4 d e f a
+@61 $ED $6B $6B o4 f a > c d
+@62 $ED $6B $6B o4 f a > c d
+@63 $ED $6B $6B o4 f a > c d
+@64 $ED $6B $6B o4 f a > c d
+@61 $ED $6B $6B o4 e a > c d
+@62 $ED $6B $6B o4 e a > c d
+@63 $ED $6B $6B o4 e a > c d
+@64 $ED $6B $6B o4 e a > c d
+l32 @61 $ED $6B $6B o4 e g > c d
+@62 $ED $6B $6B o4 e g > c d
+@63 $ED $6B $6B o4 e g > c d
+@64 $ED $6B $6B o4 e g > c d
+@65 $ED $6B $6B o5 d c < g e
+@63 $ED $6B $6B o5 d c < g e
+@62 $ED $6B $6B o5 d c < g e
+@61 $ED $6B $6B o5 d c < g e]2
+@58 $EE $10 l8  y9 v90
+[o5a4gf2f16g16]2
+a4a+a4.gf2^4..d16d+16f16
+g4fd+2d+16f16
+g4fd+4fgg2^{g4g+4g4}f2.r4
+
+#5
+q7f y10 ;Choir chord/Melody echo/Counter Melody echo
+/ l1 v120
+@60 $EE $40 o3 r8 a+ a+ a1^2..r8 a+ a+ a^2^8r8 
+@59 $ED $0C $EE $EE $70 v76 l16 y12 o4cdd+f
+g4f8d+4.cdd+f
+g4f8d+4f8g8f2^32c32d32c32<a+4
+$EE $00 v76 y8
+@62 $ED $5C $8B o3 a+ > c
+@63 $ED $5C $8B o3 g a+
+@64 $ED $5C $8B o4 c < g a+ >c
+@65 $ED $5C $8B o3 g a+
+@66 $ED $5C $8B o4 c < g 
+@68 $ED $5C $8B o3 a+ > c
+@70 $ED $5C $8B o3 g a+
+@59 $EE $70 v76 l16 y12 o4cdd+f 
+g4f8d+2^d+32f32
+g4f8d+2a+>c<
+a+4..f32g32f4^8^32c32d32c32<a+4
+$EE $00 v73 y8 l32
+@70 o4 d+ d <a+
+@69 o4 d+ d <a+
+@68 o4 d+ d <a+
+@67 o4 d+ d <a+
+@66 o4 d+ d <a+
+@65 o4 d+ d <a+
+@64 o4 d+ d <a+
+@63 o4 d+ d <a+
+@62 o4 d+ d <a+
+@61 o4 d+ d <a+[r]26[r1]3 l8 ;1D50
+@58 $ED $1C $A8 $EE $10 o5 r y11v70 [cc+ $DD $00 $0A $B3 c16 c+. $DD $00 $0A $B3] 
+y9v60 * r4. v70y11 [c+ $DD $00 $0A $B3 d+ d+ f16d16] y9v62 * r2^
+$EE $00 v70 y8 l16
+@61 $ED $5A $86 o4 d d+ a+
+@62 $ED $5A $86 o4 d d+ a+
+@63 $ED $5A $86 o4 d d+ a+
+@64 $ED $5A $86 o4 d d+ a+
+@63 $ED $5A $86 o4 d d+
+@62 $ED $5A $86 o4 a+ d
+@58 $ED $1C $A8 $EE $10 l8 o5 y11 v70
+[o5cc+ $DD $00 $0A $B3 f16 f8. $DD $00 $0A $B7] y9v60 * r4.
+v70 y11 c+ $DD $00 $0A $B3 d+d+f16d4^16d+d4.c<a+4.> v60 y9 c<a+4.
+@59 $ED $0C $EE $EE $70 v76 l16 y12 o4cdd+f
+g4f8d+4.cdd+f
+g4f8d+4f8g8f2^32c32d32c32<a+4
+$EE $00 v76 y8
+@62 $ED $5C $8B o3 a+ > c
+@63 $ED $5C $8B o3 g a+
+@64 $ED $5C $8B o4 c < g a+ >c
+@65 $ED $5C $8B o3 g a+
+@66 $ED $5C $8B o4 c < g 
+@68 $ED $5C $8B o3 a+ > c
+@70 $ED $5C $8B o3 g a+
+@59 $EE $70 v76 l16 y12 o4cdd+f 
+g4f8d+2^d+32f32
+g4f8d+2a+>c<
+a+4..f32g32f4^8^32c32d32c32<a+4
+$EE $00 v70 y8 l32
+@70 o4 d+ d <a+
+@69 o4 d+ d <a+
+@68 o4 d+ d <a+
+@67 o4 d+ d <a+
+@66 o4 d+ d <a+
+@65 o4 d+ d <a+
+[@64 o4 d+ d <a+
+@63 o4 d+ d <a+
+@62 o4 d+ d <a+
+@61 o4 d+ d <a+]y12 o4a+
+v65 * o4y8a+ v60 y12 * 
+[v70 y8 l16
+@61 $ED $6B $6B o4 d e f a
+@62 $ED $6B $6B o4 d e f a
+@63 $ED $6B $6B o4 d e f a
+@64 $ED $6B $6B o4 d e f a
+@61 $ED $6B $6B o4 f a > c d
+@62 $ED $6B $6B o4 f a > c d
+@63 $ED $6B $6B o4 f a > c d
+@64 $ED $6B $6B o4 f a > c d
+@61 $ED $6B $6B o4 e a > c d
+@62 $ED $6B $6B o4 e a > c d
+@63 $ED $6B $6B o4 e a > c d
+@64 $ED $6B $6B o4 e a > c d
+l32 @61 $ED $6B $6B o4 e g > c d
+@62 $ED $6B $6B o4 e g > c d
+@63 $ED $6B $6B o4 e g > c d
+@64 $ED $6B $6B o4 e g > c d
+@65 $ED $6B $6B o5 d c < g e
+@63 $ED $6B $6B o5 d c < g e
+@62 $ED $6B $6B o5 d c < g e
+@61 $ED $6B $6B o5 d c < g e]2
+@58 $ED $1C $A8 $EE $10 l8  y11 v70
+[o5a4gf2f16g16]2
+a4a+a4.gf2^4..d16d+16f16
+g4fd+2d+16f16
+g4fd+4fgg2^{g4g+4g4}f2.r4
+
+#4
+q7f y10 ;Strings chord 1
+/ l1 v125 
+(4)[y9 @51 $EE $40 o4 d f c^]4
+[d^c^]3(4)1 o4 d f c^^
+[eeed]2 eeec
+o3a+>ddc
+
+#6
+q7f y10 ;Strings chord 2
+/ l1 v125 ;3C8 3C8 391
+(5)[y10 @51 $EE $40 o3 a+ a+ a^]4
+[a+^a^]3(5)1 o3 a+ a+ a^^
+[o4cc<bb]2 o4c<ba+a
+o3ga+ga
+
+#7
+q7f y10 ;Strings chord 3
+/ l1 v125 ;32E 32E 2D5
+(6)[y11 @51 $EE $49 o3 g g f^]4
+[g^f^]3(6)1 o3 g g f^^
+[aggg]2 ag+gf
+d+gd+f

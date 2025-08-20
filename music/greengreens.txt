@@ -1,0 +1,725 @@
+#amm
+#samples
+{
+	#default
+	#AMM
+	"20_snare.brr"
+	"21_bass2.brr"
+	"22_bass.brr"
+	"23_hihat.brr"
+	"24_flute.brr"
+	"25_clarinet.brr"
+	"26_clarinet2.brr"
+	"27_brass.brr"
+	"28_flute2.brr"
+	"29_clarinet3.brr"
+	"2A_clarinet4.brr"
+}
+
+#SPC
+{
+	#title	"Green Greens"
+	#game	"Kirby Super Star (SMW)"
+}
+	
+"VCMD_PATCH=$da"
+"VCMD_PANPOT=$db"
+"VCMD_PAN_FADE=$dc"
+"VCMD_VIBRATO_ON=$de"
+"VCMD_VIBRATO_OFF=$df"
+"VCMD_MASTER_VOL_FADE=$e1"
+"VCMD_MASTER_VOLUME=$e0"
+"VCMD_SET_TEMPO=$e2"
+"VCMD_TEMPO_FADE=$e3"
+"VCMD_GLOBAL_TRANSPOSE=$e4"
+;"VCMD_PERVOICE_TRANSPOSE="
+"VCMD_TREMOLO_ON=$e5"
+"VCMD_TREMOLO_OFF=$e5 $00 $00 $00" ; $e6
+"VCMD_VOLUME=$e7"
+"VCMD_VOL_FADE=$e8"
+"VCMD_SUBROUTINE=$e9"
+"VCMD_VIBRATO_FADE=$ea"
+"VCMD_PITCHENV_TO=$eb"
+"VCMD_PITCHENV_FROM=$ec"
+"VCMD_PITCHENV_OFF=$eb $00 $00 $00"
+"VCMD_TUNING=$ee"
+"VCMD_ECHO_ON=$ef"
+"VCMD_ECHO_OFF=$f0"
+"VCMD_ECHO_PARAM=$f1"
+"VCMD_ECHO_VOL_FADE=$f2"
+"VCMD_PITCH_SLIDE=$dd"
+; "VCMD_PERC_PATCH_BASE="
+
+"PATCH005=@4 h1 $ed $2f $b2 $f3 $21 $0E"
+"PATCH010=@4 h-19 $ed $0f $e0 $f3 $26 $09"
+"PATCH011=@4 h-7 $ed $7f $e0 $f3 $2a $09"
+"PATCH034=@4 h-7 $ed $7f $e0 $f3 $29 $09"
+"PATCH035=@4 h-14 $ed $7d $e0 $f3 $25 $09"
+"PATCH038=@4 h0 $ed $7f $e0 $f3 $28 $04"
+"PATCH039=@4 h-19 $ed $0f $e0 $f3 $24 $09"
+"PATCH042=@4 h0 $ed $5a $a0 $f3 $27 $07 "
+"PATCH043=@4 h0 $ed $0f $e0 $f3 $22 $07"
+
+"PERC001N=@4 h-2 $ed $7f $e0 $f3 $23 $07 o4c"
+"PERC004N=@4 h-2 $ed $7f $e0 $f3 $20 $07 o4c"
+"PERC001X=@4 h-2 $ed $7f $e0 $f3 $23 $07 o4c"
+"PERC004X=@4 h-2 $ed $7f $e0 $f3 $20 $07 o4c"
+"PERC005X=@4 h1 $ed $7f $e0 $f3 $20 $07 o4c"
+
+l24
+#0
+; VCMD_PERC_PATCH_BASE $2c
+w255
+t50
+VCMD_ECHO_ON $1f $19 $19
+VCMD_ECHO_PARAM $02 $32 $00
+r3 r3 
+; VCMD_SUBROUTINE $36 $54 $04
+r3 r3 
+; subroutine / loop 3
+r3 r3 
+; subroutine / loop 2
+r3 r3 
+; subroutine / loop 1
+r3 r3 
+; subroutine / return
+
+; $4E87 / $4EC1
+/
+y10
+;VCMD_PERVOICE_TRANSPOSE $fd
+v234
+<
+VCMD_ECHO_ON $1f $19 $19
+VCMD_ECHO_PARAM $02 $32 $00
+
+; VCMD_SUBROUTINE $68 $53 $07
+q5b; q46
+(5)[PERC004N12 q58; q42
+PERC004X24 q56; q41
+PERC004X24 q5b; q46
+PERC004X12 q58; q42
+PERC004X24 q56; q41
+PERC004X24 q5b; q46
+PERC004X12 q58; q42
+PERC004X24 q56; q41
+PERC004X24 q5b; q46
+PERC004X24 q58; q42
+PERC004X24 q59; q43
+PERC004X24 q58; q42
+PERC004X24] 
+; subroutine / loop 6
+q5b; q46
+(1)[PERC004X12 q58; q42
+PERC004X24 q56; q41
+PERC004X24 q5b; q46
+PERC004X12 q58; q42
+PERC004X24 q56; q41
+PERC004X24 q5b; q46
+PERC004X12 q58; q42
+PERC004X24 q56; q41
+PERC004X24 q5b; q46
+PERC004X24 q58; q42
+PERC004X24 q59; q43
+PERC004X24 q58; q42
+PERC004X24]
+; subroutine / loop 5
+q5b; q46
+(1)
+; subroutine / loop 4
+q5b; q46
+(1)
+; subroutine / loop 3
+q5b; q46
+(1)
+; subroutine / loop 2
+q5b; q46
+(1)
+; subroutine / loop 1
+q5b; q46
+(1)
+; subroutine / return
+q5b; q46
+PERC004X12 q59; q43
+PERC004X24 q58; q42
+PERC004X24 q5b; q46
+PERC004X24 q58; q42
+PERC004X24 q59; q43
+PERC004X24 q58; q42
+PERC004X24 q5b; q46
+PERC004X12 q59; q43
+PERC004X24 q58; q42
+PERC004X24 q5b; q46
+PERC004X24 q59; q43
+PERC004X24 q58; q42
+PERC004X24 q59; q43
+PERC004X24 q5b; q46
+PERC004X12 q55; q40
+PERC004X24 q5b; q46
+PERC004X8 y8
+q56; q41
+
+
+PERC001N24 q55; q40
+PERC001X24 y10
+
+
+q5b; q46
+PERC004N12 PERC004X12 y8
+q58; q42
+
+
+PERC001N24 q55; q40
+PERC001X24 q56; q41
+PERC001X24 q55; q40
+PERC001X24 y10
+
+; VCMD_SUBROUTINE $68 $53 $02
+q5b; q46
+(5)
+; subroutine / loop 1
+q5b; q46
+(1)
+; subroutine / return
+
+; $4E89 / $5095
+v215
+
+; VCMD_SUBROUTINE $b3 $53 $07
+q7b; q77
+(2)[PERC004X24 q78; q72
+PERC004X24 q79; q73
+PERC004X24 q78; q72
+PERC004X24 q7c; q79
+PERC004X24 q78; q72
+PERC004X24 q79; q73
+PERC004X24 q78; q72
+PERC004X24 q7b; q77
+PERC004X24 q78; q72
+PERC004X24 q79; q73
+PERC004X24 q78; q72
+PERC004X24 q7c; q79
+PERC004X24 q78; q72
+PERC004X24 q79; q73
+PERC004X24 q78; q72
+PERC004X24] 
+; subroutine / loop 6
+q7b; q77
+(2)
+; subroutine / loop 5
+q7b; q77
+(2)
+; subroutine / loop 4
+q7b; q77
+(2)
+; subroutine / loop 3
+q7b; q77
+(2) 
+; subroutine / loop 2
+q7b; q77
+(2)
+; subroutine / loop 1
+q7b; q77
+(2) 
+; subroutine / return
+v244
+;VCMD_PERVOICE_TRANSPOSE $ff
+<
+q7b; q76
+
+
+
+
+PERC005X12 PERC005X24 q7a; q74
+PERC005X24 q7b; q76
+PERC005X12 PERC005X24 q7a; q74
+PERC005X24 VCMD_ECHO_ON $1c $19 $19
+q7b; q76
+PERC005X3 
+
+#1
+PATCH005
+v220
+q7b; q77
+o2 g q2b; q16
+g12 q7a; q74
+g q2b; q16
+l12
+g q2a; q15
+g q2b; q16
+g r6 q7a; q75
+l24
+g=5 VCMD_PITCH_SLIDE $05 $01 $95
+^32 VCMD_PITCH_SLIDE $05 $01 $97
+^=5 q2a; q14
+> c6 r2 c6 r2 q2a; q15
+d6 r2 r12 q1a; q04
+g12 g12 g12 g12 r4 
+; $4E87 / $4F29
+/
+PATCH043
+v244
+
+; VCMD_SUBROUTINE $90 $53 $02
+q1b; q06
+< c6 q19; q03
+< g6 > c6 < g6 
+; subroutine / loop 1
+q1b; q06
+o2 c6 q19; q03
+< g6 > c6 < g6 
+; subroutine / return
+q1b; q06
+o2 d6 q19; q03
+< a6 > g6 < g6 
+; VCMD_SUBROUTINE $90 $53 $03
+q1b; q06
+> c6 q19; q03
+< g6 > c6 < g6 
+; subroutine / loop 2
+q1b; q06
+o2 c6 q19; q03
+< g6 > c6 < g6 
+; subroutine / loop 1
+q1b; q06
+o2 c6 q19; q03
+< g6 > c6 < g6 
+; subroutine / return
+q1b; q06
+o2 d6 q19; q03
+< a6 > e6 q2b; q16
+< e6 q2b; q17
+a6 q2a; q14
+> a6 g6 q2b; q17
+< g6 q6b; q57
+f8 q2b; q17
+f12 r8 g12 g12 r6 
+; VCMD_SUBROUTINE $90 $53 $02
+q1b; q06
+> c6 q19; q03
+< g6 > c6 < g6 
+; subroutine / loop 1
+q1b; q06
+o2 c6 q19; q03
+< g6 > c6 < g6 
+; subroutine / return
+
+; $4E89 / $50B7
+PATCH005
+v244
+q3c; q28
+o1 f6 q3b; q26
+> c6 < a+6 q3c; q28
+f6 
+; VCMD_SUBROUTINE $e4 $53 $03
+d+6 q3b; q26
+a+6 g+6 > d+6 q3c; q28
+< f6 q3b; q26
+> c6 < a+6 q3c; q28
+f6 
+; subroutine / loop 2
+o1 d+6 q3b; q26
+a+6 g+6 > d+6 q3c; q28
+< f6 q3b; q26
+> c6 < a+6 q3c; q28
+f6 
+; subroutine / loop 1
+o1 d+6 q3b; q26
+a+6 g+6 > d+6 q3c; q28
+< f6 q3b; q26
+> c6 < a+6 q3c; q28
+f6 
+; subroutine / return
+q7b; q77
+o1 g12 q79; q73
+g q78; q72
+g q7b; q76
+> d12 q79; q73
+d q78; q72
+d q2b; q16
+g8 r=40 
+
+#2
+r=80 PATCH039
+v180
+y8
+q6b; q56
+o5 f q6a; q54
+f q1c; q08
+f12 r12 
+; VCMD_SUBROUTINE $39 $54 $02
+q16; q01
+< < g12 q1b; q06
+> [g12]7
+; subroutine / loop 1
+q16; q01
+o3 g12 q1b; q06
+> [g12]7 
+; subroutine / return
+q16; q01
+o3 a12 q1b; q06
+> [a12]7  r12 q1c; q08
+[a12]3 > d12 r4 
+; $4E87 / $4F62
+/
+PATCH035
+v172
+y8
+
+; VCMD_SUBROUTINE $99 $53 $02
+q7a; q74
+< < g12 q2b; q16
+> [g12]7 
+; subroutine / loop 1
+q7a; q74
+o3 g12 q2b; q16
+> [g12]7 
+; subroutine / return
+q7a; q74
+o3 a12 q2b; q16
+> [a12]3 q7a; q74
+< b12 q2b; q16
+> [b12]3
+; VCMD_SUBROUTINE $99 $53 $03
+q7a; q74
+< g12 q2b; q16
+> [g12]7
+; subroutine / loop 2
+q7a; q74
+o3 g12 q2b; q16
+> [g12]7
+; subroutine / loop 1
+q7a; q74
+o3 g12 q2b; q16
+> [g12]7
+; subroutine / return
+q7a; q74
+o3 a12 q2b; q16
+> [a12]3 q7a; q74
+< g+12 q2b; q16
+> [g+12]3 q7a; q64
+e a > [c < a >]2 c < a d g > [c < g >]2  c < g q6a; q55
+a8 q2a; q15
+a12 r8 b12 b12 r6 
+; VCMD_SUBROUTINE $99 $53 $02
+q7a; q74
+< g12 q2b; q16
+> [g12]7 
+; subroutine / loop 1
+q7a; q74
+o3 g12 q2b; q16
+> [g12]7 
+; subroutine / return
+
+; $4E89 / $50E0
+VCMD_VIBRATO_ON $10 $0c $0a
+PATCH010
+y9
+v148
+q7a; q64
+o5 c6 q7b; q66
+< a+8 > c d6 q7b; q67
+< a+8 > d d+6 q7b; q66
+d8 d+ q7a; q65
+< g+6 g8 a+ > c6 q7b; q66
+< a+8 > c d6 q7b; q67
+< a+8 > d q7b; q66
+d+3 q3a; q24
+g6 PATCH042
+v172
+q7a; q64
+< g8 q7b; q67
+a+ q7a; q64
+> c6 q7b; q66
+< a+8 q7c; q69
+> c q7b; q66
+d6 q7b; q67
+< a+8 q7c; q69
+> d q7c; q68
+d+6 q7b; q66
+d8 q7c; q69
+d+ q7a; q65
+< g+6 q7a; q64
+g8 q7c; q68
+a+ q7a; q65
+> c6 q7b; q66
+< a+8 q7c; q69
+> c q7c; q68
+d6 q7b; q67
+< a+8 q7c; q69
+> d q7a; q65
+< f3 q2a; q15
+b8 VCMD_VIBRATO_OFF
+r=40 
+
+#3
+r=80 PATCH039
+v180
+y12
+q6b; q56
+o5 g q6a; q54
+g q1c; q08
+g12 r12 
+; VCMD_SUBROUTINE $46 $54 $02
+q16; q01
+< e12 q1b; q06
+> [e12]7 
+; subroutine / loop 1
+q16; q01
+o4 e12 q1b; q06
+> [e12]7 
+; subroutine / return
+q16; q01
+o4 d12 q1b; q06
+> [f12]7  r12 q1c; q08
+c12 c12 c12 < b12 r4 
+; $4E87 / $4FB3
+/
+PATCH035
+v172
+y12
+
+; VCMD_SUBROUTINE $a6 $53 $02
+q7a; q74
+e12 q2b; q16
+> [e12]7  
+; subroutine / loop 1
+q7a; q74
+o4 e12 q2b; q16
+> [e12]7  
+; subroutine / return
+q7a; q74
+o4 d12 q2b; q16
+> [f12]3 q7b; q76
+< d12 q2b; q16
+> [f12]3
+; VCMD_SUBROUTINE $a6 $53 $03
+q7a; q74
+< e12 q2b; q16
+> [e12]7
+; subroutine / loop 2
+q7a; q74
+o4 e12 q2b; q16
+> [e12]7 
+; subroutine / loop 1
+q7a; q74
+o4 e12 q2b; q16
+> [e12]7
+; subroutine / return
+q7a; q74
+o4 d12 q2b; q16
+> f12 f12 f12 q7a; q74
+< d12 q2b; q16
+> e12 e12 e12 q7a; q64
+< a > c [e c]3 < g > c [e c]3 q6a; q55
+f8 q2a; q15
+f12 r8 g12 g12 r6 
+; VCMD_SUBROUTINE $a6 $53 $02
+q7a; q74
+< e12 q2b; q16
+> [e12]7
+; subroutine / loop 1
+q7a; q74
+o4 e12 q2b; q16
+> [e12]7 
+; subroutine / return
+
+; $4E89 / $5164
+VCMD_VIBRATO_ON $10 $0c $0a
+PATCH010
+y11
+v153
+q7a; q64
+o5 d+6 q7b; q66
+d8 d+ f6 q7b; q67
+d+8 f g6 q7b; q66
+f8 g q7a; q65
+c6 c8 d d+6 q7b; q66
+d8 d+ f6 q7b; q67
+d+8 f q7b; q66
+g3 q39; q23
+> c6 PATCH042
+v172
+q7a; q64
+< c8 q7b; q67
+d q7a; q64
+d+6 q7b; q66
+d8 q7c; q69
+d+ q7b; q66
+f6 q7b; q67
+d+8 q7c; q69
+f q7c; q68
+g6 q7b; q67
+f8 q7c; q69
+g q7a; q65
+c6 q7a; q64
+c8 q7c; q68
+d q7a; q65
+d+6 q7b; q66
+d8 q7c; q69
+d+ q7c; q68
+f6 q7b; q67
+d+8 q7c; q69
+f q7b; q67
+d3 q2b; q16
+g8 VCMD_VIBRATO_OFF
+r=40 
+
+#5
+r=80 PATCH039
+v180
+y10
+q6b; q56
+o6 d q6a; q54
+d q1c; q08
+d12 r12 r12 q1b; q06
+o5 [c12]7 
+; VCMD_SUBROUTINE $53 $54 $02
+r12 [c12]7
+; subroutine / loop 1
+r12 o5 [c12]7 
+; subroutine / return
+r12 q1c; q08
+o5 f12 f12 g12 g12 r12
+
+;VCMD_PERVOICE_TRANSPOSE $0c
+PATCH038
+v177
+y10
+VCMD_VIBRATO_ON $30 $0a $14
+q2b; q16
+< g8 q7b; q76
+g 
+; $4E87 / $5004
+;VCMD_PERVOICE_TRANSPOSE $0c
+/
+PATCH038
+v172
+y10
+VCMD_VIBRATO_ON $14 $0b $0a
+q7b; q76
+o5 c2 q7b; q66
+c8 q7b; q76
+e q7b; q66
+g12 q1b; q06
+
+> c12 < b12 a12 q6b; q56
+g6 e8 q7b; q76
+g q7b; q66
+f6 q7b; q76
+d8 e q7b; q66
+d6 q7b; q76
+
+e8 d c2 q1b; q06
+< g8 q7b; q76
+g > c2 q7b; q66
+c8 q7b; q76
+e g12 q1b; q06
+
+> c12 < b12 a12 q6b; q56
+g6 e8 q7b; q76
+g q7b; q66
+f6 q7b; q76
+d8 e q7b; q66
+d6 q7b; q76
+
+e8 d c3 ^3 q6b; q57
+c8 q7b; q77
+c q2b; q17
+d12 q5b; q47
+e6 q2c; q18
+c12 q7c; q68
+d12 q7c; q78
+c12 r3 r3 r2 VCMD_VIBRATO_ON $10 $0c $0a
+PATCH010
+y11
+v143
+q7a; q74
+ c8 q7a; q75
+d 
+; $4E89 / $51E8
+PATCH034
+v162
+VCMD_VIBRATO_OFF
+y13
+q79; q63
+<< < f > c y7
+(4)[g+ c] y13
+(4) y7
+(4) y13
+< a+ > f y7
+(50)[a+ f] y13
+(50) y7
+(50) 
+; VCMD_SUBROUTINE $f5 $53 $01
+y13
+< d+ a+ y7
+> d+ < a+ y13
+> g < a+ y7
+> d+ < a+ y13
+g+ > d+ y7
+g+ d+ y13
+< g+ > d+ y7
+g+ d+ y13
+< f > c y7
+g+ c y13
+g+ c y7
+g+ c y13
+< a+ > f y7
+a+ f y13
+a+ f y7
+a+ f 
+; subroutine / return
+y13
+o2 d+ a+ y7
+> d+ < a+ y13
+> g < a+ y7
+> d+ < a+ y13
+g+ > d+ y7
+> c < d+ y13
+< g+ > d+ y7
+g+ d+ PATCH011
+v182
+y13
+< f > c y7
+g+ c y13
+g+ c y7
+g+ c y13
+< a+ > f y7
+a+ f y13
+a+ f y7
+a+ f 
+; VCMD_SUBROUTINE $f5 $53 $01
+y13
+< d+ a+ y7
+> d+ < a+ y13
+> g < a+ y7
+> d+ < a+ y13
+g+ > d+ y7
+g+ d+ y13
+< g+ > d+ y7
+g+ d+ y13
+< f > c y7
+g+ c y13
+g+ c y7
+g+ c y13
+< a+ > f y7
+a+ f y13
+a+ f y7
+a+ f 
+; subroutine / return
+y13
+q2b; q16
+o2 g12 q7b; q66
+g q7a; q64
+> d y7
+q2b; q16
+< g12 q7b; q66
+g q7a; q64
+> d y10
+q2a; q14
+g8 r PATCH038
+v172
+q2b; q16
+> g8 q7b; q76
+g 

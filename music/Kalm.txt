@@ -1,0 +1,246 @@
+#amk 2
+;************************
+
+; SPC Generator Info
+#SPC
+{
+    #author  "Nobuo Uematsu"
+    #title   "Ahead On Our Way"
+    #game    "Final Fantasy VII"
+    #comment "Ported by Ahrion"
+}
+
+#path "Kalm"
+
+#samples
+{
+	#optimized
+	"Bassoon.brr"
+	"Clarinet.brr"
+	"Flute.brr"
+	"Oboe.brr"
+	"Sine.brr"
+	"SteelGuitar.brr"
+	"Strings_Akk.brr"
+	"Strings.brr"
+}
+
+#instruments
+{
+
+	"Bassoon.brr"	  $F7 $E6 $B0 $0A $80 ; @30
+	"Clarinet.brr"	  $F7 $E6 $00 $03 $02 ; @31
+	"Flute.brr"	  $F7 $E6 $00 $02 $00 ; @32
+	"Oboe.brr"	  $F7 $E6 $B0 $06 $00 ; @33
+	"Sine.brr"	  $FD $EA $B0 $04 $00 ; @34
+	"SteelGuitar.brr" $FF $EF $00 $03 $00 ; @35
+	"Strings_Akk.brr" $F3 $E3 $00 $04 $00 ; @36
+	"Strings.brr"	  $F3 $E3 $B0 $03 $A8 ; @37
+}
+
+
+w192
+t28
+
+"Strings = @37 v140"
+"Guitar = @35 v170"
+"Sine = @34 v190"
+"Oboe = @33 v120"
+"Flute1 = v180"
+"Flute2 = v170"
+"Flute3 = v140"
+"Clarinet1 = v180"
+"Clarinet2 = v170"
+"Clarinet3 = v140"
+"Bassoon1 = @30 v160"
+"Bassoon2 = @30 v140"
+
+"Atk = $ED $7A $E6"
+"Atk2 = $ED $75 $E6"
+
+
+"VIB = $DE $06 $14 $20"
+"VIB2 = $DE $60 $14 $1A $EA $0C"
+
+$EF $FF $24 $24
+$F1 $05 $38 $01
+
+$F4 $02 /
+
+
+
+; +---------------------+
+; |     Channel #0	|
+; |     Sine		|
+; |     Flute		|
+; +---------------------+
+
+#0
+o5
+
+VIB
+(11)[Sine y10
+a8 g8 f+8 g8 a4 < b8 > d8 f+8 e8 e2. e8 b8 a8 g8 a4. b16 > c+16 d8 < b8 b2. b8 > c8 < b8 a8 g4. a8 b8 < b8 > c8 d8 f+8]
+e2 e8 f+8 g8 a2 r8 g8 a8 b8 > c4^8^16^32^64^192 <
+r96
+(11)
+e4. e8 b8 a8 g8 a4. f+4 g8 g2.
+$DF
+
+r1 <
+
+@32 y13
+Flute3 d1 e1 e1 g2 f+4.. r16 <
+
+Flute1 Atk $F4 $01 a+8 b8 > c+8 d=12 $F4 $01 ^=12 f+8 $F4 $01 d8 e8 f+8 a=12 $F4 $01 ^=12 $F4 $01 g8 a8 b=12 $F4 $01 ^=12 e2 e8 < b8 > c8 < g+8 a2 r8 $F4 $01 g+8 a8 b=12 $F4 $01 ^=12 > c4 d8 c8
+
+VIB2
+Flute2 @32 < b1 > Flute3 e1 e1 f+1 
+
+
+
+; +---------------------+
+; |     Channel #1	|
+; |     Strings		|
+; |     Clarinet	|
+; +---------------------+
+
+#1
+o3
+Strings y11
+d1 g1. f+1. g1^1^1^2 f+2 a1 g1. f+2 f+1 e2 d+2 d1 e1 d1^1
+
+@31 Clarinet3 VIB2
+b1 g1 > c1 c1 <
+$DF
+
+Strings
+d1 e1 c1 d1 d1
+
+[[r2]]6
+
+
+
+; +---------------------+
+; |     Channel #2	|
+; |     Strings		|
+; |     Guitar		|
+; |     Clarinet	|
+; +---------------------+
+
+#2
+o2
+Strings y9 $DF
+b1^1 > c2 d1. e2 d+2 d2 e1. d+2 d2 d1^1 e1 < b1. a+2 b1 a1 b1^1
+
+Guitar y10
+g4 > b2 b4 < e4 > b2 b4 < a4 >> c2 c4 < d4 > c4 < d4 > c4 << b4 >> d2 d4 << e4 > b2 b4 < a4 >> c2 c4 < d4 > c2 c4
+
+@31 VIB2 y11
+Atk2 Clarinet1 d2. @31 < Clarinet2 b8 g=12 $F4 $01 ^=12 f+8 e8 f+8 g8 e4 $F4 $01 ^4 > Atk2 e2^8 @31 c8 < a8 g8 f+4. g8 a2 
+
+
+
+; +---------------------+
+; |     Channel #3	|
+; |     Strings		|
+; |     Bassoon		|
+; +---------------------+
+
+#3
+o2
+Strings y6 $DF
+g1 e1 a1 b1 > c1 < b1 a1^1
+@36
+g1 e1 a2 d2 < b1 > c1 g2 e2 < a2 > d2 < g1^1 >>>
+
+Bassoon1 VIB2 y7
+$F4 $01 Atk
+f+8 g8 a8 b=12 $F4 $01 ^=12 > d4 < b8 g8 f+4 e2. $F4 $01 g+8 a8 b8 > c=12 $F4 $01 ^=12  e8 c8 < e8 a8 g2 f+2 <
+$DF
+
+Strings y14
+b1 b1 a1 a1 >
+
+Bassoon2 VIB2 y7
+g1 b1 > c1 d1 
+
+
+
+; +---------------------+
+; |     Channel #4	|
+; |     Strings		|
+; |     Guitar		|
+; |     Oboe		|
+; +---------------------+
+
+#4
+o2
+Guitar y10 $DF
+g4 > b2 b4 < e4 > b2 b4 < a4 >> c4 << d4 >> d4 << b4 >> d2 d4 < c4 > e4 < c4 > d+4 << g4 > b4 < e4 > b4 < a4 >> c2 c4 << a4 > a4 d4 > c4
+
+Strings y16
+d1. c+2 c1 d1^1^1 c1 d1^1 [[r2]]8 f+1 g1 g1 f+1 g1
+
+Oboe VIB2 y9
+< b1 > c1 d1 
+
+
+
+; +---------------------+
+; |     Channel #5	|
+; |     Guitar		|
+; |     Strings		|
+; +---------------------+
+
+#5
+o3
+Guitar
+r8 g4 g8 > g8 < g4 g4 g4 g8 > e8 < g4 g4 a4 > e8 r8 < a4 > f+8 r8 < b4 b8 > f+8 < b4 b4 b4 > g8 r8 < a+4 > g8 r8 < g4 > g8 r8 < g4 > e8 r8 < a4 a8 > e8 < a4 a4 d+4 > c4 < a4 > f+8 <
+
+Strings y14
+b1^1^2 a2 b1 g1^1 g2 f+2 g1^1
+
+Guitar y10
+r8 g4 g8 > g8 < g4 g8 r8 g4 g8 > e8 < g4 g8 r8 a4 a8 > e8 < a4 a8 r8 a4 > g8 r8 < a4 > f+8 r8 < b4 b8 > f+8 < b4 b8 r8 g4 g8 > e8 < g4 g8 r8 a4 a8 > e8 < a4 a8 r8 a4 a8 > f+8 < a4 a8 < g8 > g8 b8 g8 > g8 < g8 b8 g8 < e8 > g8 b8 g8 > e8 < g8 b8 g8 < a8 > a8 > c8 < a8 > e8 < a8 > c8 < a8 d8 a8 > c8 < a8 > f+8 < a8 > c8 < a8 
+
+
+
+; +---------------------+
+; |     Channel #6	|
+; |     Guitar		|
+; |     Strings		|
+; |     Sine		|
+; +---------------------+
+
+#6
+o2
+
+[[r2]]16
+
+Guitar y10
+g8 > g8 b8 g8 > g8 < g8 b8 g8 < e8 > g8 b8 g8 > e8 < g8 b8 g8 < a8 > a8 > c8 e8 << d8 > a8 > d8 f+8 << b8 > b8 > d8 < b8 > f+8 < b8 > d8 < b8 c8 b8 > e8 g8 < c8 a+8 > d+8 g8 << g8 > g8 b8 > g8 << e8 > g8 b8 > e8 << a8 > a8 > c8 e8 < d8 a8 > c8 f+8 << g8 > g8 b8 g8 > g8 < g8 b8 g8 < g8 > g8 b8 g8 > g8 < g8 b8 g8
+
+[[r2]]16
+
+Strings y14 b1
+
+[[r2]]6
+
+
+
+; +---------------------+
+; |     Channel #7	|
+; |     Oboe		|
+; |     Sine		|
+; +---------------------+
+#7
+o5
+
+[[r2]]50
+
+VIB2
+Oboe y9 < d1
+$DF
+
+[[r2]]6 

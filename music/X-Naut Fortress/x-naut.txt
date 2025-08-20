@@ -1,0 +1,230 @@
+#amk 2
+
+#spc
+{
+    #title   "X-Naut Fortress"
+    #game    "Paper Mario: TTYD"
+    #author  "Yoshito Hirano, Yuka Tsujiyoko"
+    #comment "Ported by KevinM"
+}
+
+#path "x-naut"
+
+#samples
+{
+    #optimized
+    "Electric Bass.brr"     ;> Addams Family Values
+    "Synth Chord 1.brr"     ;\ SMRPG (chorded)
+    "Synth Chord 2.brr"     ;/
+    "square/o4 low.brr"     ;\ Musicalman's pack
+    "square/o4 high.brr"    ;|
+    "square/o5 low.brr"     ;|
+    "square/o5 high.brr"    ;|
+    "square/o6 low.brr"     ;|
+    "square/o7 low.brr"     ;/
+    "51.brr"                ;\ Castlevania Dracula X
+    "52.brr"                ;|
+    "08.brr"                ;|
+    "14.brr"                ;/
+    "Drawbar Organ.brr"     ;> M&L Superstar Saga
+}
+
+#instruments
+{
+    "Electric Bass.brr"  $ff $e0 $b9 $08 $00 ; @30
+    "Synth Chord 1.brr"  $fb $e0 $bc $04 $80 ; @31
+    "Synth Chord 2.brr"  $fb $e0 $bc $04 $80 ; @32
+    "square/o4 low.brr"  $00 $00 $1f $08 $00 ; @33
+    "square/o4 high.brr" $00 $00 $1f $06 $00 ; @34
+    "square/o5 low.brr"  $00 $00 $1f $04 $00 ; @35
+    "square/o5 high.brr" $00 $00 $1f $03 $00 ; @36
+    "square/o6 low.brr"  $00 $00 $1f $04 $00 ; @37
+    "square/o7 low.brr"  $00 $00 $1f $04 $00 ; @38
+    "51.brr"             $8f $f0 $b8 $02 $86 ; @39 kick (o4c)
+    "52.brr"             $8f $f5 $b8 $07 $90 ; @40 snare (o4c)
+    "08.brr"             $8f $fd $b8 $0b $54 ; @41 closed hi-hat (o4c)
+    "14.brr"             $8f $f3 $b8 $07 $8e ; @42 open hi-hat (o4d+)
+    "14.brr"             $00 $00 $c7 $07 $8e ; @43 reverse cymbal (o4d+)
+    "14.brr"             $ff $ee $b8 $07 $8e ; @44 crash cymbal (o4d+)
+    "Drawbar Organ.brr"  $ff $e0 $b8 $07 $84 ; @45
+}
+
+;==================;
+; Volume  /  Tempo ;
+;==================;
+   w110       t57
+
+;==================;
+;       Echo       ;
+;==================;
+$ef $de $d8 $28
+$f1 $06 $40 $01
+
+;==================;
+;      Macros      ;
+;==================;
+"Bass = @30 v252 y10 h0 (!reset0,-1) (!gain0,3)"
+"Chr1 = @31 h0"
+"Chr2 = @32 h0"
+"S4L  = @33 o4 h0"
+"S4H  = @34 o4 h0"
+"S5L  = @35 o5 h0"
+"S5H  = @36 o5 h0"
+"S6L  = @37 o5 h0"
+"S6H  = @37 o5 h0"
+"S7L  = @38 o5 h0"
+"Ki   = @39 o4 h0 $f4$03"
+"Sn   = @40 o4 h0 $f4$03"
+"Ch   = @41 o4 h0"
+"Oh   = @42 o4 h3"
+"Rev  = @43 o2 h0 v170"
+"Crsh = @44 o4 h3 v195 y13 q7f $eb$0e$c6$f4"
+"Orgn = @45 o3 h0 v190 y11 q2f $eb$00$00$00"
+
+;==================;
+;     Commands     ;
+;==================;
+"reset0 = 900"
+ "gain0 = 901"
+"reset1 = 902"
+ "gain1 = 903"
+"reset3 = 904"
+ "gain3 = 905"
+(!reset0)[$f6$05$ff]
+ (!gain0)[$f6$05$7f]
+(!reset1)[$f6$17$1f]
+ (!gain1)[$f6$17$8e]
+(!reset3)[$f6$35$fb]
+ (!gain3)[$f6$35$7f]
+
+;==================;
+;    Channel #0    ;
+;==================;
+#0 $f4$02 /
+Bass o3 l16
+r=120 c r c r c r
+[[
+[c r8. c8. c r8 c r c r < a+ r >]
+c r8. c8. c r c c r c r < a+ r >
+*
+c r8. c8. c r c c r c r d+ r
+f r8. f8. f r8 f r f r d+ r
+f r8. f8. f r f f r d+ r c r
+c r8. c8. c r8 c r c r d+ r
+g8 r8 g8. g r8 g r g r g r
+]]2
+[[
+c8 r8 c8. c r c r c r8 < a+ r >
+c8. r c8 r c c r c r c r < a+ r >
+]]8
+
+;==================;
+;    Channel #1    ;
+;==================;
+#1 / (!0,0)
+Rev y18 r4. $dc$3c$02 d+=60 $dd$00$78>>d+ $dc$3c$12 ^=60
+
+v235 y9 l16 q2f (!reset1,-1) (!gain1,3)
+[
+[[S5L d+ S5H g a+ S6L d S5H a+ g]]10
+S5L d+ S5H g a+ S6L d S5L d+ S5H g
+[[g+ S6L c S5H g+ g S5L d+ S5H g]]5
+[[S5L d+ S5H g a+ S6L d S5H a+ g]]2
+S5L d+ S5H g a+ S6L d S5L f f r S5H f+ f+ r g g r g g r g r S4L g r
+]2
+
+"rest = 69" (rest)[r2]8
+
+Orgn (!0,0)
+(10)[
+r > c < a+ > c a+ > c r < a+ r c r c a+ > c < a+ > c
+< a+ > c < a+ > c < c r8 c r a+ > c < a+ r c r c <
+]2
+
+"FadeL = $dc$2e$12"
+"FadeR = $dc$2e$02"
+
+v230 l16 (!reset1,-1) (!gain1,3) (11)[y18 q2f
+FadeR S5H a+ S5L c f r          FadeL r S5H a+ S5L c c
+FadeR S5H g S5L c S5H a+ g      FadeL S5L f c f S5H a+ 
+FadeR S5L c S5H g S5L f S4H g   FadeL S5H g a+ S4H g S4L f
+FadeR S5L f c f S5H a+          FadeL S4H g S5L f S4L f S5L f 
+FadeR c S4H a+ S5L c S5H g      FadeL S4H g S4L f S5L f c
+FadeR f S5H g S4L f f           FadeL S5L f d+ f S5H a+ 
+FadeR g S5L f c S4H a+          FadeL S5L c S4H a+ S5L c f
+FadeR S5H g S5L f c S5H g       FadeL S5L f S5H a+ g S5L f 
+FadeR c S4H a+ S5L c S5H a+     FadeL S5L c S5H a+ S4H g S4L f
+FadeR S5H a+ S4L f S5L f c      FadeL f S4L f S5H a+ g
+FadeR S6L d+ S4L f S5H a+ g     FadeL g S5L f S5H g S5L d+
+FadeR S5H g S5L c S4L f S5L f   FadeL S5H g S5L f S6L d+ S5L f
+FadeR S6L d+ S4H g S6L d+ S4H g FadeL S5H g S4H g S5H g S6L c
+FadeR f d+ f S5H a+             FadeL S4H a+ S7L f S5H a+ S7L d+
+FadeR S6H a+ S7L d+ S6L f S5H g FadeL S6L f d+ S6H g S7L d+
+FadeR d+ S6H a+ S5H a+ S6L d+   FadeL S7L f d+] S6H a+ g
+
+;==================;
+;    Channel #2    ;
+;==================;
+#2
+v0 / S6H q2f l16 a+ g r2.. $ee$00
+
+Crsh c1^1^16
+
+[[
+Orgn
+c g > c g g g r4.. r8. <
+c g c g > g g r4 g c c c c r <
+
+r1^1
+
+c a+ c > c c c c r > c c c r c < c > c
+< g r8 g r8 g r=60 g f+ f d+ <
+
+Crsh c1^1^16
+]]2
+
+r1^1
+
+Orgn v110 y9 $ee$20 r (10)2 v150 (11)
+
+;==================;
+;    Channel #3    ;
+;==================;
+#3 / $eb$00$00$00
+Rev $ee$20 y2 r=74 $dc$3a$12 d+=60 $dd$00$76>>d+ $dc$38$02 ^=58 $ee$00
+
+v235 y10 o4 p0,13,50 (!reset3,-1) (!gain3,3)
+[[
+(30)[Chr1 d+16 r=60 d+8 r16 Chr2 d+16 r8 d+16 r16 d+16 r16]
+(31)[Chr1 d+16 r8 d+16 r8 d+8 r16 Chr2 d+16 d+16 r16 d+16 r16 d+16 r16]
+]]3
+(30) r1 [[ (30) (31) ]]3 (30) $df (!0,0) r1
+
+Crsh [[ (rest)8 c1^1^1^1 ]]2
+
+;==================;
+;    Channel #4    ;
+;==================;
+#4
+Ki v225 y10 / (42)[c16 r8.]2 q2f c8 c8 c8 c8 q7f
+[[
+(40)[
+c16 r8. Sn c16 r8. Ki c16 r8. Sn c16 r8 Ki c16 
+c16 r8 c16 Sn c16 r8 Ki c16 c16 c16 c16 r16 Sn c16 r16 Ki c16 r16
+]3
+(41)[
+c16 r8. Sn c16 r8. Ki c16 r8. Sn c16 r8 Ki c16 
+c16 r8 c16 Sn c16 r8 Ki c16 c16 r16 c16 r16 Sn c16 r16 Ki c16 r16
+]
+]]2
+
+(42)16
+
+(40) (41) (40)3 (41)
+
+;==================;
+;    Channel #5    ;
+;==================;
+#5
+v170 y11 /
+[Ch c16 c16 Oh c8]2 Ch [[c16 c16 Oh c16 Ch c16]]2 *128

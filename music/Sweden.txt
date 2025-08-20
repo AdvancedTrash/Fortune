@@ -1,0 +1,44 @@
+#amk 2
+
+#spc
+{
+	#title "Sweden"
+	#game "Minecraft / SMW"
+	#author "C418"
+	#comment "Ported by Samuel"
+}
+
+#instruments
+{
+	@13 $FD $EA $00 $03 $00
+	@0 $FD $F1 $00 $03 $00
+	@0 $FD $ED $00 $03 $00
+}
+
+w150
+
+$EF $FF $D0 $30
+$F1 $07 $60 $00
+$F4 $02
+
+"trem=$E5 $00 $0A $30"
+
+#0 o4 v160 y11 l16 trem / t18
+
+[r1]6
+(1)[r4@31a8b8@32f+4.@31de]
+(2)[@32c+4.@31f+a@32e2]
+(7)[r8>@31d8<b8a8@32f+4.@31de@32c+4.@31af+@32e2r4@31a8b8>@32d4.@31f+e@32c+4.@31dc+<@32a2r4@31b8a8@32f+4.@31de]
+(2)
+(1)
+(2)
+(8)[r4@31a8b8>@32d4.@31<de@32c+4>@31f+8<f+a@32e2] t17
+(9)[r4.@31ba@32e4@31e8d8@32c+4.@31de<@32b2>>d4.<@31ba@32e4@31e8>e8@32c+4@31d8f+8<] t10 @32b2
+
+#1 o3 v160 y9 l2 @30 trem / (3)[g>d<a>c+] [<b>f+c+e]2 (4)[<b>d<a>c+]2 <b>f+4.d16e16d4.f+8e (4)2 <b>f+4.r8<a>c+f+<bag>f+<b4.>d8c+4.d16e16<b
+#2 o3 v160 y11 l2 @30 trem / (5)[eaf+a] (3) (4) (6)[gaf+a]2 (3) (6)2 g>d<f+a>d<g+ed>d<g+ag
+#3 o3 v160 y9 l2 @30 trem / [r1]2 (5) (6) [e1r1]2 (5) g1r1e1r1ea1rbe<ag>beed
+#4 o3 v160 y9 l1 @30 trem / [r]4 e [r]2 [re]3 [r]5 <ba2g2ba
+#5 o2 v160 y10 @30 trem / [l4 ef+gbagd2]9 [l2 <b>e<ag]2
+#6 o4 v92 y9 l16 / [r1]6 r16 (1) (2) (7) (2) (1) (2) (8) (9) b4..
+#7 o4 v85 y8 l16 / [r1]6 r8 (1) (2) (7) (2) (1) (2) (8) (9) b4.

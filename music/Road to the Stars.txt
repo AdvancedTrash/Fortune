@@ -1,0 +1,485 @@
+;================================;
+;	THIS RIGHT HERE IS DEFINITELY IMPORTANT!
+;================================;
+
+; There are 2 different options for changing the pitch
+; of the song.
+
+; To change the pitch of the song, replace the number after
+; ''VERSION'' to any number between 1 - 2.
+; This won't affect the percussion as it doesn't use the variables below
+
+; this allows for awesome customization to fit your needs or your
+; preferences... but if you know your stuff, then you should be able
+; to go way beyond the limits I gave you here.
+
+;================================;
+;	Song Pitch
+;================================;
+
+	#define VERSION 1 ; Change Value between 1 - 2
+
+;================================;
+
+; 1 = Pitch will be on the a# minor (Original)
+
+; 2 = Pitch will be on the b minor (Custom)
+
+;================================;
+;	SPC Generator
+;================================;
+
+#SPC
+{
+	#title "Road to the Stars"
+	; full name: Road to the Stars ~ Nitro Rider (Remix)
+	#game "Rockman 10 / Mega Man 10"
+	#author "comp. CAPCOM ST / arr. Hooded"
+	#comment "Puts me to tears everytime!! :,)"
+	#length "auto" ; 1:05 (loop)
+}
+
+;================================;
+;	Samples
+;================================;
+
+#path "NitroRider"
+
+#SAMPLES
+{
+	#optimized2
+
+	"Epic Sawtooth.brr"
+	"Ken Pulse Wave.brr"
+	"MMX1 Overdrive.brr"
+	"Some Organs.brr"
+
+	"Loud Square.brr"
+	"XG Big Lead.brr"
+	"RS1 Strings.brr"
+	"Shinobi FM Slap Bass.brr"
+
+	"Yasui Snare.brr"
+	"DR-660 Kick.brr"
+	"R8 Ride.brr"
+	"R8 Crash.brr"
+}
+
+;================================;
+;	Instruments
+;================================;
+
+#INSTRUMENTS
+{
+	"Yasui Snare.brr" $9F $F5 $B8 $14 $00 ; @30 snare
+	"DR-660 Kick.brr" $CF $00 $B8 $14 $00 ; @31 bass drum
+	"R8 Ride.brr" $FF $F4 $B8 $0A $00 ; @32 ride cymbal
+	"R8 Crash.brr" $9F $F3 $B8 $0A $00 ; @33 crash cymbal (c1)
+	"R8 Crash.brr" $9F $F5 $B8 $0A $00 ; @34 crash cymbal (c4)
+
+	"Epic Sawtooth.brr" $FF $E6 $B8 $03 $F5 ; @35 sawtooth
+	"Ken Pulse Wave.brr" $FF $E6 $B8 $04 $00 ; @36 pulse
+	"MMX1 Overdrive.brr" $FF $E6 $B8 $03 $00 ; @37 overdrive
+	"Some Organs.brr" $9F $F5 $B8 $06 $00 ; @38 organs
+
+	"Loud Square.brr" $9F $A6 $B8 $04 $00 ; @39 square
+	"XG Big Lead.brr" $FF $EA $B8 $04 $30 ; @41 chord
+	"RS1 Strings.brr" $DD $E2 $B8 $02 $77 ; @42 strings
+	"Shinobi FM Slap Bass.brr" $FF $EC $B8 $05 $C0 ; @43 synth bass
+}
+
+;================================;
+;	Main Macros
+;================================;
+
+	"@echo = $F4 $03"
+	"@leg = $F4 $01"
+
+	"(0FF) = $FA $03 $00"
+	
+	"@rest = r1 /"
+
+;================================;
+;	Instrument Macros
+;================================;
+
+	"@sawtooth = @35 v220"
+		"(F05) = ^8 $ED $7F $F2"
+		"(F00) = (F05) ^8"
+	"@pulse = @36 v220"
+	"@overdrive = @37 v255"
+	"@organs = @38 v255"
+	
+	"@square = @39 v150"
+	"@chord = @40 o3 v170"
+	"@strings = @41 v215"
+	"@synthbass = @42 o3 v220"
+
+;================================;
+;	Percussion Macros
+;================================;
+
+	"@snare = @30"
+	"@kick = @31"
+
+	"@ride = @32 v205"
+	"@crash = @33 v255"
+		"@crash4 = @34 v255"
+
+;================================;
+;	Echo Values
+;================================;
+
+	$EF $E6 $32 $32 ; OFF - #0, #3 , #4
+	$F1 $05 $B0 $01
+
+;================================;
+;	Extras
+;================================;
+
+	"channel # = #"
+
+;================================;
+;	Don't mess with this
+;	unless you know what you're doing!
+;================================;
+
+#if VERSION == 1 ; Original
+	$E4 $00 ; a# minor
+	"@wakana = "
+	"@vitor = "
+#endif
+
+#if VERSION == 2 ; Custom
+	$E4 $01 ; b minor
+	"@wakana = h0"
+	"@vitor = h-1"
+#endif
+
+;================================;
+;	Global Volume / Tempo
+;================================;
+	w125
+	"(T10) = t92"
+	"(T20) = t90"
+;================================;
+
+;================================;
+	channel #3 | (T10) r192 $F4 $02 @vitor
+;================================;
+
+o3 v235 | l8
+@snare (299)[ c4 c4 c16 c16 c16 c16 c c ] (T20) /
+
+[[ (300)[ @kick c4 @snare c4 @kick c c @snare c4 ]3
+(310)[ @kick c4 @snare c4 @kick c c @snare c c ] ]]3
+(300)2 (310) (299)
+
+[[ (300)3 (310) ]]2 (300)2 (310) (299)
+
+(300)3 (310)
+(300)3 (299)
+(300)3 (310) (300) (299)
+
+[[ (300)3 (310) ]]2
+
+[[ (300) (310) ]]3 (300) (299)
+
+;================================;
+	channel #4 | r192 @vitor
+;================================;
+
+o4 | l4
+q7D @ride [ c ]4 /
+
+(410)[ @echo q7F @crash c+2 @echo q7D @ride c c8 c8 ]
+(400)[ c c c c8 c8 ]14 [ c ]4
+
+(410) (400)3
+(410) (400)7
+
+(410) (400)6 [ c q7F @echo @crash4 d4 @echo q7D @ride ]2
+
+(410) (400)4 [ c ]4
+
+[[ (410) (400)3 ]]3 (410) (400)2 [ c ]4
+
+;================================;
+	channel #0 | r192 @rest
+;================================;
+
+@synthbass | l8
+(000)[ a+ a+ > a+ < a+ ]4 (001)[ g+ g+ > g+ < g+ ]4
+(002)[ f+ f+ > f+ < f+ ]4 (003)[ c+ c+ > c+ < c+ ]4
+(004)[ d+ d+ > d+ < d+ ]4 (000)4
+[ b+ b+ > b+ < b+ ]4 (005)[ f f > f < f ]2
+f4 e4 f4 f4
+
+(002)2 (005) f f > f < e (004) (001)
+c+ d+ f c+ g+ c+ b g+
+(002)4 (005)2 (006)[ e e > e < e ]2
+(004)2 (006)2 (005)2 f4 e4 f4 a4
+
+(000) (007)[ a+ a+ > a+ < a4
+a a > a < a a a > a < ]
+(001) (008)[ g+ g+ > g+ < g4
+g g > g < g g g > g < ]
+(002) f+ f+ > f+ < f4 (005) f f > f <
+(006)2
+> f4 e4 d+4 < f4
+(000) (007) (001) (008)
+(004)2 (005)2
+
+[[ (002)3 (005) (004)3 (005) ]]2
+
+[[ (000)3 a+ > a+ < a+ > a+ < ]]4
+
+;================================;
+	channel #1 | r192 v0 @rest
+;================================;
+
+o4
+q78 d8 q7F
+
+@sawtooth y9 | l8
+ f a+ > c c+ < f a+ b+
+> c+ q78 c+ q7F c+4 c4 < a+4
+> f4. c4. < g+4.
+f2. q78 f4 q7F
+c+ f+ g+ a+ c+ f+ g+
+a+ q78 a+ q7F a+4 g+4 f+4
+> c+4. < g+1. q78 g+4 q7F
+< a+ > d+ f f+ < a+ > d+ f
+f+ q78 f+ q7F f+4 f4 d+4
+a+4. f4. c+4.
+< a+4. > c+ q78 c+ q7F f4
+e q78 e q75 e q7F c2^ q78 c q7F
+ c c- c e c g c
+a4. f2 (F05)
+
+(100)[ @square
+f4 f+4 f4 a4 ]
+
+@pulse
+a+4. > c+ q78 c+ q7F < a+ > c+ d+ <
+b+4. g+ q78 g+ q7F f4 e d+4 > c+4 c4 f+4 f2.. q78 f q7F
+f4. d+ q78 d+ q7F d+4 < a+ > d+2.. q78 d+ q7F
+d+4. c+ q78 c+ q7F c+4 < g+ > c+2.. q78 c+ q7F
+[ c+4. c q78 c q7F c4 < a+ ]2 b+2.. q78 b+ q7F >
+
+(100)
+
+@overdrive
+(110)[ c+4 d+ q78 d+ q7F f c+ d+ f
+q78 f q7F f d+ f. q78 f16 q7F < a > ] c f
+f4 d+ q78 d+ q7F d q78 d q7F f d+
+q78 d+ q7F d+ d d+. q78 f16 q7F < g a+ > d+
+d+4 c+ q78 c+ q7F c q78 c q7F d+ c+
+q78 c+ q7F c+ c c+ q78 c+ q7F < a+ a+ b+
+> c+2. c < a+
+a4 a+4 > c4 d+4
+(110) < b+ a >
+f4 a+ q78 a+ q7F f q78 f q7F d d+
+q78 d+ q7F d+ d d+. q78 d+ q75 d+16 q7F
+
+@sawtooth
+< d+ f d+4 > c+ q78 c+ q7F c < a+4.
+g+4 > d+ q78 d+ q7F c+ d+4. (120)[ f1^4 (F00) <
+
+@organs
+d+ c < g+ d+ < a+ > d+ f+
+a+ c+ d+ f+ a+ c+ d+ >
+
+@sawtooth
+> g+4 g+ ] d+ q78 d+ q75 d+ q7F
+(120) g+ q78 g+ q75 g+ q7F a+1^1^1... (F00) <
+
+@organs
+b+ g+ b+ d+ g+ c d+
+q78 d+ q7F a+ f a+ d f < a+ > d
+q78 d q7F g+ d+ g+ c d+ < g+ b+ >
+q78 c q7F f d f < a+ > d < f > d
+
+;================================;
+	channel #2 | r192 v0 @rest
+;================================;
+
+o3
+q78 a+ q7F
+
+@sawtooth y12 | l8
+> c+ f g+ a+ c+ f g+
+a+ q78 a+ q7F a+4 g+4 f4
+b+4. g+4. f4.
+c4.
+
+@square
+q6F > b+ g+ f c q68 c q7F <
+
+@sawtooth
+< a+ > c+ f f+ < a+ > c+ f
+f+ q78 f+ q7F f+4 f4 c+4
+f4. c+2 (F05)
+
+@square
+q6F > d+ c+ f c+ g+ c+ f c+ q68 c+ q7F <
+
+@sawtooth
+< f+ > c c+ d+ < f+ > c c+
+d+ q78 d+ q7F d+4 c+4 c4
+c+4. < a+4. f4.
+f4. a+ q78 a+ q7F > c+4
+c q78 c q75 c q7F < e2^
+q78 e q7F e d e g e b+ e >
+f4. c2^
+
+(200)[ @square
+< a4 a+4 a4 > d+4 ]
+
+@pulse y11
+q7A r. a+4. > c+ q73 c+ q7A < a+ > c+ d+
+c4. < g+ q73 g+ q7A f4 e d+4 > c+4 c4 f+4 f2.^16
+
+@square y12
+q4F [ a+ f+ > c+ < f+ ]2 [ a f+ > c+ < f+ ]2
+[ g+ f > c+ < f ]2 (210)[ g e a+ e ]2
+[ f+ d+ a+ d+ ]2 (210)2
+q5F < q6F g q7F d+ g a+ > d+ g a+ > d+ <
+
+(200)
+
+@overdrive
+r1.^8
+< f a b+ q78 b+ q75 b+ q72 b+ q7F
+r1^4
+d+ g a+ q78 a+ q75 a+ q72 a+ q7F
+r1^4
+f f g+
+g d+ g a+ > d+ g a+ g
+< f4 f+4 f4 a4
+f f q78 f q75 f q72 f q7F
+r4
+b+ q78 b+ q7F b+
+r4. f a f
+a+ a+ q78 a+ q7F r2 g q78 g q7F
+g q78 g q75 g q72 g q7F r
+
+@sawtooth
+< a+ b+ a+4 > a+ q78 a+ q7F g+ f+4.
+f4 b+ q78 b+ q7F a+ b+4. q78 b+ q7F
+
+@organs
+(240)[ c+ < a+ f+ f f+ a+ > c+
+f c+ < a+ f+ > g+ d+ c < g+
+d+ f+ a+ > c+ < f f+ a+ > c+
+< f+ a+ > c+ f d+ c < g+ d+ ]
+q78 d+ q7F (240)
+
+q78 d+ q7F (245)[ > g+ d+ g+ c d+ < g+ b+ >
+q78 c q7F f d f < a+ > d < f a+
+q78 a+ q7F > d+ c d+ < g+ b+ d+ g+
+q78 g+ q7F > d < a+ > d < f a+ d a+ ]
+q78 a+ q7F (245)
+
+;================================;
+	channel #5 | r192 @rest
+;================================;
+
+@chord o3 y13 | l4
+a+ > g+ q78 g+8 q7F a+ q78 a+8 q7F < a+ > f q78 f8 q7F f 
+q78 f8 q7F g+. f. c. f2..
+< a+ > a+ q78 a+8 q7F g+ q78 g+8 q7F
+< a+ > f+ q78 f+8 q7F f+ q78 f+8 q7F
+g+. f.
+c+. f2..
+< a+ > a+ q78 a+8 q7F g+ q78 g+8 q7F
+< a+ > f+ q78 f+8 q7F f q78 f8 q7F
+a+. f.
+c+. f. a+
+c+ > c q78 c8 q7F < g2..
+e d e a. f2^8
+f f+ f a a+1 g+1 a+2 b+2 
+g+1 a+1 a1 g+1
+g1 a+1 > c+1 c1 <
+a a+ a b+
+
+@strings | l2
+c+.. c1^8 f.. d+1^8
+c.. c+.. f4 e g f c
+f.. f8 q78 f8 q7F f8 q78 f8 q7F c8 q78 c8 q7F f4.  
+f.. d+8 q78 d+8 q7F d+8 q78 d+8 q7F < a+8 q78 a+8 q7F > d+4. 
+< a+1 > c1
+
+[ f1. f d+1. f ]2
+
+l1
+g+ a+ g+ f g+ a+ > c f
+
+;================================;
+	channel #6 | r192 @rest
+;================================;
+
+@chord o3 y7 | l4
+f > f q78 f8 q7F f q78 f8 q7F < f > c+ q78 c+8 q7F c q78 c8 q7F
+f. c. < g+. > c2..
+< f+ > f+ q78 f+8 q7F f+ q78 f+8 q7F < f+ > c+ q78 c+8 q7F c+ q78 c+8 q7F 
+f. c+. < g+. > c+2..
+< f+ > f+ q78 f+8 q7F f+ q78 f+8 q7F < f+ > d+ q78 d+8 q7F d+ q78 d+8 q7F 
+f. c+. < a+. > c+. f 
+< a+ > g q78 g8 q7F e2.. 
+c2. f. c2^8
+c c c f f+1 f1 f+2 g+2
+f1 f+1 f+1 f1
+e1 f+1 g1 a1
+f f+ f a
+
+@strings | l2
+< a+.. a1^8 > d.. < a+1^8
+f+.. a+..  > c+4 c+ e < b+ a 
+> c+.. < b+8 q78 b+8 q7F b+8 q78 b+8 q7F a8 q78 a8 q7F b+4. 
+> d.. < a+8 q78 a+8 q7F a+8 q78 a+8 q7F g8 q78 g8 q7F a+4.  
+f+1 g+1 >
+
+[ c+1. c < a+1. b+ > ]2
+
+l1
+d+ f d+ d d+ f g+ a+
+
+;================================;
+	channel #7 | r192 @rest
+;================================;
+
+o4 y10 | @vitor | l4
+@echo q7D @ride c4 @echo
+
+@chord y11 | @wakana
+q7F > c+4 q78 c+8 q7F c+4 r8 < r4 a+4 q78 a+8 q7F a+4 q78 a+8 q7F
+b+4. g+4. f4. g+2.. q78 r8 q7F
+r8 > c+4 q78 c+8 q7F c+4 q78 c+8 q7F < r4 a+4 q78 a+8 q7F g+4 q78 g+8 q7F 
+> c+4. < g+4. f4. g+2.. q78 r8 q7F
+r8 > d+4 q78 d+8 q7F d+4 q78 d+8 q7F < r4 a+4 q78 a+8 q7F a+4 q78 a+8 q7F 
+> c+4. < a+4.  f4. a+4. > c+4 < f4 > e4 q78 e8 q7F
+c2.. <  g2. b+4. a2^8
+a4 a+4 a4 > d+4 c+1 c1 d+2 d+2 
+c1 c+1 c+1 c+1
+c+1 d+1 e1 f1
+r1
+
+@strings | l2
+< f.. f1^8 g+.. g1^8
+d+.. f.. a+4 a+ > c+ 
+< a f 
+a+.. a8 q78 a8 q7F a8 q78 a8 q7F f8 q78 f8 q7F a4.
+g+.. g8 q78 g8 q7F g8 q78 g8 q7F d+8 q78 d+8 q7F g4.
+d+1 f1
+
+[ a+1. g+ f+1. g+ ]2
+
+l1
+> c d c < a+ > c d d+ f
+
+;================================;
+;	AddmusicK 1.0.6
+;================================;
+
+#amk 2

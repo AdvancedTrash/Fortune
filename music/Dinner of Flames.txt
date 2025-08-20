@@ -1,0 +1,829 @@
+;==========================================;
+;	SPC Generator
+;==========================================;
+
+#SPC
+{
+	#title "Dinner of Flames" ; ~ Divine Bloodlines (SNES Scarlet-Mix)
+	#game "Castlevania: Rondo of Dracula X"
+	#author "Tomoya Tomita"
+	#comment "arr. Hooded Edge"
+	#length "auto"
+}
+
+;==========================================;
+;	THIS RIGHT HERE IS DEFINITELY IMPORTANT!!
+;==========================================;
+
+; To change the pitch of the song, replace the number after
+; ''PITCH'' to any number between whatever's included below.
+; This won't affect the percussion / sfx by this at all.
+
+; this allows for awesome customization to fit your needs or your
+; preferences... but if you know your stuff, then you should be able
+; to go way beyond the limits I gave you here.
+
+;==========================================;
+;	Song Pitch
+;==========================================;
+
+	#define PITCH 1 ; Choose between 1 - 3
+
+;=================| Pitch |===================;
+
+; 1 = Pitch will be on the c minor (Original)
+
+; 2 = Pitch will be on the c# minor (M&K Company)
+
+; 3 = Pitch will be on the d minor (Custom)
+
+;==========================================;
+;	Samples
+;==========================================;
+
+#path "DIE-MONSTER"
+
+;==========================================;
+
+#SAMPLES
+{
+	"../optimized/00 SMW @0.brr"
+	"../optimized/01 SMW @1.brr"
+	"../optimized/02 SMW @2.brr"
+	"../optimized/03 SMW @3.brr"
+	"../optimized/04 SMW @4.brr"
+	"../optimized/05 SMW @8.brr"
+	"../optimized/06 SMW @22.brr"
+	"../optimized/07 SMW @5.brr"
+	"../default/08 SMW @6.brr"
+	"../EMPTY.brr"
+	"../optimized/0A SMW @9.brr"
+	"../optimized/0B SMW @10.brr"
+	"../optimized/0C SMW @13.brr"
+	"../optimized/0D SMW @14.brr"
+	"../optimized/0E SMW @29.brr"
+	"../optimized/0F SMW @21.brr"
+	"../EMPTY.brr"
+	"../optimized/11 SMW @17.brr"
+	"../optimized/12 SMW @15.brr"
+	"../EMPTY.brr"
+
+	"SC-55 Funk Gt B+40.brr"
+	"Some Organs.brr"
+
+	"Wind Glock.brr"
+	"Popful Mail Overdrive.brr"
+	"BDH2 Piano Mid.brr"
+	"MM7 Sawtooth.brr"
+
+	"FF6 Pipe Organ 1.brr"
+	"MMX1 String Ens.brr"
+	"S3 Slap Bass II.brr"
+
+	"Yasui Snare.brr"
+	"DR-660 Kick.brr"
+	"S-550 LA Tom.brr"
+	"TR-909 Hi-Hat.brr"
+	"Ultima Hi-Hat.brr"
+	"R-8 Crash Cym.brr"
+}
+
+;==========================================;
+;	Instruments
+;==========================================;
+
+#INSTRUMENTS
+{
+	"Yasui Snare.brr" $9F $F5 $B8 $15 $00 ; @30 snare
+	"DR-660 Kick.brr" $CF $FA $B8 $13 $00 ; @31 bass drum
+	"S-550 LA Tom.brr" $FF $F2 $B8 $0E $00 ; @32 tom
+	"TR-909 Hi-Hat.brr" $FF $FB $B8 $0B $00 ; @33 closed hi-hat
+	"Ultima Hi-Hat.brr" $FF $F4 $B8 $0A $40 ; @34 open hi-hat
+	"R-8 Crash Cym.brr" $9F $F2 $B8 $0A $00 ; @35 crash cymbal (c+1)
+	"R-8 Crash Cym.brr" $9F $F3 $B8 $0A $00 ; @36 crash cymbal (c+4)
+
+	"SC-55 Funk Gt B+40.brr" $AF $D2 $B8 $01 $E0 ; @37 muted guitar
+	"Some Organs.brr" $FE $E6 $B8 $03 $00 ; @38 organs
+
+	@6 $FF $E8 $B8 $03 $00 ; @39 lead synth
+	"Wind Glock.brr" $AF $AA $B8 $04 $00 ; @40 glock
+	"Popful Mail Overdrive.brr" $FE $E8 $B8 $03 $C0 ; @41 overdrive guitar
+	"BDH2 Piano Mid.brr" $9F $CB $B8 $04 $02 ; @42 lead piano
+	"MMX1 String Ens.brr" $AB $E6 $B8 $03 $00 ; @43 lead strings
+	"MM7 Sawtooth.brr" $FE $E8 $B8 $04 $01 ; @39 mm7 sawtooth
+
+	"MMX1 String Ens.brr" $FB $E4 $B8 $03 $00 ; @44 bg strings
+	"FF6 Pipe Organ 1.brr" $FF $EA $B8 $02 $F9 ; @45 church organs
+	"MMX1 String Ens.brr" $FA $E0 $B8 $03 $00 ; @46 string chord
+
+	"MMX1 String Ens.brr" $F6 $E0 $B8 $03 $00 ; @47 low string
+	"S3 Slap Bass II.brr" $FF $AC $B8 $05 $C0 ; @48 slap bass
+}
+
+;==========================================;
+;	Main Macros
+;==========================================;
+
+	"@e = $F4 $03"
+	"%l = $F4 $01"
+
+	"($FA-3X) = $FA $03 $00"
+	"$XR-X = $FA $02 $00"
+		"$XR- = $FA $02 $"
+	"($EC-X) = $EC $00 $00 $00"
+		"($EC-0) = $EC $00 $04 $02"
+	"($DC-X) = $DC $00 $00"
+
+;==========================================;
+;	Instrument Macros
+;==========================================;
+
+		"(F00) = $ED $7F $F4 ^8"
+		"(F10) = $ED $7F $F2 ^4"
+			"(F13) = $ED $7F $F2 ^8."
+		"(F20) = $ED $7F $F1 ^2"
+		"(F30) = $ED $7F $EF ^1"
+
+	"@muted = @37 v255 | $FA $03 $6F"
+		"(V05) = v240"
+		"(V00) = v160"
+	"@organs = @38 v255"
+		"(V10) = v165"
+		"(V15) = v130"
+
+	"@lead = @39 v255 | $DE $20 $0A $32 | ($EC-0) | $FA $03 $4F"
+		"(A00) = v245 | ($EC-X) | $ED $7E $E7"
+		"(A05) = ($EC-X) | $ED $7F $EA | $DE $16 $0A $2F"
+	"@glock = @40 v255 | $DE $1A $0A $32 | $FA $03 $2F"
+	"@overdrive = @41 | $DE $20 $0A $2F | $FA $03 $4F"
+	"@piano = @42 v255 | $DE $1A $0A $2F"
+	"@strings = @43 v245 | $DE $16 $08 $3F"
+	"@mm7saw = @44 v225 | $DE $1A $0A $32"
+		"(V20) = v135 y11"
+
+	"@BGstr = @45 v220 | $DE $16 $08 $3F"
+	"@CHUorg = @46 v205 | $DE $16 $0A $32"
+		"(F11) = (F10) | @46"
+		"@l = y7 || $DC $C0 $0C"
+		"@r = y13 || $DC $C0 $08"
+	"@strCHD = v175 | (A10) | $DF"
+		"(A10) = @47"
+		"(A15) = $ED $72 $E0"
+		"(F04) = (F00) | (A10)"
+		"(F14) = (F10) | (A10)"
+
+	"@LOWstr = @48 o1 v200 y10,1,2"
+	"@SLAPbass = @49 o4 v235 y10"
+
+;==========================================;
+;	Percussion Macros
+;==========================================;
+
+	"@p = $FA $03 $2F"
+
+	"@snare = @30 v255"
+	"@kick = @31 v225"
+		"u = < @p c ($FA-3X) >"
+		"u16 = < @p c16 ($FA-3X) >"
+		"u8 = < @p c8 ($FA-3X) >"
+	"@tom = @32 v255"
+
+	"@closed = @33 v205 y9"
+	"@open = @34 v237 y10"
+	"@crash = v255 y10 | $FA $03 $DF"
+		"@crash+ = @35 | @crash"
+		"@crash- = @36 | @crash"
+
+;==========================================;
+;	Echo Values
+;==========================================;
+
+	$EF $FE $32 $32 ; OFF - #0
+	$F1 $05 $A0 $01
+	$F4 $02
+
+;==========================================;
+;	DON'T MESS WITH THIS
+;	IF YOU DON'T KNOW WHAT YOU'RE DOING!!!
+;==========================================;
+
+#if PITCH == 1 ; Original
+;	$E4 $00 ; c minor
+	"@dracula = "
+	"@richter = "
+#endif
+
+#if PITCH == 2 ; M&K Company
+	$E4 $01 ; c# minor
+	"@dracula = h-1"
+	"@richter = h0"
+#endif
+
+#if PITCH == 3 ; Custom
+	$E4 $02 ; d minor
+	"@dracula = h-2"
+	"@richter = h0"
+#endif
+
+;==========================================;
+;	Extras
+;==========================================;
+
+	"BELMONT # = #"
+
+;==========================================;
+;	Global Volume / Tempo
+;==========================================;
+	w100 t59
+;==========================================;
+
+;==========================================;
+	BELMONT #0 | @dracula
+;==========================================;
+
+@closed o4 | l8
+q74 c r q76 c r q78 c r q7A c r
+q7B c r q7C c r q7D c r q7E c r
+q7F [[ c r ]]4
+
+o3 |  @p | l8
+(000)[ @snare c ($FA-3X) @tom y13 b+16 y11 a y9 f+16 y7 d+16
+@p y10 @snare q7B c32 q7D c32 q7F c. c c16 c16 c16 ] / @kick
+
+(010)[ c r @snare c4 @kick c r16 c16 @snare c @kick c ]
+(011)[ r c @snare c4 @kick c16 c16 c @snare c4 @kick ]
+(010) (012)[ r c @snare c4 @kick c16 c16 c @snare c c16 c16 @kick ]
+(010) (011) (010)
+(013)[ c16 c r16 @snare c. c @kick c16 c16 @snare q7B c32 q7D c32 q7F c16 c c16 @kick ]
+
+(010) (020)[ r c @snare c. @kick c @snare c @kick c16 @snare c4 @kick ]
+(010) (021)[ r c @snare c4 @kick c16 c c16 @snare c c16 c16 @kick ]
+(010) (020) (010)
+(022)[ c16 c r16 @snare c. c. @kick c16 @snare q7B c32 q7D c32 q7F c16 c16 c16 c16 @kick ]
+
+(010) (011) (010) (012)
+(010) (011) (010) (013)
+
+(010) (020) (010) (021)
+(010) (020) (010) (022)
+
+[[ c r @snare c @kick c16 c c16 c @snare c4 @kick ]]7
+c r c r @snare c. c. c16 c16 @kick
+
+(010) (060)[ r16 c16 c @snare c4 @kick c16 c16 c @snare c @kick c
+c c @snare c4 @kick c r16 c16 @snare c @kick c
+r16 c16 c @snare ] c4 @kick c16 @snare c @kick c16 @snare c c16 c16 @kick
+(010) (060) (061)[ c @kick c16 @snare c. @kick c16 @snare  q7B c32 q7D c32 q7F c16 ] c c16 @kick
+(010) (060) c4 @kick c16 c16 @snare c. c c16 @kick
+(010) (060) (061) c16 c16 c16 @kick
+
+c c @snare c4 @kick c16 c c16 @snare c16 c16 @kick c 
+@snare c1 
+
+[ r2 ]31
+
+r4. @snare c16 c16 
+(070)[ @kick c > ($FA-3X) @closed c < @p  y10 ]16
+[[ (070)2 [ @kick c > @e ($FA-3X) @open y9 d @e < @p  y10 ]2 ]]3
+(070)2
+@snare c8 ($FA-3X) @tom y11 b+16 y9 a8 y7 f+16 @p  y10 @snare c16 c16 @kick
+
+(010) (020) (010) (021)
+(010) (020) (010) (013)
+(010) (020) (010) (021)
+(010) (020) (010) (022)
+
+(010) (020) c r @snare c4 @kick c16 c c16 @snare c16 c16 @kick c 
+
+(000)
+
+;==========================================;
+	BELMONT #6
+;==========================================;
+
+@strCHD o3 y13 | (A15) | l1
+q7E g^^ (F10) > 
+
+@e | @dracula | l16
+@closed c8 r8 c8 r8 (610)[ c q7D c q7F @open c @closed q7D c q7F ] @e /
+
+(615)[ @crash- c+4^ ($FA-3X) @e @closed  q7D c q7F @open c @closed  q7D c q7F ]
+(610)14
+@e (615) (610)12 (612)[ < @tom y13 b+ b+ y11 a a8 y9 f+ y7 d+8 > ]
+
+@e (625)[ @crash- c+4^ ($FA-3X) @e @closed  q7D c q7F @open c8 ]
+(620)[ @closed c  q7D c q7F @open c8 ]13
+(621)[ @closed c < @tom y11 b+ y9 a y7 f+ > ]
+@e (625) (620)12 (612)
+
+@e (615) (610)14
+@e (615) (610)12 (612)
+
+@e (625) (620)13 (621)
+@e (625) (620)12 (612)
+
+@e @crash- c+4 ($FA-3X) @e (650)[ @open c8 @closed c  q7D c q7F ]
+(651)[ @open c @closed  q7D c q7F c  q7D c q7F ] (650) 
+[[ (650)2 (651) (650) ]]6
+@e @crash- c+4 ($FA-3X) @e 
+< @tom y13 b+8 y11 b+ a y9 f+8. y8 f8. y7 d+8 >
+
+@e (625) (620)14
+@e (625) (620)12
+@closed c  q7D c q7F < @tom y13 b+ b+ y12 b+ y11 a y9 f+ y7 d+ >
+
+@e (625) (620)12 @closed c c @e @crash+ c+8. c+8.
+(625) (620)14
+
+@e @crash- c+4 ($FA-3X) @e @closed [[ c8 r8 ]]3 
+
+@e @crash+ c+1 ($FA-3X)
+
+@richter
+@mm7saw (V20) | l4
+r8. (270)[ g1 f $DD $00 $04 g ^8 f. a+
+g1 f $DD $00 $04 g ^8 f. b+
+g1 f $DD $00 $04 g ^8 f. > d <
+g1 f $DD $00 $04 g ^8 g+. a+
+
+l8
+g1 f2^ f4 d+
+d4 d+ f q79 f q7F d q79 d q7F c2 
+c d+4 f4 
+g4 d+ c4 c d+ f 
+g d c g d c g a+ 
+> d d+ q79 d+ q7F d q79 d q7F < a+ q79 a+ q7F b+2 
+> d4. ] d+16 < 
+
+@dracula | $DF
+@crash+ c+2^16 ($FA-3X)
+
+@richter
+@mm7saw (V20)
+b+ g+ d+ b+ g+ ; b+ g+ d+
+$XR-02 (275)[ b+ g+ d+ b+ g+ d+ b+ g+ ] ; > d < a+ f
+$XR-FF (275) ; b g d
+(276)[ $XR-X c d d+ f > c. d. d+
+c2 c. d. d+ < b+2 a+. f. a+ ] %l g32 f32 g4... %l ^4... (F10) r16
+
+@dracula | $DF | l16
+@crash+ c+2
+
+(625) (620)13 (621)
+
+@e (625) (620)12
+@closed c  q7D c q7F < @tom y13 b+ b+ y12 b+ y11 a y9 f+ y7 d+ > 
+
+@e (625) (620)13 (621)
+
+@e (625) (620)12 (612) 
+
+@e (625) (620)10
+
+@e @crash+ c+1
+
+;==========================================;
+	BELMONT #1
+;==========================================;
+
+@LOWstr
+b+1^1^1 (F10) r4 @e
+
+@SLAPbass | l16
+(100)[ f < f8 g8 a+8 b > ] /
+
+[[ (110)[ c8 b+8 c8 b+ b+ ] ; c
+(111)[ c g a+ b+8 a+8 b+ ]
+$XR-FE (110) ; a+
+$XR-X (112)[ < a+ > f g a+8 g+8 a+ ]
+$XR-FC (110) ; g+
+$XR-X (113)[ < g+ > f g g+8 g8 g+ ]
+$XR-F9 (110)  ; f
+$XR-X < g8 > g8 < g > d g b
+(110) ; c
+(111)
+$XR-FE (110) ; a+
+$XR-X (112)
+$XR-FC (110) ; g+
+$XR-X (113)
+$XR-FB (110) ; g
+$XR-X [ < g > d g d ]2
+
+$XR-F9 (110)4 ; f
+$XR-F7 (110)2 ; d+
+$XR-FC (110) ; g+
+$XR-FB (110) ; g
+$XR-FC (110)2 ; g+
+$XR-F7 (110)2 ; d+
+$XR-F9 (110)2 ; f
+$XR-FB (110) ; g
+$XR-X < g g > c c d d g g ]]2
+
+[ < g+4 q77 g+8 q7F g+ g+ > g+ < g+8 g+ q79 g+ q7F g+ g+8 ]2
+g4 q77 g8 q7F g g > g < g8 g q79 g q7F g g8
+b+4 q77 b+8 q7F b+ b+ > b+ < b+8 b+ q79 b+ q7F b+ a+8
+f4 q77 f8 q7F f f > f < f8 f q79 f q7F f g+8
+a+4 q77 a+8 q7F a+ a+ > a+ < a+8 a+ q79 a+ q7F a+ g+8
+g4 q77 g8 q7F g g > g < g8 g q79 g q7F g f8
+g4. g g g8. > g8. < g8
+
+(160)[ d+ d+ > d+8 < g g > g8 < a+ a+ > a+ a+ < g g > g8
+< f f > f8 < a a > a8 c c b+ b+< a a > a8 ]
+(161)[ < d d > d8 < f+ f+ > f+8 < a a > a a < f+ f+ > f+8 ]
+(162)[ < g g > g8 < a+ a+ > a+8 ] < a+ a+ > (163)[ > d d < g g < a+ a+ 
+d+ d+ > d+8 < g g > g8 < a+ a+ > a+ a+ < g g > g8 ]
+(161)
+(164)[ < c c b+8 d+ d+ > d+8 < g g > g g ] < d+ d+ > d+8
+(164) < b+ b+ f f
+
+(160) (161)
+(162) q79 a+8 q7F (163)
+(161)
+(164) d+ d+ > d+8 <
+(164) b+ b+ f f
+d1 (F10) r2.
+
+@LOWstr | l1
+@e b+^ a+^ g+^ b^
+
+[[ g+ a+^ b+ ]]2
+g+ a+ b b+
+g+ a+^ b+2 (F00) @e
+
+@SLAPbass | l16
+g g d d < g g >
+
+$XR-FC (110)2 ; g+
+$XR-FE (110)2 ; a+
+$XR-FB (110)4 ; g
+$XR-FC (110)2 ; g+
+$XR-FE (110)2 ; a+
+$XR-FB (110)3 ; g
+$XR-X < g g > b+ b+ g g c c
+$XR-FC (110)2 ; g+
+$XR-FE (110)2 ; a+
+$XR-FB (110)4 ; g
+$XR-FC (110)2 ; g+
+$XR-FE (110)2 ; a+
+$XR-FF (110)2 ; b
+$XR-FB (110) ; g
+$XR-X < g g > d d g g a+ a+
+
+(110)6
+
+
+r2 (100)
+
+;==========================================;
+	BELMONT #2
+;==========================================;
+
+@muted o4 y10 | l16
+(200)[ a+8 $DD $0F $03 b+ b+ b+ b+8 g g
+a+8 $DD $0F $03 b+ b+ b+ b+ b+ a+ a+ ]
+(201)[ a+8 $DD $0F $03 b+ b+ b+ > g c c c d <
+a+8 $DD $0F $03 b+ b+8 b+ g g ]
+(200) ($FA-3X)
+
+@organs | l24
+(205)[ q7E > > y12 f48 %l ^48 d c < y11 g f d < q7D y10 b+ g y9 f d y8 c < g > > %l ]
+(206)[ q78 %l y12 f d c < y11 g f d < q77 y10 b+ g y9 f d y8 c < g48 %l ^48 > > > ] / q7F ($DC-X)
+
+@lead y10 | l8
+(210)[ g2 g. f. a+ g2 g. f. b+
+g2 g. f. > d < ] g1
+(210) g2 (F20) ($EC-X)
+
+@glock y9
+g2^. f. c g2 g. f. d+
+d2^. < a+. g b+2 > g. g+. a+
+g2 g. g+. a+
+g2 f. c. f g1.
+
+; JOJO
+@overdrive y10
+<  d+4 $DD $00 $06 g g4
+f+4. g1^ c4 $DD $00 $06 d+ f4 f+4. g1^4.
+f g a+ $DD $00 $06 b+ ^ > c16 d d+. d c d16 c2^. <
+d+ d+ d+ d+12 $DD $00 $06 a+ ^24 g+16 g1^4.. ($FA-3X)
+
+; SEPTETTE 1
+@piano y9
+(240)[ g g a+
+b+ a+ b+ a+ > c. d+. d <
+b+ a+ b+ a+ > c. g. f
+d+. d. c ] < a+. g. f g2^ >
+(240) d. d+. f g4. g4. g4 >
+
+@lead o6 y10 | l4
+c2 c8. d8. d+8 d c < a+ b+
+a+2 g8. a+8. > d8 c c+ c < a+
+g+2 > c d+ d d+ f c < a+2. g b2 (F20) ($EC-X) ($FA-3X)
+
+; SEPTETTE 2
+@piano y9 | l8
+(360)[ b+4. a+ a. f. g2.. g ] > d < b+4. a+ a. > f. d2.. < g > d <
+(360) a a+ a f g2^ > d2. (F10)
+
+@strings
+< a+2 g4 > d4 c4 < a+4 a4 g4
+f+2 g4 a4 a+2 q77 a+ q7F g. a.
+a+2.. a16 a+16 b+2.. a+16 b+16 >
+d1.^16 [[ d+16 d16 ]]3 d+16 d1
+
+@organs
+(205) (206) ($DC-X)
+
+@mm7saw o4 y9
+(270) > d+4 <
+
+(275); b+ g+ d+
+$XR-02 (275) ; > d < a+ f
+$XR-FF (275) ; b g d
+(276) %l g32 f32 g4... %l ^4... (F10) r8
+
+@lead y9 | (A05)
+g16 > c16 g. g+. a+ 
+
+(280)[ g2 g. f. c g2 g. f. d+ ]
+(281)[ d2 d. < a+. g > c16 d16 c4 < g16 > c16 g. g+. a+ ]
+g2 g. f. c g2^ g f d+
+d4 d+ f4 d4 c4. < g > c g. g+. a+
+(280) (281) g2 g. g+. a+ g2 f. d. f
+g2.. f g2. (F10)
+
+@muted y10 | $DF
+(200) (201) (200) ($FA-3X)
+
+@organs
+(205) (206) ($DC-X)
+
+;==========================================;
+	BELMONT #3
+;==========================================;
+
+r8. @muted o4 (V00) y9 | l16
+@e (200) (201)
+(299)[ a+8 $DD $0F $03 b+ b+ b+ b+8 g g
+a+8 $DD $0F $03 b+ b+ b+ b+ ($FA-3X) @e ]
+
+r6.. @organs (V10) | l24
+(205) (207)[ q78 %l > y12 f d c y11 < g f48 %l ^48 > ] @e / @e q7F ($DC-X)
+
+@CHUorg y9 | l8
+r4 [[ (310)[ d+ q79 d+ q7F d+ q79 d+16 q7F d q79 d16 q7F d+ ]
+q79 d+ q76 d+ q7F ]]2 (310)
+(315)[ q79 d+ q76 d+16 q7F c q79 c16 q7F c d q79 d16 q7F d q79 d16 q7F d ]
+q79 d q76 d q7F [[ [ d+ q79 d+ q7F d+ q79 d+16 q7F d q79 d16 q7F d+ ]
+q79 d+ q76 d+ q7F ]]2 (310)
+d2. (F10)
+
+@muted o4 (V05) y10 | $DF | l16
+[[ (200) (201) ]]3
+(200) (202)[ b+8 $DD $0F $03 > d d d g c c c d < a+8 b+8 b+ g g ($FA-3X) ]
+
+@CHUorg y9 | l8
+r4 > [[ (310)
+q79 d+ q76 d+ q7F ]]2 (310)
+(315)
+q79 d q76 d q7F [[ (310)
+q79 d+ q76 d+ q7F ]]2 (310)
+d2. (F11) 
+
+; SEPTETTE 1
+$DF | l16
+r8 @r c c q79 c q7F d+ d+ q79 d+ q7F
+f f q79 f q7F g g q79 g q7F b+ b+
+> d+ d+ q79 d+ q76 d+ q7F c c q79 c q76 c q7F <  ($DC-X)
+
+@piano y12 | l8
+(340)[ < q77 g+. > q79 d+. q7B d < q7C b+. a+. ] g+ g. d+. d
+d+2^ (F10) r q7F >
+
+@CHUorg | $DF | l16
+r8 @l < g+ g+ q79 g+ q7F > d+ d+ q79 d+ q7F
+f f q79 f q7F g g q79 g q7F a+ a+
+> d d q79 d q76 d q7F < a+ a+ q79 a+ q76 a+ ($DC-X)
+
+@piano y12 | l8
+(340) q7C < a a+. > c. d
+d4. d4. d4 q7F
+
+@muted (V05) y10 | $DF | l16
+< (200) (201)
+(204)[ g+8 $DD $0F $03 a+ a+ a+ a+8 g g
+g+8 $DD $0F $03 a+ a+ a+ a+ a+ g+ g+ ] (201)
+(200) (201) (204) (202) >
+
+; SEPTETTE 2
+@piano y12 | l8
+q7D (460)[ a4. g f. d. d2.. ] d a+ a4. g f+. > d. < a+2.. d a+
+(460) d f g f d d2^ g2
+
+@strings y9
+q7F > c-. c. d <
+
+@BGstr y11
+< g2 d+4 g4 f2. c4 d2. c4 d4. < a+8 q79 a+8 q7F > d+8. f8. g4.
+< g16 > d+16 g4. f16 g16 a4.
+< a16 > f16 a4. g16 a16 a+4. < a16 a+16 > g1 f2 f+1 >
+
+(F10) @organs (V10)
+r24 (205) (207)
+
+[ r2 ]22 r4.
+
+@mm7saw o3 y12 | l8
+q7D g > c4 d4 
+d+4 c < g+4 g+ > c d 
+d < a+ g > d < a+ g > d f 
+a+ b+ q77 b+ q7D a+ q77 a+ q7D g q77 g q7D g2 
+a+4. b+4 
+
+(375)[ g+ d+ c g+ d+ c g+ d+ ] ; g+ d+ c
+$XR-02 (375) ; a+ f d
+$XR-FF (375) ; g d c-
+$XR-X < g a+ > c d g. a+. b+ 
+g+2 g+. a+. b+ 
+g2 g. d. g 
+d1 (F10) r
+
+@lead o5 y12 | (A05) | l8
+q7D < d+16 g16 > d+. f. g 
+
+(380)[ d+2 d+. d. < g > d+2 d+. d. c ]
+(381)[ < a+2 a+. g. d+ g16 a+16 g4 d+16 g16 > d+. f. g ]
+d+2 d+. d. < g > d+2^ d+ d c
+< a+4 > c d4 < a+4 g4. d+ g > d+. f. g 
+(380) (381) d+2 d+. f. g d+2 d. < a+. > d 
+d2.. c d2. (F10) ($FA-3X)
+
+@strCHD y7 | $DF
+q7E < < d+1^1^1 (F10)
+
+o4 | @e | @dracula
+q7F @closed c r c r (610)
+
+;==========================================;
+	BELMONT #4
+;==========================================;
+
+@strCHD o4 y11 | (A15)
+(208)[ c1^1^1 (F10)
+
+@organs (V15)
+q7E r2 > y12 f48 %l ^48 d24 c24 y11 < g24 f24 d48 %l ^48 ] / ($DC-X)
+
+@strCHD y7 | l1
+[[ < d+^^ f2 d2
+d+^^ f
+
+^^ g d+
+^ g f d > ]]2
+
+y11
+q7F c d^ c^ d^^
+d+ f d^ d+ f d+^
+
+^ f d. (F04) d4. d+ f d+^
+d (F10) r4
+
+@mm7saw y9
+c4 $DD $00 $04 d+ f4
+
+@strCHD y11 | $DF
+d+^ d^ c^ d^
+
+c [[ d^ c
+^ ]]3 d^ c2 (F10) r4
+
+@muted (V05) y10
+[[ (200) (201) ]]7
+(200) (202)
+
+@strCHD y11
+q7E (208)
+
+;==========================================;
+	BELMONT #5
+;==========================================;
+
+@strCHD o3 y7 | (A15) | l1
+q7E d+^^ (F14) r2.
+
+y13 /
+
+g^ (510)[ g+. g2
+^^ g+ a+
+
+g+^ a+ g+2 g2
+g+ a+ a ] g
+
+^^ (510) g
+
+(550)[ g+ a+^ g ]
+g+ a+^ b2
+
+@piano y9
+q7F > > > c-8.  c8. d8 < < <
+
+@strCHD y13
+q7E a+ b+ a a+
+^ b+^^
+
+a+ b+ a a+2 (F04) a+4.
+^ b+^^
+a (F14) r2.
+
+b+^ a+^ g+^ b^
+
+(550)2
+g+ a+ b g
+g+ a+^ g2 (F14) r4
+
+(550)3
+g+ a+ b g
+
+^^^ (F14) r2.
+
+
+;==========================================;
+	BELMONT #7 | @dracula r1^8
+;==========================================;
+
+o4 | l8
+q7C @open c+2^8 q7F c+ c+^1 @crash+ c+1 ($FA-3X)
+
+@richter /
+
+@CHUorg y12 | l8
+r4 [[ (410)[ b+ q79 b+ q7F b+ q79 b+16 q7F a+ q79 a+16 q7F b+ ]
+q79 b+ q76 b+ q7F ]]2 (410)
+(415)[ q79 b+ q76 b+16 q7F g+ q79 g+16 q7F g+ a+ q79 a+16 q7F a+ q79 a+16 q7F a+
+q79 a+ q76 a+ q7F ]
+[[ (410) q79 b+ q76 b+ q7F ]]2 (410) a+2
+
+@glock y9 | l8
+> g. g+. a+ <
+
+@lead y11 | (A00)
+q7B g.^64 %l ^.^64 g32 g+32 a+64 %l ^64 b+1 a+. f. d+ d2^. c. < a+ b+2 (F20) ($FA-3X)
+
+@BGstr
+q7D b+4. g2^8 > d4. c4. f4 g^32 %l ^^32 f16 c16 < a32 %l ^32 g4 f4 g2.. (F00) >
+
+@CHUorg y12
+r4 [[ (410) q79 b+ q76 b+ q7F ]]2 
+(410) (415)
+[[ (410) q79 b+ q76 b+ q7F ]]2 (410) a+2. (F11) 
+
+l16
+q7D r8 @r g+ g+ q77 g+ q7D b+ b+ q77 b+ q7D
+> d d q77 d q7D d+ d+ q77 d+ q7D g+ g+
+b+ b+ q77 b+ q74 b+ q7D g+ g+ ($DC-X)
+
+@BGstr 
+q7F (440)[ y10
+c d d+ c d d+ f d d+ f ] b+2.. a+ g+ a+2.. (F00)
+
+@CHUorg | $DF
+q7D r8 @l < f f q77 f q7D > c c q77 c q7D
+d d q77 d q7D d+ d+ q77 d+ q7D g g
+a+ a+ q77 a+ q74 a+ q7D g g
+ 
+@BGstr
+q7F (440) b+4. a f c8. < a8. f8 d4. g2^8 ($DC-X)
+
+@strCHD o3 y7 | $DF | l1
+q7E d+ (720)[ f g d+
+^ ] f g.
+
+@piano y12
+q7D > > g8. a8. a+8 < <
+
+@strCHD y7 | $DF
+q7E g a f+ g
+^ a g^
+
+^ a f+ g2 (F04) g4.
+^ a g^
+f+ (F14) r2.
+
+g^ f^ d+^ f^
+
+d+ (720)2 f^ d+
+^ f g d+2 (F14) r4
+
+d+ (720)3 f g d
+
+r8. @muted (V00) y9
+@e (200) (201) (299)
+
+r6.. @organs (V10)
+(205) (207)
+
+;==========================================;
+;	MML by Hooded Edge
+;==========================================;
+
+#amk 2

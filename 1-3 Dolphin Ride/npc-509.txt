@@ -1,0 +1,6 @@
+frames = 2
+framespeed = 8
+gfxwidth = 64
+gfxheight = 64
+width = 60
+height = 60

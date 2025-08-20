@@ -1,0 +1,5 @@
+Zinger sprites from MegaDood's Zingers and modified by DRACalgar Law to accomodate for orbiting
+Queen B sprites imported HengShao and reassembled by DRACalgar Law
+local orbit from KateBulka and modified by DRACalgar Law
+
+Please credit King DRACalgar Law!

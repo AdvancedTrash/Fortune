@@ -1,0 +1,62 @@
+#amk 2
+
+#spc
+{
+#title "W.D. Gaster (ALPHA SPHERE Remix)"
+#game "UNDERTALE"
+}
+
+;#path "RomancingSaGa3"
+
+#path "WDGaster"
+
+#samples
+{
+#default
+"pianohigh.brr"
+"pianolow.brr" 
+"Giygas Breath.brr"
+}
+
+#instruments
+{
+"pianohigh.brr" 	$FE $EA $00 $04 $40 ; @30  high piano
+"pianolow.brr" 		$FE $EA $00 $04 $40 ; @31  low piano 
+"Giygas Breath.brr"	$8F $E0 $B8 $06 $10
+}
+
+$ef $ff $35 $35
+$f1 $04 $90 $01
+
+$f4 $02
+
+#0 t45 w130 @30 l4 o4 v60 h-6
+$E8 $C0 $FF
+(1)[y11a>y10f<]4
+(2)[y11g+>y10e]4
+/
+$E8 $C0 $D0(1)4
+$E8 $C0 $FF(2)4
+
+#1 o4 @30 v60 h-6
+$E8 $C0 $FF
+r8
+(3)[y9a+a+]4
+(4)[y9aa]3
+aa8
+/
+r8
+$E8 $C0 $D0(3)4
+$E8 $C0 $FF(4)3
+aa8
+
+#2 o2 @32 h-6 v255 l2
+[r2]4 a+2c2^2^4v60r4 / @31 o3 
+$E8 $C0 $FF [a]4
+$E8 $C0 $D0 [g+]4
+
+#3 o4 @31 v60 h-6 l8
+[r2]8 /
+r
+$E8 $C0 $FF [fed4]4 $E8 $C0 $D0 ***
+fed

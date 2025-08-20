@@ -1,0 +1,184 @@
+#amk 2
+#SPC
+{
+	#title "Star Light Zone"
+	#game "Sonic The Hedgehog"
+	#comment "ported by Wakana"
+}
+
+#samples
+{
+#default
+}
+
+#instruments
+{
+@2 $9A$4C$00$03$00 ;@30
+@1 $FF$EE$00$03$00 ;@31
+@4 $FD$E8$00$03$00 ;@32
+@22$00$00$FF$0F$00 ;@33
+@23$00$00$FF$0A$00 ;@34
+@21$00$00$FF$09$00 ;@35
+@1 $FF$E0$00$03$00 ;@36
+}
+
+$f4$02
+;size 4F0
+$EF $FF $35 $35
+$F1 $04 $A0 $00
+
+(!800)[$f4$09]
+(!801)[$ED$7F$f2]
+(!802)[$ED$7F$f8]
+
+#0 t51 w225
+
+@30 v160 o3 y9
+g4a4>g4/
+(001)[e2..e16f16g8.a8.a+8a4g4f2^8f8e8f2^8
+d4e4f2..d16e16f8.g8.g+8g4f4]e2^8f8e8d4.<
+g4a4>g4(001)e2^8>
+[e8c1...]3 e8c2<<g4a4>g4
+
+
+
+
+
+
+#1
+$fa$00$02
+@31 v160 o3 y10,1,1 $ee$08
+g4a4>g4 $f4$01 / @31 $f4$01 $fa$00$02 $DF
+(001)e2^8
+f8e8d4.<g4a4>g4(001)
+$fa$00$00 e8 l16 v170
+[ga>ccr<a>cc $fa$00$02 v100>e8c4.<v160 $fa$00$00
+e8r8c8r8<a8>c8<a8r8
+ga>ccr<a>cc $fa$00$02 v100>e8]c4.<v160 $fa$00$00
+e8f8e8f8g8r8c8r8<
+
+*>c8 v160 $fa$00$00 e16f16g8r8 v160 @36 $ed$7F$e7 $de$30$0F$20 $f4$01 a+64b64 >c2^8^16^32
+
+
+
+[r1]100
+
+
+
+
+
+#2
+
+(!800,-1)
+(!802,3)
+
+;BAss
+$f4$03
+@32 v150 y10 o2
+r2.
+/l16 q6f
+[c8.cr8c4.r8cc<a+8.a+r8a4.r8aa>d8.d8rddc+8.c+8rc+c+c8.c8rcc<b8.b8rbb
+g8.gr8g4.r8ggb8.br8b4.r8]bb>c8.cr8c4.r8ccd8.d<r8g4.>d8<g8*>d<b>
+[c8.cr8c4.r8<g>cd8.dr8d4.r8<a>de8.er8e4.]r8<b>e f8.fr8f4.r8gf * r8ff+g8r8<g2.
+
+
+
+
+[r1]100
+
+
+
+
+
+
+#3
+r2 o3 v140 l16
+y8 @33cc y12 @34 c8
+/
+[v230 y10 $f4$03 @35c $f4$03 v140 y8 @33c v130 y12 @34 c8]99
+
+
+
+
+
+
+[r1]100
+
+
+
+
+
+
+#4
+$f4$03
+r2./
+(!800,-1)
+(!801,3)
+@36 v110 l16 o4 y12 q5f
+[e8.er8e2^16rd8.dr8c+2^16r [[a8rgr8f8]]2 a8rgr8f2^16r d8.dr8d2^16rf8.fr8f2^16r]e8.er8e4..rb8r8bra4grf4^16r*
+
+[r8gr8gr8gr8gr8gg
+ r8ar8ar8ar8ar8aa
+ r8br8br8br8br8bb]
+r8>cr8cr8cr8<br8ar
+* r4 a2.
+
+
+[r1]100
+
+
+
+
+
+
+
+#5
+;ECHO
+r8 $ee$08
+@30 v120 y11,1,1 o3
+g4a4>g8/^8
+(001)e2^8
+f8e8d4.<g4a4>g4(001)e2^8>
+[e8c1...]3 e8c2<<g4a4>g4
+
+
+
+[r1]100
+
+
+
+
+
+
+
+#6
+
+r2. o3 v140 l16
+/
+[v140 y8 @33cr8. v125 y10 @25c4]99
+
+
+
+
+
+
+[r1]100
+
+
+
+#7
+
+$f4$03
+r2./
+(!800,-1)
+(!801,3)
+@36 v110 l16 o4 y8 q5f
+[c8.cr8c2^16r<a+8.a+r8a2^16r> [[f8rer8d8]]2 f8rer8d2^16r<b8.br8b2^16r>d8.dr8d2^16r]c8.cr8 c4..rg8r8grf4erd4^16r
+*
+[r8er8er8er8er8ee
+ r8fr8fr8fr8fr8ff
+ r8gr8gr8gr8gr8gg]
+r8ar8ar8ar8gr8fr
+* r4 g2.
+
+[r1]100

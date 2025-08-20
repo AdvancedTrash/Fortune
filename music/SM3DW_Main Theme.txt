@@ -1,0 +1,252 @@
+#amk 2
+;   https://www.youtube.com/watch?v=L3k2B2hSl7A
+
+#spc
+{
+#length "1:52"
+#game "Super Mario 3D World"
+#title "Main Theme"
+#comment "Ported by Wakana"
+}
+#path "kitty"
+#samples
+{
+#optimized
+"XG_trumpet.brr"
+"XG_pickedbass.brr"
+"XG_brass.brr"
+"XG_Alto+Sax.brr"
+"XG_crash.brr"
+"XG_hihat2.brr"
+"altKick.brr"
+"eslap.brr"
+"Piano2.brr"
+"accordianRPG.brr"
+}
+
+#instruments
+{
+"XG_pickedbass.brr" $8F $87 $00 $05 $40 ;@30
+"XG_brass.brr" $FF $E2 $00 $02 $9F	;@31
+"XG_trumpet.brr" $FF$E2$00$04$00	;@32
+"XG_Alto+Sax.brr" $AE $6E $00 $02 $A0;@33
+"XG_crash.brr" $FF $F4 $CF $0A $52; @34
+"XG_hihat2.brr" $FF $F9 $00 $0D $00; @35 SHORT
+"XG_hihat2.brr" $FF $F1 $00 $0C $00; @36 LONG
+"altKick.brr" $00 $00 $6D $0F $00    ;  @37 a y10@32  v255 
+"eslap.brr" $ff $e0 $00 $0A $A5
+@13 $FF$EF$00$03$00 ;@39
+"Piano2.brr" $AF $20 $C0 $03 $00 ; @40
+"accordianRPG.brr" $BA$4F$00$05$00 ;@41
+"accordianRPG.brr" $FA$E9$00$05$00 ;@41
+}
+
+(!800)[$f4$09]
+(!801)[$ed$7f$f8]
+
+"bum= @37 v240 y10 "
+"pem= @38 v200 y10 "
+"tz= @35 v100 y8 "
+"ts= @36 v180 y12 "
+"cym= @34 v200 y9 "
+
+$f4$02
+
+$ef$ff$20$E0
+$f1$03$A0$01
+
+#0 t69 w210
+
+@32 v180 y12 o3 l16
+r8f8rga8ra8ra+8aa+8b4..>c8.<a+8ra8g+8rg4..>c4.
+/
+(!800,-1)
+(!801,3)
+@39 v110 o5 y6
+[a8r4a+8r4>c4<a+4r4a8r4g8r4f4g4r4
+f8r4f8r4a+4f4r4a+8r4g8r4f4g4r4
+a8r4a+8r4>c4<a+4r4a8r4g8r4f4g4r4
+f8r8f8r8.>c8rd8r2^8<a8r4a+8r4] >c4<a+4r4
+* b4>c4r4
+cym o3 c1^1^4
+@32 v180 y12 o4
+[d8rd8rd8c8r8<a+2.g4a4a+4] >c4r8d4r8d+4e4r4
+cym o3 c1^1^4
+@32 v180 y12 o4
+* e8re8rf8rf8rf+8f+8rg4..r8>c8r8c8r4c2.
+
+
+
+[r1]100
+
+
+
+
+
+#1
+
+@32 v160 y10 o3
+r8c8rdf8rf8rf8fg8g+4..g4$dd$20$20<a>  r2^4^8 g4.
+/
+(!800,-1)
+(!801,3)
+@39 v100 o5 y6
+[f8r4g8r4a4g4r4f8r4e8r4d4e4r4
+d8r4c8r4f4d4r4f8r4e8r4d4e4r4
+f8r4g8r4a4g4r4f8r4e8r4d4e4r4
+d8r8d8r8.a8ra+8r8^2f8r4g8r4] a4g4r4
+* g+4a4r4
+v0 r1^1^4
+@31 v120 y7 o5
+[d8rd8rd8c8r8<a+2.]
+e4f4g4a4r8a+4r8b4>c4r4
+r1^1^4 * <g4a4a+4> e8re8rf8rf8rf+8f+8rg4..r8>c8r8c8r4c2.
+
+
+[r1]100
+
+
+
+
+
+#2
+
+@31 v140 y7 o5 l16
+r8f8rga8ra8ra+8aa+8b4..>c8.<a+8ra8g+8rg4..>c4.
+/
+@40 v120 o4 y11
+(200)[r8a8.aa8a>e8.f8.c8ec8ce4^16d8.dd8<a>c8.d8.d8fd8dd8.] (201)[^8d8.dd8df8.d8.d8dd8dd8.^8f8.ff8.f+8.g8.f8f8.ff8.<]
+(200) >r8f8.ff8.f+8.g2d8.d8.cc8cd8.d8.f4^16d8.dd8d
+(200) (201) (200) r8f8.ff8.f+8.g2..cc8cd8.d8.e4^f8.ff8f
+
+[ [[d8.f8.]]4 c8.e8.c8.e8. d8.f+8.d8.f+8.] d8.g8.d8.g8. c8.e8.c8.e8.f4.g4.g+4a2
+* 
+r1.
+
+@32 v170 y11 o4
+c8rc8rc8rc8rd+8d+8re4.. q79 c8 q7f g q79 c8 r q7f g8 r q79 c8 r q7f g+2.r2
+
+[r1]100
+
+
+
+
+
+
+#3
+
+
+@31 v120 y9 o5
+r8c8rdf8rf8rf8fg8g+4..g4$dd$20$20<a>  r2^4^8 g4.
+$f4$03/
+o3 
+[ [[bumc4.pemc4.bumc4.pemc4^16bumc]]3 bumc4.pemc4.bumc4.pemc8.c8c]6
+r8 ts c4c4.c2 pem cc8c
+
+[r1]100
+
+
+
+
+
+
+#4
+$f4$03
+(!800,-1)
+(!801,3)
+@30 v199 o4 y10 l16
+f8.>fr8<e8.>er8<d8.>d8<c+4   a8a+>c8.<a+8.a8g+8.g4^r2
+/
+[f4r8c4r8f8fc8rf8.e8.d4r8<a4r8>d8d<a8r>d8.c8.<a+4r8f4r8a+8a+f8ra+8.b8.>c4r8<g4r8>c8c<g8r>c8.d8ef4r8c4r8f8fc8rf8.e8.d4r8<a4r8>d8d<a8r>d8.c8.<a+8.r>f4r<a+8.>c8.r^4b>c8.<f4.g4.f4.r4.]2
+
+[a+4r8f4r8a+8a+f8rg8.a+8.a4r8e4r8d8de8rf+8.a8.g4] r8 d4r8c8cd8re8.g8.f8.r8.g8.r8gg+8gg+8a8.f8.r
+* rg4f8.d+8.ra+8.r8>d+8.c4r8<g4r8>c8c<g8ra8.a+8.>c4r8<c4>c4c<a+8.a8.g8.
+
+
+[r1]100
+
+
+
+
+
+
+
+#5
+r1r1r4.
+@33 v220 o4 y11
+(!800,-1)
+(!801,3)
+c4d8re8r
+/
+[gr8fr8e8fr8c2^cd8fgr8fr8e8fr8a2^ef8>cc4<a+4^f8.>c4.<a+4.ar8ar8a8a+r8g2^cd8f
+gr8fr8e8fr8c2^cd8fgr8fr8e8fr8a2^ef8>cc4<a+4^a8.g8.cr8d8fr8f1^4^] cd8f
+* 
+
+@42 v160 o4 y8
+f8.. $f4$01 >c+32d4 $f4$01 <a+4>d4f4e4d4cr8cr8c8<a+r8a2ra8.ra+4g4a+4>d4c4<a+4> c8. r8. d8. r8. d+4 e4<f8.r>
+d4<a+4>d4f4e4d4cr8cr8c8<a+r8a2r8a8.a+4g8r8g8a8a+4g8r8>d+4c1^4
+r4.
+@31 v90 y9 o5
+e8r8e8r4e2
+
+@33 v220 o4 y11
+cd8f
+
+
+
+
+
+
+
+#6
+o3
+
+tsc4.c4.c4^c4.. cymc1.
+/@40 v120 o4 y12
+(600)[r8f8.ff8f>c8.c8.<a8>c<a8a>c8.^8<a8.aa8fa8.a8.a8>d<a8aa8.]
+(601)[^8a+8.a+a+8a+a+8.a+8.a+8a+a+8a+a+8.^8> d8.dd8.d8.d8.d8d8.dd8.]
+(600) r8d8.dd8.d8.d2<a8.a8.a @41 v130 o4 y9 a8.a+4.>c4<a+4r4 ;a8aa+8.a+8.>c4^16<a+8.a+a+8a+
+
+@40 v120 o4 y12
+(600) (601) (600) >r8d8.dd8.d8.d2..<a @41 v130 o4 y9 a8.a+4.b4>c4r4 ;a8aa+8.a+8.>c+4^c8.cc8c
+
+@40 v120 o5 y12
+[r8. a+4.a+4.a+4.a+4.g4.g4.a4.a8.] r8.a+4.a+4.g4.g8. 
+
+@31 v130 y7 o5
+c4r8d4r8d+4e4r4
+
+@40 v120 o4 y12
+* 
+r1.
+@32 v130 y11 o3
+a8ra8ra+8ra+8rb8b8r>c4.r8.e8r8e8r4e2.r4
+
+[r1]100
+
+
+
+#7
+o3 $f4$03
+bumc4.c4.c4^16c4..r1. $f4$03
+/
+(700)[cym c4 tz[[c q76 c q7f c]]55 c q76 c q7f]
+
+@41 v130 o5 y9
+c8.d4.e4d4r4
+
+(700) 
+
+@41 v130 o5 y9
+c8.d4.d+4e4r4
+o3
+tz [c q78 c q7f c]20  ;r1^1^1..
+
+@32 v180 y12 o3
+e4f4g4a4r8a+4r8b4>c4r4
+o3
+tz [c q78 c q7f c]24 ;[r1]4 r2 
+@31 v90 y9 o5
+c8rc8rc8rc8rd+8d+8re4.. r8 g8 r8 q7f g8 r4 g+2.r2
+
+[r1]100

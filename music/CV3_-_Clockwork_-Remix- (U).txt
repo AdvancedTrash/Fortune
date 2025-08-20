@@ -1,0 +1,169 @@
+#amk 2
+
+#SPC
+{
+	#title "Clockwork SMW"
+	#game "Castlevania"
+	#comment "ported by Wakana"
+}
+
+#samples
+{
+        #optimized
+}
+
+
+#instruments
+{
+@1 $00 $00 $FF $03 $00 ;@30
+@6 $8F $F0 $FF $03 $00 ;@31
+@21 $00 $00 $FF $09 $00;@32
+@29 $00 $00 $FF $05 $00;@33
+n1f $FF $F0 $00 $00 $00;@34
+@22 $FF $F5 $00 $0C $00;@35
+@23 $FC $F5 $00 $0C $00;@36
+}
+
+"bum=@32 v240 y10"
+"pem=@33 v200 y8"
+"tz=@35 v160 y12"
+"tss=@36 v210 y11"
+
+
+$EF $FF $30 $30 
+$F1 $04 $A5 $01
+
+#0 t50 w165
+r192
+$f4 $02
+/
+t50
+;MAIN
+@31 v160 l16 o5 y12
+d<a>c<a+f+agdc+ega+cd+f+agf+gaa+ga+>dc+<a>c+ed+cd+f+g1<
+gdgd8.c+dd+dc+c<agf+d>
+t50
+v180 y11
+d<aa+>cd<a+>cdd+dc<a+g+a>dc8<a+agf+gaa+>c<g>d+<g>d<f+>c<f+
+v160 y12
+a+g>d<g>c<g>d+<g>d<ga+g>c<gagf+df+gaf+a>cd4.
+v180 y11
+a>cd<aa+>cd<a+>cdd+dc<a+g+a>dc8<a+agf+gaa+>c<g>d+<g>d<f+>c<f+
+v160 y12
+a+g>d<g>c<g>d+<g>d<g>g<g>f<g>d+<g>e4g4g4f+df+a<
+v170 y11
+t50
+gaa+>cd2<g8>d8c2.<a+8a8gaa+>cd2<g8>d8c2^8<a8>f+d<af+
+gaa+>cd2<g8>d8c2.<a+8a8gaa+>cc+2<a+8>c+8d2.deff+
+g2.f+2.g2.f+4f+d+c<af+a>cd+
+
+
+
+#1
+r192/
+;MAIN
+@31 v160 l16 o4 y8
+a+fagdc<a+gaa>ee<f+f+>dd<a+aa+>cd<a+>dfec+egf+d<a+a>
+d8<g8>f8<g8>e8<g8>d+8<g8>
+d<a+>d<a8.g+aa+ag+gedc+<a>
+[r2]4 gda+dada+da+dgdagfdc+dc+dec+ega4.r8
+[r2]4 >gda+dada+da+d>d<d>d<d>c<d>c+4e4d4d<a>df+<
+<
+v150
+r4.gaa+>cd8d8g8c8g8f+8c8g8f+8df+gar4.<
+gaa+>cd8d8g8c<g>cg8gagf+8d8af+d<a
+a+2^8d+8a+8>c8<a2.g8f+8a+2^8d+8a+8>c+8<a2.
+af+gaa+aa+>cd<aa+>cd<a+>cdd+c<a+a>d+c<a+ad>c<a+aa+aa+>cd<aa+>cd<a+>cdd+c<a+a>d+c<a+ad>c<a+a
+
+[r1]100
+
+#2
+r192/
+;STRING
+$e5 $00 $00 $00
+@17 $ed $7F $e0 v100 y12 o3 l16
+g2a4d4g4a+4a4d4g4a+4a4g+4
+g>dgd8.c+dd+dc+c<agf+d
+v130
+$e5 $00 $30 $80
+[g2a4f+4g4a+4a4f+4g4a4a+4>c4c+2d4<d4]2
+$e5 $00 $00 $00 v100
+[d+1d1]3
+c+1d1
+$e5 $00 $30 $80 v130
+g1^1^2d2
+
+[r1]100
+
+#3
+r192/
+;STRING
+$e5 $00 $00 $00
+@17 $ed $7F $e0 v100 y8 o3 l16
+d2e4<a4>d4f4e4<a4>d4f4e4d+4
+da>d<a8.g+aa+ag+gedc+<a>
+v130
+$e5 $00 $30 $80
+[d2e4c+4d4f4e4c+4d4e4f4g4g+2a4<a4]2
+$e5 $00 $00 $00 v100
+[a+1a1]3
+g+1a1
+$e5 $00 $30 $80 v130
+>d1d1d2<a2
+
+
+[r1]100
+
+
+#4
+r192
+$f4 $03
+/
+;BASS
+@8 $ed $7C $E0 o2 v200 y10
+g2a4d4g4a+4a4d4g4a+4a4g+4
+g>dgd8.c+dd+dc+c<agf+d
+v220
+[ggggggggaaaaf+f+f+f+gggga+a+a+a+aaaaf+f+f+f+ggggaaaaa+a+a+a+>ccccc+c+c+c+c+c+c+c+dddd<dddd]2
+v200
+[ [[d+8]]8 [[d8]]8 ]3
+[c+8]8 [d8]8
+v220
+[g]40 [d]8
+
+[r1]100
+
+
+#5
+r192/
+o3 l16
+$f4 $03bumc4c4$f4 $03pemcc8c$f4 $03bumc4c4c8$f4 $03pemc32c32c32c32cc8c$f4 $03bumc4c8c8$f4 $03pemc8$f4 $03bumc8
+bumc8c8$f4 $03pemc8$f4 $03bumc8$f4 $03pemc$f4 $03bumcc$f4 $03pemc8.$f4 $03bumcc$f4 $03pemc$f4 $03bumccc$f4 $03pemc$f4 $03bumc$f4 $03pemcc
+[$f4 $03bumc8$f4 $03pemc8]32
+[$f4 $03 bumcc8c $f4 $03 pemc8 $f4 $03 bumcc8cc8 $f4 $03 pemc8 $f4 $03 bumc8]12
+
+
+
+[r1]100
+
+
+#6
+r192/
+o3 l16
+[r4tssc2.]2 r4 c2c1^4
+[tzcctssctzc]32
+r4
+[tssc4]99
+
+[r1]100
+
+
+#7
+r192/
+v70 o3 @34
+y13 c1 y7 c1 y13 c1^8^16 c4^16 y7 c4 y13 c4
+[y13c1[[r2]]6
+y7c1[[r2]]6]2
+y13c1[[r2]]6
+
+[r1]100

@@ -1,0 +1,249 @@
+#amk 2
+;************************
+
+; SPC Generator Info
+#SPC
+{
+    #author  "Nobuo Uematsu"
+    #title   "Tifa's Theme"
+    #game    "Final Fantasy VII"
+    #comment "Ported by Ahrion"
+}
+
+#path "TifasTheme"
+
+#samples
+{
+	#optimized
+	"Bassoon.brr"
+	"Clarinet.brr"
+	"Flute.brr"
+	"GlassBell.brr"
+	"Oboe.brr"
+	"Strings.brr"
+	"Strings_Akk.brr"
+}
+
+#instruments
+{
+	"Bassoon.brr"	    $FF $E6 $00 $0A $80 ; @30
+	"Clarinet.brr"	    $F4 $E8 $00 $03 $02 ; @31
+	"Flute.brr"	    $FF $E8 $00 $02 $00 ; @32
+	"GlassBell.brr"	    $FF $EC $00 $03 $68 ; @33
+	"Oboe.brr"	    $F4 $E8 $00 $06 $00 ; @34
+	"Strings.brr"	    $F3 $E6 $00 $03 $A8 ; @35
+	"Strings_Akk.brr"   $FF $E6 $00 $04 $00 ; @36
+}
+
+w175
+t32
+
+"Bassoon = v220"
+"Clarinet = v160"
+"Flute = v164"
+"Oboe = v150"
+"GlassBell1 = v160"
+"Strings1 = v130"
+"Strings2 = v165"
+"StringsA = v145"
+
+
+"VIB = $DE $60 $16 $0F $EA $0C"
+
+$F4 $02 /
+
+
+
+
+; +---------------------+
+; |     Channel #0	|
+; |     Clarinet	|
+; |     Flute		|
+; |     Bassoon		|
+; +---------------------+
+
+#0
+o4
+Clarinet VIB y9
+(11)[@31
+c1 < g2. $ED $76 $E8 a+4 a1.. r4 @31 > c1 < g2. $ED $76 $E8 a+4 >]
+< $ED $78 $E8 $F4 $01 a+8 a8 g8 
+a1^4^8 $F4 $01 ^8 r8 >
+(11)
+< $ED $78 $E8 $F4 $01 a+8 a8 g8 a4 $F4 $01 ^8 f4 g8 $DD $0C $01 a ^2 $DD $00 $01 g ^2^4^8 r8 >
+
+@32 Flute
+(12)[
+c8 a8 g8 a8 c2 c8 a8 g8 a8 c+2 c+8 d+8 c+8 c1. r8 c8 a8 g8 a8 c2 c8 a8 g8 a8 > c2 < a8 > f8 e8 d1. r8 < d8 a+8 a8 a+8 d2 d8 a+8 a8 a+8 g2 g8 f8 g8 a1.. a4 a8 g8 f+8 g8 a+4 a8 g8 g4 f2 d8 f8] g1^2^8
+
+@30 Bassoon
+(12) $ED $7F $E9
+g1^2^4 r4
+
+
+; +---------------------+
+; |     Channel #1	|
+; |     Oboe		|
+; |     Flute		|
+; |     GlassBell	|
+; +---------------------+
+
+#1
+o4
+Oboe VIB y11
+(21)[@34 c1 c+2. $ED $76 $E8 < a+4 > c1.. r4 @34 c1 c+2. $ED $76 $E8 < a+4 >]
+
+$ED $78 $E8 $F4 $01 c+8 c8 < a+8 >
+c1^4^8 $F4 $01 ^8 r8
+(21)
+$ED $78 $E8 $F4 $01 c+8 c8 < a+8 >
+c4 $F4 $01 ^8
+
+< a4 a+8 $DD $0C $01 >c ^2 $DD $00 $01 <a+ ^2^4^8 r2
+
+@33 GlassBell1 $DF
+y9 a1 r4. a+4. r2^8 a2^8 r4. a2^8 r4. a2^8 r4. > c2^8 r4. < y7 a+8 r4. a8 r4. a+2^8 r4. y9 a+4. > d4 d8 e8 c8 < a+2^8 > c4. < a4. a+4 > c4. < a+4. a4 r4. g2^8 r4. f2^8 r4. b4. r8 > d1^8 < a1 r4. a+4. r2^8 a2^8 r4. a2^8 r4. a2^8 r4. > c2^8 r4. < y7 a+8 r4. a8 r4. a+2^8 y9 r4. a+4. > d4 d8 e8 c8 < a+2^8 > c4. < a4. a+4 > c4. < a+4.
+
+@32 Flute VIB y10
+>> c4 c8 < a+8 a8 a+8 > d4 c8 < a+8 a+4 a2 f8 a8 $ED $7F $E9 b1.. r4 
+
+
+
+; +---------------------+
+; |     Channel #2	|
+; |     GlassBell	|
+; +---------------------+
+
+#2
+o2
+@33 GlassBell1
+y13
+[[f1]]15
+
+> c1^1
+
+(31)[y11 c1 r8 c+2.. r8 c2.. r8 c2.. r8 c2.. r8 e2.. r8 d4. r8 d4. r8 d2.. r8 d2.. r8 c2.. r8 c1... r8]
+< a+2.. r8 a2.. r8 > d1...
+(31)
+< a+4 > y9 g2^8 r8 y11 < a4 > y9 f2^8 r8 y11 d4 y9 b4. r8 > d1^8 
+
+
+
+; +---------------------+
+; |     Channel #3	|
+; |     GlassBell	|
+; |     Strings		|
+; +---------------------+
+
+#3
+o3
+@33 GlassBell1
+y11
+[[r8 c2.. r8 c+2.. r8 c2.. r8 c2..]]2
+
+(41)[r8 y11 c4 y9 a2^8 r8 y11 c+4 y9 a+2^8 r8 y11 c4 y9 a2^8 r8]
+y11 c4 y9 a2^8
+(41)
+
+y11 g4 > y7 d+1^2^8 <
+
+y10 g1 r4 f2^8 f8 r4 f8 g2^8 r4 f2. r4 f8 g2^8 r4 a8 b2^8 r4 y9 f4 r4 f4 r4 g2. r4 y10 g8 a4 g4. r4 e2. r4 f2 g4 a4. g4. f4 r4 d+2. r4 d2. r4 g4. a8 b1^4
+
+@35 Strings1 y11 
+< f1 f1 f1^1 f1 a1 a+2 a2 g2^8 r4. $ED $7F $E6 Strings2 g1^1 f1^1 d+1 d1 d1 $ED $7F $E8 ^1 
+
+
+
+; +---------------------+
+; |     Channel #4	|
+; |     GlassBell	|
+; |     Strings		|
+; +---------------------+
+
+#4
+o3
+@33 GlassBell1
+y9
+[[r4 f2.]]8
+
+@35 Strings1 y11
+a1 a+1 a1^1 a1 a+1 a1 g1^1 <
+
+@33 GlassBell1
+y13 f1 f1 f1 f1 f1 a1 a+2 a2 g1 g1 c1 f1^1 d+1 d1 g1^1 
+
+@35 Strings1 y10 
+> c1 c+1 c1^1 c1 e1 $ED $73 $E0 f1^2^8 r4. $ED $7F $E6 Strings2 < a+1 > c1^1^1 < a+1 a1 b1 $ED $7F $E8 ^1 
+
+
+
+; +---------------------+
+; |     Channel #5	|
+; |     GlassBell	|
+; |     Strings		|
+; +---------------------+
+
+#5
+o3
+@33 GlassBell1
+y7
+[[
+r4. a2^8
+r4. a+2^8
+r4. a2^8
+r4. a2^8
+]]2
+
+@35 Strings1 y10
+> f1^1^1^1 f1 f1 f1 d+1^1
+
+@33 GlassBell1
+y7 c1 r4. c+4 c8 < a+8 r2 > c2^8 r4. g4 f8 c4 r4. c2^8 r4. e2^8 r1^1^4^8 d4. f4 g4. d2^8 r4. f1^2^8 r2 < a+2 r2 a2 r2 > d4. r8 g1
+
+@35 Strings1 y9
+< a1 a+1 a1^1 a1 > c1 $ED $73 $E0 d1^2^8
+
+@36 StringsA
+d8 a+8 a8 a+8 d2 d8 a+8 a8 a+8 g2 g8 f8 g8 a1^1 a8 g8 f+8 g8 a+4 a8 g8 g4 f2 d8 f8 g1 $ED $7F $E8 ^1 
+
+
+
+; +---------------------+
+; |     Channel #6	|
+; |     GlassBell	|
+; |     Strings		|
+; +---------------------+
+
+#6
+o4
+[[r2]]16
+
+@35 Strings1 y9
+c1 c+1 c1^1 c1 c+1 c1^1^1
+
+[[r2]]32
+
+@33 GlassBell1 y13
+<< f1 f1 f4. > g2^8 < f1 f4. > g2^8 < a4. > b2^8 < a+2 a2 g1 g4. > a4 r4. < c1 f1^1 d+1 d1 g1^1 
+
+
+
+; +---------------------+
+; |     Channel #7	|
+; |     GlassBell	|
+; +---------------------+
+
+#7
+o3
+[[r2]]16
+
+y9
+@33 GlassBell1
+[[r4 f2^8 r8]]7
+r4 > c2^8 < r8
+
+[[r2]]34
+
+y10
+>
+c1 r4 < f8 > c+4 c8 < a+8 f8 r4 f8 > c2^8 r4 < f8 > g4 f8 c4 r4 < f8 > c2^8 r4 < a8 > e2^8 r4 < f4 r4 f4 r4 g2. r4 g8 > d4 < g8 > f4 g4 < e8 > d2^8 r4 < f8 > f4. < g4 a4. g4. f4 r4 d+4 a+2 r4 d4 a2 r4 g4 > d8 < a8 b4 > g1 

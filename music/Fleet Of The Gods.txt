@@ -1,0 +1,634 @@
+;==========================================;
+;	SPC Generator
+;==========================================;
+
+#SPC
+{
+	#title "Fleet Of The Gods" ; ~ Flying Battery Zone Act 1 (SNES Hakurei-mix)
+	#game "Reimu Hakurei 3 & Meta Knuckles"
+	#author "[REDACTED]"
+	#comment "arr. Hooded Edge"
+	; THANKS FOR 1.5K SUBSCRIBERS, EVERYBODY!!! :DDDDDDDDDDDD
+	#length "auto"
+}
+
+;==========================================;
+;	THIS RIGHT HERE IS DEFINITELY IMPORTANT!!
+;==========================================;
+
+; To change the pitch of the song, replace the number after
+; ''PITCH'' to any number between whatever's included below.
+; This won't affect the percussion / sfx by this at all.
+
+; To change the version of the song, replace the number after
+; ''VERSION'' to any number between 1 - 2.
+; This'll affect whether the voice clips appears in the song, but it's not compatible with Super Mario World. It's just there for those who just wanna listen to the song.
+
+; this allows for awesome customization to fit your needs or your
+; preferences... but if you know your stuff, then you should be able
+; to go way beyond the limits I gave you here.
+
+;==========================================;
+;	Song Pitch
+;==========================================;
+
+	#define PITCH 1 ; Choose between 1 - 2
+
+	#define VERSION 2 ; Choose between 1 - 2
+
+;=================\ Pitch \==================;
+
+; 1 = Pitch will be on the a minor (Original)
+
+; 2 = Pitch will be on the b minor (AoCF)
+
+;================\ Version \================;
+
+; 1 = Enables the voice clips (Listening-Only)
+
+; 2 = Disables the voice clips (SMW-Compatible)
+
+;==========================================;
+;	Samples
+;==========================================;
+
+#path "Hooded-Edge-Simping-For-Sonic-3-And-Knuckles-Again"
+
+#if VERSION == 1 ; Listening-Only
+#SAMPLES
+{
+	"../default/08 SMW @6.brr"
+}
+#endif
+
+#if VERSION == 2 ; SMW-Compatible
+#SAMPLES
+{
+	"../optimized/00 SMW @0.brr"
+	"../optimized/01 SMW @1.brr"
+	"../optimized/02 SMW @2.brr"
+	"../optimized/03 SMW @3.brr"
+	"../optimized/04 SMW @4.brr"
+	"../optimized/05 SMW @8.brr"
+	"../optimized/06 SMW @22.brr"
+	"../optimized/07 SMW @5.brr"
+	"../default/08 SMW @6.brr"
+	"../EMPTY.brr"
+	"../optimized/0A SMW @9.brr"
+	"../optimized/0B SMW @10.brr"
+	"../optimized/0C SMW @13.brr"
+	"../optimized/0D SMW @14.brr"
+	"../optimized/0E SMW @29.brr"
+	"../optimized/0F SMW @21.brr"
+	"../optimized/10 SMW @12.brr"
+	"../optimized/11 SMW @17.brr"
+	"../optimized/12 SMW @15.brr"
+	"../EMPTY.brr"
+}
+#endif
+
+#SAMPLES
+{
+	"RS1 Square.brr"
+	"MM7 Sawtooth.brr"
+	"Romantic Trumpet.brr"
+	"JV1080 Creamy Guitar Lead.brr"
+	"Some Organs.brr"
+	"MM7 Pulse 18.75%.brr"
+	"DK4 Synth Brass.brr"
+
+	"MM7 Synth Brass I.brr"
+	"Square Pop.brr"
+	"Sawtooth X.brr"
+	"Cool String Ens.brr"
+	"Custom FM Synth Bass.brr"
+
+	"Yasui Snare.brr"
+	"DNB Bass Drum.brr"
+	"Waka Side Stick.brr"
+	"MM7 Hi-Hat 1.brr"
+	"R-8 Crash Cym.brr"
+}
+
+;==========================================;
+;	Instruments
+;==========================================;
+
+#INSTRUMENTS
+{
+	"Yasui Snare.brr" $9F $F5 $B8 $15 $00 ; @30 snare
+	"DNB Bass Drum.brr" $FF $F5 $B8 $09 $FC ; @31 bass drum
+	"Waka Side Stick.brr" $FF $98 $B8 $0E $A0 ; @32 stick
+	"MM7 Hi-Hat 1.brr" $FF $FB $B8 $0A $00 ; @33 closed hi-hat
+	"MM7 Hi-Hat 1.brr" $FF $F4 $B8 $0A $00 ; @34 open hi-hat
+	"R-8 Crash Cym.brr" $9F $F2 $B8 $0A $00 ; @35 crash cymbal (c+1)
+	"R-8 Crash Cym.brr" $9F $F3 $B8 $0A $00 ; @36 crash cymbal (c+4)
+
+	"RS1 Square.brr" $9E $E6 $B8 $04 $00 ; @37 sine
+	"MM7 Sawtooth.brr" $FF $A6 $B8 $04 $01 ; @38 low brass
+	"../default/08 SMW @6.brr" $9B $C6 $B8 $02 $FE ; @39 violin
+	"Romantic Trumpet.brr" $8B $E6 $FF $01 $C0 ; @40 zunpet
+	"JV1080 Creamy Guitar Lead.brr" $FF $E6 $B8 $06 $00 ; @41 overdrive
+	"Some Organs.brr" $AF $E8 $B8 $03 $00 ; @42 organs
+	"MM7 Pulse 18.75%.brr" $CF $A6 $B8 $08 $03 ; @43 pulse
+	"DK4 Synth Brass.brr" $FF $E8 $B8 $03 $00 ; @44 lady gaga
+
+	"MM7 Synth Brass I.brr" $FF $E8 $B8 $07 $02 ; @44 synth brass
+	"Square Pop.brr" $FF $E8 $B8 $03 $00 ; @45 square pop
+	"Sawtooth X.brr" $DE $E0 $B8 $03 $C0 ; @46 saw chord
+		"Cool String Ens.brr" $DA $E0 $B8 $03 $05 ; @47 string chord
+	"Custom FM Synth Bass.brr" $FF $EB $B8 $05 $C0 ; @48 synth bass
+}
+
+;==========================================;
+;	Main Macros
+;==========================================;
+
+	"@e = $F4 $03"
+	"%l = $F4 $01"
+
+	"($FA-3X) = $FA $03 $00"
+	"$XR-X = $FA $02 $00"
+		"$XR- = $FA $02 $"
+	"($E8-X) = $E8 $00 $00"
+		"($E8-0) = $E8 $FF $1A" ; fade out
+	"($EC-X) = $EC $00 $00 $00"
+		"($EC-0) = $EC $00 $04 $02"
+	
+	"@rest = r1 /"
+
+;==========================================;
+;	Remote Commands
+;==========================================;
+
+	(!800)[ $F4 $09 ]
+	(!810)[ $ED $7F $F8 ] ; main
+	(!820)[ $ED $7F $FC ] ; bass
+
+	"@cmd_main = (!800, -1) (!810, 3)"
+	"@cmd_bass = (!800, -1) (!820, 3)"
+	
+	"@cmd_main_off = (!800, 0) (!810, 0)"
+	"@cmd_bass_off = (!800, 0) (!820, 0)"
+
+;==========================================;
+;	Instrument Macros
+;==========================================;
+
+		"(F00) = $ED $7F $F4 ^8"
+		"(F10) = $ED $7F $F2 ^4"
+			"(F11) = $ED $7F $F2 ^8."
+		"(F20) = $ED $7F $F1 ^2"
+		"(F30) = $ED $7F $EF ^1"
+
+	"@sine = @37 v240 | $DE $1A $0A $2A"
+	"@lowsaw = @38 v235 | $DE $1A $0C $3F"
+	"@violin = @39 v255 | $DE $18 $0B $40 | $FA $03 $72"
+	"@zunpet = @40 v255 | (B00) | $FA $03 $FF"
+		"(B00) = $DE $12 $0B $40"
+	"@overdrive = @41 v255"
+		"(B10) = $DE $0C $0C $2F"
+		"(A10) = $FA $03 $24"
+	"@organs = @42 v245 | $DE $1A $0C $3F"
+	"@pulse = @43 v195"
+	"@ladygaga = @44 v255 | (B10)"
+
+	"@synbrass = @45 v205 | $DE $10 $0A $1A"
+		"(A00) = $FA $03 $AF"
+	"@sqrpop = @46 v175"
+	"@saw_chd = @47 v200 | $DE $0A $0A $1C"
+		"@string_chd = @48 v195"
+	"@synbass = @49 o3 v220"
+
+;==========================================;
+;	Percussion Macros
+;==========================================;
+
+	"@p = $FA $03 $2F"
+
+	"@snare = @30 v255 y10"
+	"@kick = @31 v230 y10"
+	"@stick = @32 v255 y12"
+
+		"(vol) = v225"
+	"@closed = @33 y9"
+	"@open = @34 y10"
+	"@crash = v255 y10 | $FA $03 $CF"
+		"@crash+ = @35 | @crash"
+		"@crash- = @36 | @crash"
+
+;==========================================;
+;	Echo Values
+;==========================================;
+
+	$EF $3C $32 $32 ; OFF - #0, #1, #6, #7
+	$F1 $05 $40 $01
+	$F4 $02
+
+;==========================================;
+;	DON'T MESS WITH THIS
+;	IF YOU DON'T KNOW WHAT YOU'RE DOING!!!
+;==========================================;
+
+#if PITCH == 1 ; Original
+;	$E4 $00 ; a minor
+	"@knuckles = "
+	"@eggrobo = "
+#endif
+
+#if PITCH == 2 ; AoCF
+	$E4 $02 ; b minor
+	"@knuckles = h-2"
+	"@eggrobo = h0"
+#endif
+
+;==========================================;
+;	AGAIN DON'T MESS WITH THIS
+;	IF YOU DON'T KNOW WHAT YOU'RE DOING!!!
+;==========================================;
+
+#if VERSION == 1 ; Listening-Only
+
+#SAMPLES { "MJ Scream.brr" }
+
+#INSTRUMENTS
+{
+	"MJ Scream.brr" $00 $00 $7F $03 $00 ; @50 mj scream
+}
+
+	"@woo = @50 v255 y10 | $FA $03 $FF | e4 ($FA-3X)"
+
+#endif
+
+;==========================================;
+;	Extras
+;==========================================;
+
+	"HAKUREI # = #"
+
+;==========================================;
+;	Global Volume / Tempo
+;==========================================;
+	w100 t63
+;==========================================;
+
+;==========================================;
+	HAKUREI #0 | @knuckles @p r2.
+;==========================================;
+
+o3 | l8
+@snare c c16 c16 /
+
+(000)[ @kick c r @snare c4 ]7 (001)[ @kick c r @snare c c16 c16 ]
+(000)7 (002)[ c @kick c16 c16 @snare c16 c16 c16 c16 ]
+
+(000)7 (001) (000)6 (004)[ c16 c16 @kick c c @snare c16 c16 @kick c @snare c c c16 c16 ]
+
+[[ (020)[ @kick c @stick c @snare c @stick c16 c16 @kick c @stick c @snare c @stick c16 c16
+@kick c @stick c @snare c @stick c16 c16 @kick c16 @stick c16 c16 c16 @snare c @stick ] c
+(020) c16 @snare c16 ]]6
+
+(025)[ @kick c @snare c c c16 c16 c2 ]
+
+(000)7 (001) (000)7 (002)
+
+(000)7 (001) (000)6 (004)
+
+[[ (020) c (020) c16 @snare c16 ]]6
+
+(025)
+
+;==========================================;
+	HAKUREI #6 | @knuckles r2
+;==========================================;
+
+o3 | l16
+q7D @p @kick c c c c c8 c8 ($FA-3X) q7F > @e /
+
+[[ (605)[ @crash- c+4 @e < q7D @p @kick c ($FA-3X) q7F > (vol) @closed c c c ]
+(600)[ @open c8 @closed c c < q7D @p @kick c ($FA-3X) q7F > (vol) @closed c c c ]7
+@e (605) (600)6 [ < q7D @p @kick c ($FA-3X) q7F > (vol) @closed c c c ]2
+
+@e (605) (600)13 [ @open c8 @closed c c ]2 (600)
+
+(625)[ @e @crash- c+4 @e < q7D @p @kick c ($FA-3X) q7F > (vol) @closed c @open c8 ]
+(620)[ @closed c c @open c8 < q7D @p @kick c ($FA-3X) q7F > (vol) @closed c @open c8 ]15
+(625) (620)15
+
+(625) (620)5 (625)2
+(625) (620)5 (625) (620)
+
+(600) @e @crash+ c+2 ]]2
+
+;==========================================;
+	HAKUREI #1
+;==========================================;
+
+r2. @synbass | @cmd_bass | l16
+q5F d e < a a /
+
+[[ [ q7F a8 q5F > g a < a q59 a q5F a a q7F g+8 q5F > g g+ < g+ q59 g+ q5F g+ g+ 
+q7F g8 q5F g > g < g q59 g q5F g g q7F g+8 q5F > g+ q59 g+ q5F < g+ q59 g+ q5F g+ g+ 
+q7F a8 q5F > g a d e < a a q7F a8 q5F a q7F a8 a8 q5F a 
+a > d e g a < q7F a8 q5F a a > g a < a > d e < q7F a8 ]2
+
+[ a a > a8 < a a a a g+8 > g+8 < g+8 g+ g+ g g > g8 < g g g g g+8 > g+8 < g+8 g+ g+ 
+a8 a8 a8 > g a < a8 a8 a8 > g a g a < a8 a8 > g a < a8 a8 > g a < a8 ]2 q5F
+
+(120)[ f > q7F f8 q5F < f f > q7F f8 q5F < f q7F f8 q5F > f q59 f q5F < q7F f8 q5F > f q59 f q5F 
+< g > q7F g8 q5F < g g > q7F g8 q5F < g q7F g8 q5F > g q59 g q5F < q7F g8 q5F > g q59 g q5F 
+< g+ > q7F g+8 q5F < g+ g+ > q7F g+8 q5F < g+ q7F g+8 q5F > g+ q59 g+ < q7F g+8 q5F > g+ q59 g+ q5F 
+< a > q7F a8 q5F < a a > q7F a8 q5F < a ] (125)[ q7F g8 q5F > g q59 g q5F ]2 ; g
+(120) (125)2 ; g
+(120) (125)2 ; g
+(120) $XR-02 (125)2 ; a
+$XR-X
+
+(120) (125)2 ; g
+(120) $XR-02 (125)2 ; a
+$XR-X
+
+< a q59 a q5F a q59 a q5F a q59 a q5F a a a > a g a d e < a a ]]2
+
+;==========================================;
+	HAKUREI #2
+;==========================================;
+
+@violin o5
+(269)[ d e < q4F a a q7F d e < q4F a a q7F d e < q4F a a q7F d e < q4F a a q7F ]
+
+($FA-3X) | @cmd_main /
+
+@sine o5 y10 | ($FA-3X) | l16
+a1.^ %l (200)[ g e d e d c < a > d32 d+. < a8 %l
+
+@p @sqrpop y11
+q7E b r a r b8 r a8 r ] b r8.
+
+b+ r b+ r b+ r32 > ; b8 r a8 r b r q7F
+
+@sine y10
+%l c-64 c64 d d+ d d+ g a b+ a32 %l ^32 q79 a8 q7F
+
+a1^4.. %l (200) c- r32
+
+@sine y10
+< %l c64 d64 e g e g a g a > c d+ e d c a g e c32 %l ^32
+ @cmd_main_off
+ 
+@lowsaw | l8
+< (210)[ e2. e16 a16 q79 a16 q7F e2^. d16 q79 d16 q7F c16 q79 c16 q7F c-16 q79 c-16 q7F 
+< b+. ] a q79 a q76 a q73 a q71 a q7F r1^. >
+(210) e q79 e q76 e q73 e q71 e q7F r2^16
+
+; THE GROUND'S COLOR IS YELLOW
+@zunpet y9
+> %l e16 g16 %l (220)[ g+. e. g+
+
+a2 a. g. a16. %l a+32 b32 %l b+^32 b. g e. d. < g
+g+ a > c d e. g+. b a e d e16. %l d32 c+32 %l c.. < b g
+a2 a. b. b+ > d. c. d e. d. d+
+e4. %l e32 f32 f+32 g32 %l g+. e. g+ a b b+ b a g f e
+
+f2 f. c. f g. a. b b. g. e
+g+. a. b b. g+. b b+4. e b ] %l b+16 b16 %l(221)[ g e
+a4.. %l g32 g+32 %l a. g. d e4.^32 %l ^32 f32 f+32 %l g. e. g
+g+ a e g d e c d e2 (F00) ($FA-3X) ]
+
+; FLYING BATTERY ZONE
+@overdrive | (B10) | @cmd_main
+e d c
+< b+. a. > e2 d16 c16 (225)[ d. < b. g4. b a g+. b. > d4 f e d ] e4 d4 c4 c-4
+< b+. a. > e4. d c (225) e16 d16 e2..
+
+r e16 r16 e16 r16 e16 r16 e16 (F10) @cmd_main_off r.
+
+; HALBERD ~ NIGHTMARE WARSHIP
+r @organs | l16
+(230)[ < a q79 a q7F b+ q79 b+ q7F a > d+ q79 d+ q76 d+ q7F d q79 d q7F c < a g q79 g q7F
+a > c q79 c q7F d q79 d q7F c d q79 d q7F <
+
+@pulse || d4 c4 ]
+
+@lowsaw
+a b+ q79 b+ q7F b+ q79 b+ q7F a > d+ < a > e8 g q79 g q7F d+ d c8 <
+g g+ q79 g+ q7F a q79 a q7F e d2^8 (F00) >
+
+@organs
+(230)
+
+@organs
+g8 a q79 a q7F d d+ q79 d+ q7F d q79 d q7F c q79 c q7F < a q79 a q7F g e d+ d2 (F20)
+@cmd_main_off
+
+ ; FLYING BATTERY ZONE
+@lowsaw y10 | l8
+(210) < a q79 a q76 a q73 a q71 a q7F r1^. >
+(210) e q79 e q76 e q73 e q71 e q7F r2^16
+
+; THE GROUND'S COLOR IS YELLOW
+@overdrive y9 | (A10) | (B00)
+> e16 g16 (220) b+16 b16 (221) r4.
+
+; BAD ROMANCE
+@ladygaga | @cmd_main
+(250)[ f4 f f f e4 d2^ c4 d4 
+e4 e e g e4 ] c2^
+c d e c  (250) a1^
+
+r b+16 r16 b+ a b+ a b+4 
+
+;==========================================;
+	HAKUREI #3
+;==========================================;
+
+o4
+#if VERSION == 1 ; Listening-Only
+@knuckles
+r2. @woo
+
+@cmd_main / @eggrobo
+#endif
+
+#if VERSION == 2 ; SMW-Compatible
+@cmd_main @rest
+#endif
+
+y8 | ($FA-3X)
+q7F (300)[ @synbrass | l16
+a8. r g8. r e8. d8. c r8
+c8. d r e r d8. c r4
+
+^8 @sqrpop
+> e r d r c r d8 r c8 r d r8.
+e r e r e r ] d8 r c8 r d r
+
+(300) @cmd_main_off
+
+; THE GROUND'S COLOR IS YELLOW
+@violin y11 | l16
+(310)[ e e d q79 d q7F c q79 c q7F c- q79 c- q7F <
+
+a q79 a q7F > a q79 a q7F d c c- c c- c d e %l c32 c+32 %l c < b g
+a q79 a q7F a q79 a q7F > c c- c d e d e f e4
+c q79 c q7F c q79 c q7F d c c- c d c d e %l c32 c+32 %l c < b g
+a8 g a b8 a b > c8 c- c d8 c d
+e4^ e f e d e c d c- c < b g
+a b > c d e f g f g+8. f8. d8
+[[ e4. e f ]]3 e8. q7E d8. q7D c-8
+
+l8
+q7C c2^. c-. c e. d. < b g. a. b b+4. b g+. b. > d c c- c < b a4 g e
+f2^. g. a g. a. b4^16 b+. g g+. a. b4^16 b+. g+ a g+ a b b+ b a g
+
+a1 b2^. b+. b > c-2^. e. c- < a2 g4 e4
+f1 g2^ e4 d b a g+ e d e g+4 a4 b4 ] e ($FA-3X)
+
+@overdrive y12 | (B10)
+q7E @cmd_main || b+ b a
+
+a. f. b+2 b16 a16 (325)[ b. g. d4. g f e. g+. b4 > d c c- < ] b+4 b4 a4 g4
+a. f. b+4. b a (325) b+16 b16 b+2..
+
+#if VERSION == 1 ; Listening-Only
+r b+16 r16 b+16 r16 b+16 r16 b+16 (F11) @cmd_main_off q7F @knuckles @woo ($FA-3X) @eggrobo
+#endif
+
+
+#if VERSION == 2 ; SMW-Compatible
+r b+16 r16 b+16 r16 b+16 r16 b+16 (F10) @cmd_main_off r.
+#endif
+
+; HALBERD ~ NIGHTMARE WARSHIP
+r8 @organs o4 y12 | l16
+(330)[ q7E  e q78 e q7E g q78 g q7E e a+ q78 a+ q75 a+ q7E a q78 a q7E g e d q78 d q7E
+e g q78 g q7E a q78 a q7E g a q78 a q7E
+
+@pulse || < g4 f+4 > ]
+
+@lowsaw
+q7E e g q78 g q7E g q78 g q7E e g e a q78 a q7E b+ q78 b+ q7E a a a8 e
+q7E e q78 e q7E e q78 e q7E c < a2^8 (F00) >
+
+@organs
+(330)
+
+@organs
+> d8 e q78 e q7E < a a+ q78 a+ q7E a q78 a q7E g q78 g q7E e q78 e q7E d < b a+ a2 >
+
+; THE GROUND'S COLOR IS YELLOW
+@violin y11
+(310) ($FA-3X)
+
+; BAD ROMANCE
+@ladygaga y9 | @cmd_main | l8
+q7F > c d e c <
+
+y12
+q7E (350)[ b+4 b+ b+ b+ b+4 b2^ a4 b4 >
+c-4 c- c- e c-4 < ] a4 >
+b+16 r16 b+ a b+ a b+4 
+(350) e1^ 
+
+r a16 r16 a e a e a4 
+
+;==========================================;
+	HAKUREI #4
+;==========================================;
+
+@sine || (269) / ($FA-3X) | @eggrobo
+
+[[ @synbrass o4 y11 | @cmd_main | l8
+q7E e. r16 e. r16 < b+. a. e16 r
+a. b16 r16 b+16 r16 b. a16 r4 >
+@cmd_main_off
+
+@saw_chd y13 | l2
+q7C e f f+ f ]]2
+
+(410)[ e d e d e f f+ f ]2
+
+@string_chd | l1
+(420)[ c d^ e2 d2 ]3
+(425)[ c d^ e ]
+
+(420) (427)[ c d^ e
+
+^2 ] e16 (F10) r8.
+
+@saw_chd
+(410)4
+
+@string_chd | l1
+(420)3 (425)
+
+#if VERSION == 1 ; Listening-Only
+(420) (427) e16 (F11) q7F @knuckles @woo
+#endif
+
+#if VERSION == 2 ; SMW-Compatible
+(420) (427) e16 (F10) r8.
+#endif
+
+;==========================================;
+	HAKUREI #5
+;==========================================;
+
+@synbrass || (269) /
+
+@saw_chd o3 | l2
+q7C [ y9 a g+ g g+ y7 a1^1 ]2
+
+(510)[ a g+ g g+ a1^1 ]2
+
+@string_chd | l1
+(520)[ f g g+ a2 g2 ]3
+(525)[ f g g+ a ]
+
+(520) (527)[ f g g+ a
+
+^2 a16 (F10) r8. ]
+
+@saw_chd
+(510)4
+
+@string_chd
+(520)3 (525)
+
+(520) (527)
+
+;==========================================;
+	HAKUREI #7 | @knuckles r2
+;==========================================;
+
+o4 (vol) | l16
+@closed c c c c @open c8 @closed c c <
+
+@e | @eggrobo /
+
+@saw_chd | l2
+q7C [ y13 b+ b b+ b y11 b+1^1 ]2
+
+(710)[ b+ b b+ b b+1^1 ]2
+
+@string_chd | l1
+(720)[ a b^ b+2 b2 ]3
+(725)[ a b^ b+ ]
+
+(720) (727)[ a b^ b+
+
+^2 b+16 (F10) r8. ]
+
+@saw_chd
+(710)4
+
+@string_chd
+(720)3 (725)
+
+(720) (727)
+
+;==========================================;
+;	MML by Hooded Edge
+;==========================================;
+
+#amk 2

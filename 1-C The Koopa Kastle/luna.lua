@@ -1,0 +1,303 @@
+local minTimer = require("minTimer")
+local textplus = require("textplus")
+local minFont = textplus.loadFont("minFont.ini")
+local timer1 = minTimer.create{initValue = minTimer.toTicks{hrs = 0, mins = 0, secs = 20}, x = 150, y = 552}
+local emergencyClose = false
+local LuigiGame = Graphics.loadImage("LuigiGame.png")
+local myOpacity = 0
+local myOpacityChange = -0.05
+local respawnRooms = require("respawnRooms")
+local registeredNPCs = {}
+local sameSectionCount = {}
+local timerChallengeOff = timerChallengeOff or true
+local luigiChallengeOff = luigiChallengeOff or true
+local bossChallengeOff = luigiChallengeOff or true
+
+--Boss Template by AdvancedTrash
+local bossName = Kore -- For name draw
+local barMax = 15 -- This is how much HP is on one bar (damage 3 for all but fireball)
+local bossMaxHP = bossMaxHP or 21 -- Set in NPC Creator too, couldn't pull the HP data directly for some reason
+local bossCurrentHP = bossCurrentHP or 21 -- Set in NPC Creator too, couldn't pull the HP data directly for some reason
+local BOSS_ID = 1000 -- This will be the boss that is drawn, later we may want to do a table
+local bossImmuneNPC = {[416] = true} -- NPC Creator was hurting itself in the bar display
+local damageAll = 3 -- All damage except fireball
+local damageFireball = 1 -- Fireball damage
+local bossHurtCooldown = 0 --this is because of spin jump
+local bossHurtCooldownTime = 10 --this is because of spin jump
+
+--Set bars
+local greenHP = 0 
+local yellowHP = 0 
+local orangeHP = 0
+local redHP = 0
+local purpleHP = 0
+
+--Load images
+local imgBorder = Graphics.loadImageResolved("../bars/hpBorder.png")
+local imgBack = Graphics.loadImageResolved("../bars/hpBackdrop.png")
+local imgDamage = Graphics.loadImageResolved("../bars/hpSliceDamage.png")
+local imgDummy = Graphics.loadImageResolved("../bars/hpDummy.png")
+
+--images by color
+local imgByName = {
+  green = Graphics.loadImageResolved("../bars/hpSlicegreen.png"),
+  yellow = Graphics.loadImageResolved("../bars/hpSliceyellow.png"),
+  orange = Graphics.loadImageResolved("../bars/hpSliceorange.png"),
+  red = Graphics.loadImageResolved("../bars/hpSliceRed.png"),
+  purple = Graphics.loadImageResolved("../bars/hpSlicePurple.png"),
+}
+
+--draw all bars
+local greenHPbar = Sprite.bar{
+   x = camera.width/2 - 15,
+   y = 552,
+   width = 178,
+   height = 12,
+   pivot = Sprite.align.TOP,
+   value = math.max(0, greenHP / barMax),
+   texture = imgByName.green,
+   trailspeed = 1,
+   trailtexture = imgDamage,
+   bgtexture = imgDummy,
+   borderwidth = 0
+}
+
+local yellowHPbar = Sprite.bar{
+   x = camera.width/2 - 15,
+   y = 552,
+   width = 178,
+   height = 12,
+   pivot = Sprite.align.TOP,
+   value = math.max(0, yellowHP / barMax),
+   texture = imgByName.yellow,
+   trailspeed = 1,
+   trailtexture = imgDamage,
+   bgtexture = imgDummy,
+   borderwidth = 0
+}
+
+local orangeHPbar = Sprite.bar{
+   x = camera.width/2 - 15,
+   y = 552,
+   width = 178,
+   height = 12,
+   pivot = Sprite.align.TOP,
+   value = math.max(0, orangeHP / barMax),
+   texture = imgByName.orange,
+   trailspeed = 1,
+   trailtexture = imgDamage,
+   bgtexture = imgDummy,
+   borderwidth = 0
+}
+
+local redHPbar = Sprite.bar{
+   x = camera.width/2 - 15,
+   y = 552,
+   width = 178,
+   height = 12,
+   pivot = Sprite.align.TOP,
+   value = math.max(0, redHP / barMax),
+   texture = imgByName.red,
+   trailspeed = 1,
+   trailtexture = imgDamage,
+   bgtexture = imgDummy,
+   borderwidth = 0
+}
+
+local purpleHPbar = Sprite.bar{
+   x = camera.width/2 - 15,
+   y = 552,
+   width = 178,
+   height = 12,
+   pivot = Sprite.align.TOP,
+   value = math.max(0, purpleHP / barMax),
+   texture = imgByName.purple,
+   trailspeed = 1,
+   trailtexture = imgDamage,
+   bgtexture = imgDummy,
+   borderwidth = 0
+}
+
+--this helps the bars with the total HP remaining
+local function redistributeBarsFrom(totalHP)
+    local remaining = math.max(0, math.min(totalHP, bossMaxHP))
+
+    greenHP  = math.min(barMax, remaining);          remaining = remaining - greenHP
+    yellowHP = math.min(barMax, math.max(0, remaining)); remaining = remaining - yellowHP
+    orangeHP = math.min(barMax, math.max(0, remaining)); remaining = remaining - orangeHP
+    redHP    = math.min(barMax, math.max(0, remaining)); remaining = remaining - redHP
+    purpleHP = math.min(barMax, math.max(0, remaining))
+
+    greenHPbar.value  = greenHP  / barMax
+    yellowHPbar.value = yellowHP / barMax
+    orangeHPbar.value = orangeHP / barMax
+    redHPbar.value    = redHP    / barMax
+    purpleHPbar.value = purpleHP / barMax
+end
+
+--run the HP distribution 
+redistributeBarsFrom(bossCurrentHP)
+
+function onDraw()
+    if luigiChallengeOff == false then
+        Graphics.drawImage(LuigiGame, 35, 482, myOpacity)
+
+        textplus.print{
+                text = string.format("Luigi Block Challenge 3: Block Heads!"),
+                font = minFont,
+                priority = 5,
+                wave = 1,
+                pivot = Sprite.align.TOP,
+                x = camera.width/2, y = 32,
+                xscale = 2, yscale = 2,
+                color = Color.fromHexRGBA(0x66CC66FF) * myOpacity
+        }
+    end
+    
+    --boss draws with boolean (triggered by resizable collectable using event "boss")
+    if bossChallengeOff == false then
+        Graphics.drawImage(imgBack, 400 - imgBack.width/2 - 9, 551, myOpacity)
+        greenHPbar:draw{color = Color.white .. myOpacity}
+        yellowHPbar:draw{color = Color.white .. myOpacity}
+        orangeHPbar:draw{color = Color.white .. myOpacity}
+        redHPbar:draw{color = Color.white .. myOpacity}
+        purpleHPbar:draw{color = Color.white .. myOpacity}
+        Graphics.drawImage(imgBorder, 400 - imgBorder.width/2, 547, myOpacity)
+        textplus.print{
+                text = string.format("Kore"),
+                font = minFont,
+                priority = 5,
+                pivot = Sprite.align.TOP,
+                x = camera.width/2, y = 531,
+                xscale = 2, yscale = 2,
+                color = Color.fromHexRGBA(0xFFFFFFFF) * myOpacity
+        }    
+    end
+
+    --[[if timerChallengeOff == false then
+
+        textplus.print{
+                text = string.format("No mini game here!"),
+                font = minFont,
+                priority = 5,
+                wave = 1,
+                pivot = Sprite.align.TOP,
+                x = camera.width/2, y = 32,
+                xscale = 2, yscale = 2,
+                color = Color.fromHexRGBA(0x1E90FFFF) * myOpacity
+        }
+    end]]
+end
+
+local canMove = true
+local moveTimer = 0
+
+local function closeTimer()
+    timer1:close(minTimer.WIN_FAIL, false)
+    luigiChallengeOff = true
+    emergencyClose = true
+end
+
+function onPlayerKill(p)
+    bossChallengeOff = true
+    bossCurrentHP = bossMaxHP
+    redistributeBarsFrom(bossCurrentHP)
+    myOpacityChange = -1
+    if minTimer.activeTimer.id == timer1.id and not emergencyClose then
+        closeTimer()
+    end
+end
+
+function onWarpEnter(p)
+    if minTimer.activeTimer.id == timer1.id and not emergencyClose then
+        closeTimer()
+    end
+end
+
+function onEvent(eventName)
+    if eventName == "timerStart" and Layer.get("reward").isHidden then
+        timer1:start()
+        luigiChallengeOff = false
+        emergencyClose = false
+        myOpacityChange = 0.05
+    elseif eventName == "timerEnd" and minTimer.activeTimer.id == timer1.id then
+        timer1:close(minTimer.WIN_CLEAR, true)
+        Layer.get("reward"):show(true)
+        luigiChallengeOff = true
+        myOpacityChange = -0.05
+        emergencyClose = false
+    end
+
+    if eventName == "boss" then
+        bossChallengeOff = false
+        myOpacityChange = 0.05
+    elseif eventName == "BossWin" then
+        myOpacityChange = -0.05
+    end
+
+end
+
+function timer1:onEnd(win)
+    if not win and not emergencyClose then
+        player:kill()
+        luigiChallengeOff = true
+        emergencyClose = false
+    end
+end
+
+function onStart()
+    Defines.npc_throwfriendlytimer = 10
+end
+
+function onTick()
+    myOpacity = math.clamp(myOpacity + myOpacityChange, 0, 1)
+    if bossHurtCooldown > 0 then
+        bossHurtCooldown = bossHurtCooldown - 1
+    end
+    if not canMove then
+        moveTimer = moveTimer + 1
+        for k, v in pairs(player.keys) do
+            player.keys[k] = false
+        end
+        if moveTimer >= 32 then
+            canMove = true
+            moveTimer = 0
+        end
+    end
+end
+
+local function applyBossDamage(dmg)
+    if dmg <= 0 or bossChallengeOff then return end
+    bossCurrentHP = math.max(0, bossCurrentHP - dmg)
+    redistributeBarsFrom(bossCurrentHP)
+    if bossCurrentHP <= 0 then
+        bossChallengeOff = true
+        triggerEvent("BossWin")
+    end
+end
+
+function onNPCHarm(eventObj, v, reason, culprit)
+    if not (v and v.id == BOSS_ID) or bossChallengeOff then
+        return
+    end
+
+     if bossHurtCooldown > 0 then return end
+     
+    local dmg = 0
+
+    if culprit and culprit.__type == "NPC" then
+        if bossImmuneNPC[culprit.id] then
+            dmg = 0
+        end
+            if reason == HARM_TYPE_EXT_FIRE then
+                dmg = damageFireball
+            end
+    else
+        dmg = damageAll
+    end
+
+    if dmg > 0 then
+        applyBossDamage(dmg)
+        bossHurtCooldown = bossHurtCooldownTime
+    end
+end

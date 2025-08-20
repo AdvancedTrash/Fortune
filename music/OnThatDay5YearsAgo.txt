@@ -1,0 +1,261 @@
+#amk 2
+;************************
+
+; SPC Generator Info
+#SPC
+{
+    #author  "Nobuo Uematsu"
+    #title   "On That Day Five Years Ago"
+    #game    "Final Fantasy VII"
+    #comment "Ported by Ahrion"
+}
+
+#path "FiveYearsAgo"
+
+#samples
+{
+	#optimized
+	"Harp.brr"
+	"Strings.brr"
+}
+
+#instruments
+{
+	"Harp.brr"	$AF $8E $00 $03 $02 ; @30
+	"Strings.brr"	$F4 $E2 $00 $03 $A8 ; @31
+}
+
+
+w192
+t28
+
+"Strings = @31 v150"
+
+"Harp1 = v180"
+"Harp2 = v160"
+"Harp3 = v145"
+"Harp4 = v135"
+"Harp5 = v125"
+"Harp6 = v115"
+"Harp7 = v105"
+
+"Fade1 = $E3 $54 $24"
+"Fade2 = $E3 $60 $1C"
+
+"Rel = $ED $3A $EE"
+"Rel2 = $ED $74 $E8"
+
+$EF $FF $20 $20
+$F1 $06 $28 $01
+
+$F4 $02 /
+
+
+
+; +---------------------+
+; |     Channel #0	|
+; |     Strings		|
+; +---------------------+
+
+#0
+o3
+Strings y13
+$ED $76 $E2
+a2 b4 > c4 g2 f+2 r4 < a4 b4 > c4 e4 d4 < a4 b4 > c2 < a1 Rel2 ^2 $ED $76 $E3 r1^1 g2 a4 a+4 > g2 d1 Rel2 ^1^2 [[r2]]6 $ED $76 $E3 e2 d4 c4 < b2 g2 a1 Rel ^1 r1^1 $ED $76 $E3 g+2 a4 b4 > e2 < b2 > c+1^1^1^1 
+
+
+
+; +---------------------+
+; |     Channel #1	|
+; |     Strings		|
+; +---------------------+
+
+#1
+o3
+Strings y12
+e1 g2 f+2 f1 f2 e2 $ED $74 $E0 e2 Rel2 ^2^1 $ED $74 $E0 f+2 Rel2 ^2^1 $ED $72 $E2 d1^1^1 @31
+
+e2 Rel e2
+@31 e2 Rel e2
+$ED $72 $E2 e1^1 @31
+
+f1 e1
+
+e2 Rel f2
+@31 e2 Rel f2
+$ED $72 $E2 e1^1 @31 f1 f+1 f1^1^1^1 
+
+
+
+; +---------------------+
+; |     Channel #2	|
+; |     Strings		|
+; +---------------------+
+
+#2
+o3
+Strings
+c1 d1 c1 d2 d2 $ED $74 $E0 c2 Rel2 ^2^1 $ED $74 $E0 d2 Rel2 ^2^1 < $ED $72 $E2 a+1^1^1 @31
+b2 > Rel c2 <
+@31 b2 > Rel c2 <
+$ED $72 $E2 b1^1 @31
+
+> c1 < b1 >
+
+c+2 Rel d2
+@31 c+2 Rel d2
+$ED $72 $E2 c+1^1 @31 d1^1 c+1^1^1^1 
+
+
+
+; +---------------------+
+; |     Channel #3	|
+; |     Strings		|
+; +---------------------+
+
+#3
+o2
+Strings y8
+a1 a1 a1 a2 b2 $ED $74 $E0 a2 Rel2 ^2^1 $ED $74 $E0 a2 Rel2 ^2^1 $ED $72 $E2 g1^1^1 @31
+g2 Rel g2
+@31 g2 Rel g2
+$ED $72 $E2 g1^1 @31 
+
+a1 g1
+
+a2 Rel a2
+@31 a2 Rel a2
+$ED $72 $E2 a1^1 @31 b1^1 a+1^1^1^1 
+
+
+
+; +---------------------+
+; |     Channel #4	|
+; |     Strings		|
+; |     Harp		|
+; +---------------------+
+
+#4
+o1
+Strings y6
+a1 a1 a1 a1 $ED $74 $E0 a2 Rel2 ^2^1 $ED $74 $E0 a2 Rel2 ^2^1 @31 r1^1^1^16^64^192
+
+@30 y11
+>>>
+(51)[Harp3 g4^16^64^192 Harp2 g8^32^96 g4^16^64^192 Harp5 g8^32^96]2
+
+[[r2]]8
+
+$FA $02 $02
+(51)2
+$FA $02 $00
+
+[[r8]]31 r32^96 
+
+Strings y6
+c2 < a+4 g+4 g1^1^1 
+
+
+
+; +---------------------+
+; |     Channel #5	|
+; |     Harp		|
+; +---------------------+
+
+#5
+o3
+@30
+[[r2]]8
+
+Harp1
+[[y12 a4^32 > y8 a4 > c4.. r32 <<]]2
+[[y12 a4^32 > y8 a4 > d4.. r32 <<]]2
+
+r1^1^1 >>
+
+[[Harp4 y12 < e4 > Harp2 y8 e4 y12 < e4 > Harp3 y8 e4]]2
+
+< Harp5 y12 e2 [[r2]]7 >
+
+[[Harp4 y12 < e4 > Harp2 y8 e4 y12 < f4 > Harp3 y8 f4]]2
+
+< y12 Harp5 e2 [[r16]]75
+
+y8
+>
+[[Harp1 f4 Harp2 f4 Harp3 f4 Harp4 f4 Harp5 f4]]2
+Harp6 f4 Harp7 f4 
+
+
+
+; +---------------------+
+; |     Channel #6	|
+; |     Harp		|
+; +---------------------+
+
+#6
+o4
+@30 y9
+[[r4]]17 r64
+
+Harp1
+e4 a2 r4
+e4 a2 r4
+f+4 a2 r4
+f+4 a2 r4
+
+r1^1^2^4^8^64^96
+
+(71)[Harp2 b8^32^96 b4^16^64^192 > Harp3 c8^32^96 Harp4 c4^16^64^192 <]2
+
+
+[[r2]]8
+
+$FA $02 $02
+(71)2
+$FA $02 $00
+
+r1^1^1^1^2^4^16^64^192
+
+[[
+Harp1 y12 g8 > y9 c+8 <
+Harp2 y12 g8 > y9 c+8 <
+Harp3 y12 g8 > y9 c+8 <
+Harp4 y12 g8 > y9 c+8 <
+Harp5 y12 g8 > y9 c+8 <
+]]2
+
+Harp6 y12 g8 > y9 c+8 <
+Harp7 y12 g8 > y9 c+8 <
+
+
+
+; +---------------------+
+; |     Channel #7	|
+; |     Harp		|
+; +---------------------+
+
+#7
+o4
+@30
+[[r4]]17
+
+y11 Harp1
+c4 e2 r4
+c4 e2 r4
+d4 f+2 r4
+d4 f+2 [[r16]]49
+
+(80)[
+Fade1 r=84
+Fade2 r2^16]2
+
+[[r2]]8
+
+(80)2
+
+[[r2]]10
+
+[[Harp1 a+4 Harp2 a+4 Harp3 a+4 Harp4 a+4 Harp5 a+4]]2
+
+Harp6 a+4 Harp7 a+8. 
