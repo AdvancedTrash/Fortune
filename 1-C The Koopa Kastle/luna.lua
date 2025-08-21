@@ -288,10 +288,9 @@ function onNPCHarm(eventObj, v, reason, culprit)
     if culprit and culprit.__type == "NPC" then
         if bossImmuneNPC[culprit.id] then
             dmg = 0
+        else
+            dmg = damageAll
         end
-            if reason == HARM_TYPE_EXT_FIRE then
-                dmg = damageFireball
-            end
     else
         dmg = damageAll
     end

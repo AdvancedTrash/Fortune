@@ -1,14 +1,14 @@
 {
 --[1]--
 {
-   ["deathCount"]=80,
+   ["deathCount"]=129,
    ["_lakitushop"]={2},
    ["__costumes"]={3},
-   ["customCoins"]=414,
+   ["customCoins"]=614,
    ["checklist"]={4},
-   ["rankSystem"]={5},
+   ["_currencies"]={5},
    ["smwMap"]={6},
-   ["_currencies"]={7},
+   ["rankSystem"]={7},
    ["_basegame"]={8},
    ["timerStuff"]={9},
    ["__launcher"]={10}
@@ -23,41 +23,43 @@
 },
 --[4]--
 {
-   ["1-1 Adventure Away.lvlx"]={12},
+   ["1-3 Dolphin Ride.lvlx"]={12},
    ["1-2 Cavern Depths.lvlx"]={13},
-   ["1-C The Koopa Kastle.lvlx"]={14},
-   ["1-3 Dolphin Ride.lvlx"]={15}
+   ["1-1 Adventure Away.lvlx"]={14},
+   ["1-B8 Kore (Hard Mode).lvlx"]={15},
+   ["1-C The Koopa Kastle.lvlx"]={16}
 },
 --[5]--
 {
-   ["1-1 Adventure Away.lvlx"]={16},
-   ["1-2 Cavern Depths.lvlx"]={17},
-   ["1-C The Koopa Kastle.lvlx"]={18},
-   ["1-3 Dolphin Ride.lvlx"]={19}
+
 },
 --[6]--
 {
-   ["beatenLevels"]={20},
-   ["unlockedCheckpoints"]={21},
-   ["unlockedPaths"]={22},
-   ["crossUnlock"]={23},
-   ["playerY"]=-200432,
-   ["encounterData"]={24},
+   ["crossUnlock"]={17},
+   ["encounterData"]={18},
    ["playerX"]=-198928,
-   ["crossRoadFrame"]={25},
-   ["crossPathDone"]={26}
+   ["playerY"]=-200432,
+   ["crossRoadFrame"]={19},
+   ["crossPathDone"]={20},
+   ["beatenLevels"]={21},
+   ["unlockedCheckpoints"]={22},
+   ["unlockedPaths"]={23}
 },
 --[7]--
 {
-
+   ["1-3 Dolphin Ride.lvlx"]={24},
+   ["1-2 Cavern Depths.lvlx"]={25},
+   ["1-1 Adventure Away.lvlx"]={26},
+   ["1-B8 Kore (Hard Mode).lvlx"]={27},
+   ["1-C The Koopa Kastle.lvlx"]={28}
 },
 --[8]--
 {
-   ["_characterdata"]={27},
-   ["starcoinCounter"]=5,
-   ["hud"]={28},
-   ["bigSwitch"]={29},
-   ["starcoin"]={30}
+   ["_characterdata"]={29},
+   ["hud"]={30},
+   ["starcoin"]={31},
+   ["bigSwitch"]={32},
+   ["starcoinCounter"]=7
 },
 --[9]--
 {
@@ -69,111 +71,106 @@
 },
 --[11]--
 {
-   ["Super Leaf"]=-1,
-   ["Cyan Yoshi"]=-1,
-   ["Podoboo Shoe"]=-1,
-   ["Lakitu Shoe"]=-1,
+   ["Tanooki Suit"]=-1,
+   ["Hammer Suit"]=-1,
+   ["Starman"]=-1,
    ["Green Yoshi"]=-1,
    ["1-UP Mushroom"]=-1,
    ["Kuribo Shoe"]=-1,
    ["Red Yoshi"]=-1,
+   ["Super Leaf"]=-1,
+   ["Cyan Yoshi"]=-1,
+   ["Podoboo Shoe"]=-1,
+   ["Lakitu Shoe"]=-1,
    ["Blue Yoshi"]=-1,
    ["Super Mushroom"]=-1,
    ["Yellow Yoshi"]=-1,
    ["Fire Flower"]=-1,
    ["Pink Yoshi"]=-1,
    ["Ice Flower"]=-1,
-   ["Purple Yoshi"]=-1,
-   ["Tanooki Suit"]=-1,
-   ["Hammer Suit"]=-1,
-   ["Starman"]=-1
+   ["Purple Yoshi"]=-1
 },
 --[12]--
 {
-   ["miniGameInLevel"]=false,
-   ["luigiCoinInLevel"]=true,
-   ["miniGameWon"]=false,
-   ["starInLevel"]=true,
-   ["starCollected"]=true,
-   ["miniGameMastered"]=false,
-   ["luigiCollected"]=true
-},
---[13]--
-{
-   ["miniGameHighScore"]=19,
-   ["miniGameInLevel"]=true,
-   ["luigiCoinInLevel"]=false,
-   ["miniGameWon"]=true,
-   ["starInLevel"]=true,
-   ["starCollected"]=false,
    ["miniGameMastered"]=true,
-   ["luigiCollected"]=false
-},
---[14]--
-{
-   ["miniGameInLevel"]=false,
-   ["luigiCoinInLevel"]=true,
-   ["miniGameWon"]=false,
-   ["starInLevel"]=true,
-   ["starCollected"]=false,
-   ["miniGameMastered"]=false,
-   ["luigiCollected"]=true
-},
---[15]--
-{
-   ["miniGameHighScore"]=12,
+   ["luigiCollected"]=false,
    ["miniGameInLevel"]=true,
    ["luigiCoinInLevel"]=true,
    ["miniGameWon"]=true,
    ["starInLevel"]=false,
    ["starCollected"]=false,
+   ["miniGameHighScore"]=12
+},
+--[13]--
+{
    ["miniGameMastered"]=true,
-   ["luigiCollected"]=false
+   ["luigiCollected"]=false,
+   ["miniGameInLevel"]=true,
+   ["luigiCoinInLevel"]=false,
+   ["miniGameWon"]=true,
+   ["starInLevel"]=true,
+   ["starCollected"]=true,
+   ["miniGameHighScore"]=19
+},
+--[14]--
+{
+   ["miniGameMastered"]=false,
+   ["luigiCollected"]=true,
+   ["miniGameInLevel"]=false,
+   ["luigiCoinInLevel"]=true,
+   ["miniGameWon"]=false,
+   ["starInLevel"]=true,
+   ["starCollected"]=true
+},
+--[15]--
+{
+   ["miniGameMastered"]=false,
+   ["luigiCollected"]=false,
+   ["miniGameInLevel"]=false,
+   ["luigiCoinInLevel"]=true,
+   ["miniGameWon"]=false,
+   ["starInLevel"]=false,
+   ["starCollected"]=false
 },
 --[16]--
 {
-   ["timePreset"]=10000,
-   ["requirement"]=40000,
-   ["highestRank"]=2,
-   ["bestTime"]=7718,
-   ["highScore"]=18170
+   ["miniGameMastered"]=false,
+   ["luigiCollected"]=true,
+   ["miniGameInLevel"]=false,
+   ["luigiCoinInLevel"]=true,
+   ["miniGameWon"]=false,
+   ["starInLevel"]=true,
+   ["starCollected"]=false
 },
 --[17]--
 {
-   ["timePreset"]=10000,
-   ["requirement"]=40000,
-   ["highestRank"]=1,
-   ["bestTime"]=895,
-   ["highScore"]=12519
+   ["GreatLock"]=true
 },
 --[18]--
 {
-   ["timePreset"]=10000,
-   ["requirement"]=40000,
-   ["highestRank"]=2,
-   ["bestTime"]=8696,
-   ["highScore"]=22950
+
 },
 --[19]--
 {
-   ["timePreset"]=10000,
-   ["requirement"]=40000,
-   ["highestRank"]=1,
-   ["bestTime"]=2747,
-   ["highScore"]=14003
+   ["GreatLock"]=14,
+   ["GreatLock2"]=8
 },
 --[20]--
 {
-   ["1-1 Adventure Away.lvlx"]=true,
-   ["1-2 Cavern Depths.lvlx"]=true,
-   ["1-C The Koopa Kastle.lvlx"]=true,
-   ["1-3 Dolphin Ride.lvlx"]=true
+
 },
 --[21]--
 {
-
+   ["1-2 Cavern Depths.lvlx"]=true,
+   ["1-1 Adventure Away.lvlx"]=true,
+   ["1-3 Dolphin Ride.lvlx"]=true,
+   ["1-C The Koopa Kastle.lvlx"]=true
 },
 --[22]--
+{
+
+},
+--[23]--
 {
    ["tomap"]=true,
    ["tolock"]=true,
@@ -182,155 +179,161 @@
    ["to1-2"]=true,
    ["to1-3"]=true
 },
---[23]--
-{
-   ["GreatLock"]=true
-},
 --[24]--
 {
-
+   ["bestTime"]=2747,
+   ["highScore"]=14003,
+   ["timePreset"]=10000,
+   ["requirement"]=40000,
+   ["highestRank"]=1
 },
 --[25]--
 {
-   ["GreatLock"]=14,
-   ["GreatLock2"]=8
+   ["bestTime"]=895,
+   ["highScore"]=34540,
+   ["timePreset"]=10000,
+   ["requirement"]=40000,
+   ["highestRank"]=4
 },
 --[26]--
 {
-
+   ["bestTime"]=7718,
+   ["highScore"]=18170,
+   ["timePreset"]=10000,
+   ["requirement"]=40000,
+   ["highestRank"]=2
 },
 --[27]--
 {
-   ["13"]={31},
-   ["7"]={32},
-   ["8"]={33},
-   ["16"]={34},
-   ["6"]={35},
-   ["14"]={36},
-   ["10"]={37},
-   ["12"]={38},
-   ["15"]={39},
-   ["11"]={40},
-   ["9"]={41}
+   ["highScore"]=0,
+   ["timePreset"]=10000,
+   ["requirement"]=10000
 },
 --[28]--
 {
-   ["score"]=4120
+   ["bestTime"]=8696,
+   ["highScore"]=22950,
+   ["timePreset"]=10000,
+   ["requirement"]=40000,
+   ["highestRank"]=2
 },
 --[29]--
 {
-
+   ["11"]={33},
+   ["12"]={34},
+   ["13"]={35},
+   ["16"]={36},
+   ["8"]={37},
+   ["9"]={38},
+   ["7"]={39},
+   ["14"]={40},
+   ["15"]={41},
+   ["6"]={42},
+   ["10"]={43}
 },
 --[30]--
 {
-   ["map.lvlx"]={42},
-   ["1-C The Koopa Kastle.lvlx"]={43},
-   ["1-2 Cavern Depths.lvlx"]={44},
-   ["1-1 Adventure Away.lvlx"]={45},
-   ["1-3 Dolphin Ride.lvlx"]={46}
+   ["score"]=740
 },
 --[31]--
 {
-   ["powerup"]=1,
-   ["0x10A"]=0,
-   ["0x16"]=1,
-   ["0x108"]=0,
-   ["reservePowerup"]=0
+   ["1-3 Dolphin Ride.lvlx"]={44},
+   ["map.lvlx"]={45},
+   ["1-1 Adventure Away.lvlx"]={46},
+   ["1-2 Cavern Depths.lvlx"]={47},
+   ["1-C The Koopa Kastle.lvlx"]={48}
 },
 --[32]--
 {
-   ["powerup"]=1,
-   ["0x10A"]=0,
-   ["0x16"]=1,
-   ["0x108"]=0,
-   ["reservePowerup"]=0
+
 },
 --[33]--
 {
-   ["powerup"]=1,
-   ["0x10A"]=0,
-   ["0x16"]=1,
+   ["reservePowerup"]=0,
    ["0x108"]=0,
-   ["reservePowerup"]=0
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1
 },
 --[34]--
 {
-   ["powerup"]=1,
-   ["0x10A"]=0,
-   ["0x16"]=1,
+   ["reservePowerup"]=0,
    ["0x108"]=0,
-   ["reservePowerup"]=0
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1
 },
 --[35]--
 {
-   ["powerup"]=1,
-   ["0x10A"]=0,
-   ["0x16"]=1,
+   ["reservePowerup"]=0,
    ["0x108"]=0,
-   ["reservePowerup"]=0
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1
 },
 --[36]--
 {
-   ["powerup"]=1,
-   ["0x10A"]=0,
-   ["0x16"]=1,
+   ["reservePowerup"]=0,
    ["0x108"]=0,
-   ["reservePowerup"]=0
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1
 },
 --[37]--
 {
-   ["powerup"]=1,
-   ["0x10A"]=0,
-   ["0x16"]=1,
+   ["reservePowerup"]=0,
    ["0x108"]=0,
-   ["reservePowerup"]=0
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1
 },
 --[38]--
 {
-   ["powerup"]=1,
-   ["0x10A"]=0,
-   ["0x16"]=1,
+   ["reservePowerup"]=0,
    ["0x108"]=0,
-   ["reservePowerup"]=0
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1
 },
 --[39]--
 {
-   ["powerup"]=1,
-   ["0x10A"]=0,
-   ["0x16"]=1,
+   ["reservePowerup"]=0,
    ["0x108"]=0,
-   ["reservePowerup"]=0
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1
 },
 --[40]--
 {
-   ["powerup"]=1,
-   ["0x10A"]=0,
-   ["0x16"]=1,
+   ["reservePowerup"]=0,
    ["0x108"]=0,
-   ["reservePowerup"]=0
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1
 },
 --[41]--
 {
-   ["powerup"]=1,
-   ["0x10A"]=0,
-   ["0x16"]=1,
+   ["reservePowerup"]=0,
    ["0x108"]=0,
-   ["reservePowerup"]=0
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1
 },
 --[42]--
 {
-   ["alive"]={47},
-   ["maxID"]=0
+   ["reservePowerup"]=0,
+   ["0x108"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1
 },
 --[43]--
 {
-   1,
-   0,
-   0,
-   1,
-   0,
-   ["alive"]={48},
-   ["maxID"]=5
+   ["reservePowerup"]=0,
+   ["0x108"]=0,
+   ["0x10A"]=0,
+   ["powerup"]=1,
+   ["0x16"]=1
 },
 --[44]--
 {
@@ -339,40 +342,43 @@
    0,
    0,
    1,
-   ["alive"]={49},
-   ["maxID"]=5
+   ["maxID"]=5,
+   ["alive"]={49}
 },
 --[45]--
 {
-   0,
-   0,
-   0,
-   0,
-   1,
-   ["alive"]={50},
-   ["maxID"]=5
+   ["maxID"]=0,
+   ["alive"]={50}
 },
 --[46]--
 {
    0,
    0,
    0,
-   3,
+   0,
    1,
-   ["alive"]={51},
-   ["maxID"]=5
+   ["maxID"]=5,
+   ["alive"]={51}
 },
 --[47]--
 {
-
+   0,
+   1,
+   1,
+   0,
+   1,
+   ["maxID"]=5,
+   ["alive"]={52}
 },
 --[48]--
 {
-   true,
-   true,
-   true,
-   true,
-   true
+   1,
+   0,
+   0,
+   1,
+   0,
+   ["maxID"]=5,
+   ["alive"]={53}
 },
 --[49]--
 {
@@ -384,13 +390,25 @@
 },
 --[50]--
 {
+
+},
+--[51]--
+{
    true,
    true,
    true,
    true,
    true
 },
---[51]--
+--[52]--
+{
+   true,
+   true,
+   true,
+   true,
+   true
+},
+--[53]--
 {
    true,
    true,
