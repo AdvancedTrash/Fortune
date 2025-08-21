@@ -48,7 +48,7 @@ function onDraw()
         Graphics.drawImage(LuigiGame, 35, 482, myOpacity)
 
         textplus.print{
-                text = string.format("Luigi Block Challenge 2: Death Dolphin Panic!"),
+                text = string.format("Luigi Block Challenge 2: Electric Dolphin Panic!"),
                 font = minFont,
                 priority = 5,
                 wave = 1,
