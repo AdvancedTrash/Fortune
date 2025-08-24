@@ -1,0 +1,27 @@
+{
+	"style" : "groupbox",
+	"title" : "Zinger Settings",
+	"layout": [
+
+				{
+			"control": "multiLineEdit",
+			"name": "parserInput",
+			"title": "Movement",
+			"tooltip": "LunaLua function to define and customize the Zinger's behaviour. Only works with Parabolic Zingers.",
+			"value-default": ""
+		},
+		{
+			"control": "group",
+			"title": "Movement Examples",
+			"children": [
+        {
+			"control": "lineEdit",
+			"title": "Wavy Horizontal",
+			"tooltip": "Makes the Zinger fly in a wavy formation.",
+			"value-default": "y=0.5 * sin(x); x=-t  * 5;",
+			"read-only": true
+        }
+		]
+		}
+		]
+}

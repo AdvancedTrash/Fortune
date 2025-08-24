@@ -46,7 +46,7 @@ customPause.settings = {
 	-- set to customPause.MUSIC_SILENT to simply pause the music
 	-- set to customPause.MUSIC_CURRENT to only change the volume and not the music
 	-- set to a string to set a different music
-	pausedMusic = customPause.MUSIC_CURRENT,
+	pausedMusic = customPause.MUSIC_CURRENT
 }
 
 -- images used for the menu

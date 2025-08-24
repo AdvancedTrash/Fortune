@@ -7,7 +7,6 @@ Player.setCostume(CHARACTER_LUIGI,"SMW-Luigi",true)
 local rankSystem = require("rankSystem")
 local coinTracker = require("coinTracker")
 local littleDialogue = require("littleDialogue")
-local Damage Pause = require("Damage Pause")
 local customPause = require("customPause")
 local playerphysicspatch = require("playerphysicspatch")
 local checklist = require("checklist")
@@ -61,4 +60,10 @@ end
 
 function onPlayerHarm(p)
 	player:kill()
+end
+
+function onInputUpdate()
+    if Level.filename() == "map.lvlx" or Level.isOverworld then
+        player.dropItemKeyPressing = false
+    end
 end

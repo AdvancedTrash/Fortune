@@ -1,0 +1,32 @@
+fill-color = #6CA4D4
+
+[smallClouds]
+image = "bg_smallClouds.png"
+repeatX = true
+depth = 300
+alignX = LEFT
+alignY = BOTTOM
+
+[backClouds]
+image = "bg_backClouds.png"
+repeatX = true
+depth = 200
+alignY = BOTTOM
+speedX = -0.075
+
+[hills]
+image = "bg_hills.png"
+repeatX = true
+depth = 150
+alignX = LEFT
+alignY = BOTTOM
+y = 48
+
+[frontClouds]
+image = "bg_frontClouds.png"
+repeatX = true
+depth = 100
+alignX = LEFT
+alignY = BOTTOM
+x = 96
+speedX = -0.2

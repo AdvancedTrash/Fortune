@@ -14,7 +14,7 @@ ID:813;X:-199776;Y:-200416;D:-1;XTRA:"{\n    \"destroyAfterWin\"\: true\,\n    \
 ID:753;X:-200000;Y:-200608;D:-1;XTRA:"{\n    \"customMusicPath\"\: \"music/BuriedInTheSnow.spc\"\,\n    \"music\"\: 2\,\n    \"restrictCamera\"\: true\n}\n";
 ID:751;X:-199776;Y:-200416;D:-1;LR:"Top";LA:"Top";
 ID:752;X:-199744;Y:-200416;D:-1;XTRA:"{\n    \"name\"\: \"tomap\"\,\n    \"points\"\: \"-32\,0\, 676\,-32\"\,\n    \"smoothness\"\: 0.5\n}\n";
-ID:753;X:-199200;Y:-200608;D:-1;XTRA:"{\n    \"customMusicPath\"\: \"music/04 Streets of New York.spc\"\,\n    \"music\"\: 2\,\n    \"restrictCamera\"\: true\n}\n";
+ID:753;X:-199200;Y:-200608;D:-1;XTRA:"{\n    \"backgroundName\"\: \"sky\"\,\n    \"customMusicPath\"\: \"music/04 Streets of New York.spc\"\,\n    \"music\"\: 2\,\n    \"restrictCamera\"\: true\n}\n";
 ID:752;X:-199808;Y:-200416;D:-1;XTRA:"{\n    \"name\"\: \"tolock\"\,\n    \"points\"\: \"32\,0\, -98\,0\"\,\n    \"smoothness\"\: 0.5\n}\n";
 ID:752;X:-199904;Y:-200448;D:-1;XTRA:"{\n    \"hideIfLocked\"\: true\,\n    \"name\"\: \"tohome\"\,\n    \"points\"\: \"0\,32\, 0\,-32\, 64\,-64\, 130\,48\"\,\n    \"smoothness\"\: 0.5\n}\n";
 ID:978;X:-199904;Y:-200416;D:-1;XTRA:"{\n    \"alwaysVisible\"\: true\,\n    \"coins\"\: 0\,\n    \"dontRemoveCoins\"\: false\,\n    \"dontRemoveItems\"\: false\,\n    \"locked\"\: true\,\n    \"luigiCoins\"\: 0\,\n    \"path_down\"\: \"tolock2\"\,\n    \"path_right\"\: \"tolock\"\,\n    \"path_up\"\: \"tohome\"\,\n    \"requiredCoins\"\: 0\,\n    \"requiredLuigiCoins\"\: 0\,\n    \"roadTitle\"\: \"GreatLock\"\,\n    \"starCoins\"\: 1\,\n    \"stars\"\: 1\,\n    \"unlock_down\"\: true\,\n    \"unlock_left\"\: false\,\n    \"unlock_right\"\: true\,\n    \"unlock_up\"\: true\n}\n";
