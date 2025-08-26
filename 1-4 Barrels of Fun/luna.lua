@@ -12,6 +12,7 @@ local sameSectionCount = {}
 local timerChallengeOff = timerChallengeOff or true
 local luigiChallengeOff = luigiChallengeOff or true
 local bossChallengeOff = luigiChallengeOff or true
+local flameChomp = require("npcs/ai/fireChomp")
 
 --Boss Template by AdvancedTrash
 local bossName = "Queen B" -- For name draw
@@ -23,7 +24,7 @@ local bossImmuneNPC = {[416] = true} -- NPC Creator was hurting itself in the ba
 local damageAll = 3 -- All damage except fireball
 local damageFireball = 3 -- Fireball damage
 local bossHurtCooldown = 0 --this is because of spin jump
-local bossHurtCooldownTime = 10 --this is because of spin jump
+local bossHurtCooldownTime = 20 --this is because of spin jump
 
 --Set bars
 local greenHP = 0 
@@ -199,6 +200,10 @@ local function closeTimer()
 end
 
 function onPlayerKill(p)
+    if bossChallengeOff == false then
+        Audio.MusicChange(0, "music/17 Stickerbrush Symphony.spc", 30)
+    end 
+
     bossChallengeOff = true
     bossCurrentHP = bossMaxHP
     redistributeBarsFrom(bossCurrentHP)
@@ -230,8 +235,10 @@ function onEvent(eventName)
 
     if eventName == "boss" then
         bossChallengeOff = false
+        Audio.MusicChange(0, "music/20 Boss Bossanova.spc", 30)
         myOpacityChange = 0.05
     elseif eventName == "BossWin" then
+        Audio.MusicChange(0, "music/17 Stickerbrush Symphony.spc", 30)
         myOpacityChange = -0.05
     end
 
@@ -269,10 +276,18 @@ function onTick()
     end
 end
 
+local STATE = {
+	FLYING = 0,
+	SUMMON = 1,
+	SPIKE = 2,
+	HURT = 3,
+	KILL = 4,
+}
+
 local function applyBossDamage(dmg)
     local boss = NPC.get(BOSS_ID)[1]
     if not boss or not boss.isValid then return end
-    if boss.data.invincible then return end 
+    if boss.data.invincible or (boss.data.state == STATE.HURT and boss.data.timer >= 2) then return end 
 
     bossCurrentHP = math.max(0, bossCurrentHP - dmg)
     redistributeBarsFrom(bossCurrentHP)
@@ -306,4 +321,16 @@ function onNPCHarm(eventObj, v, reason, culprit)
         applyBossDamage(dmg)
         bossHurtCooldown = bossHurtCooldownTime
     end
+end
+
+-- This makes respawn rooms fookin' work with Flame Chomp
+local function ensureTailObject(v)
+    local d = v and v.data and v.data._basegame
+    if d and d.tailObject == nil then d.tailObject = {} end
+end
+
+local _kill = flameChomp.onPostNPCKill
+flameChomp.onPostNPCKill = function(v, reason)
+    ensureTailObject(v)
+    return _kill(v, reason)
 end

@@ -638,7 +638,10 @@ function QueenB.onNPCHarm(eventObj,v,reason,culprit)
 	if not data.invincible and data.invincibleTimer >= 48 and data.state ~= STATE.HURT and data.state ~= STATE.KILL then
 		if culprit then
 			if culprit.__type == "NPC" and (culprit.id == 13 or culprit.id == 108 or culprit.id == 17) then
-				data.health = data.health - 0.25
+				data.health = data.health - 1
+				data.timer = 0
+				data.state = STATE.HURT
+				data.animationTimer = 0
 				culprit:kill()
 			elseif reason ~= HARM_TYPE_LAVA then
 				data.health = data.health - 1
@@ -650,7 +653,10 @@ function QueenB.onNPCHarm(eventObj,v,reason,culprit)
 			end
 		else
 			if reason == HARM_TYPE_SWORD then
-				data.health = data.health - 0.5
+				data.health = data.health - 1
+				data.timer = 0
+				data.state = STATE.HURT
+				data.animationTimer = 0
 				if Colliders.downSlash(player,v) then
 					player.speedY = -6
 				end

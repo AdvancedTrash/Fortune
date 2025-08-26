@@ -27,10 +27,12 @@ ID:801;X:-199072;Y:-200448;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-1 Adventure
 ID:762;X:-199840;Y:-200416;D:-1;
 ID:752;X:-199040;Y:-200448;D:-1;XTRA:"{\n    \"name\"\: \"to1-2\"\,\n    \"points\"\: \"-32\,0\, 34\,0\"\,\n    \"smoothness\"\: 0.5\n}\n";
 ID:801;X:-199008;Y:-200448;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-2 Cavern Depths.lvlx\"\,\n    \"levelTitle\"\: \"\[1-2\] Cavern Depths\"\,\n    \"path_left\"\: \"to1-2\"\,\n    \"path_right\"\: \"to1-3\"\n}\n";
-ID:801;X:-198944;Y:-200448;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-3 Dolphin Ride.lvlx\"\,\n    \"levelTitle\"\: \"\[1-3\] Dolphin Ride\"\,\n    \"path_left\"\: \"to1-3\"\,\n    \"path_right\"\: \"toSpecialChallenge\"\n}\n";
+ID:801;X:-198944;Y:-200448;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-3 Dolphin Ride.lvlx\"\,\n    \"levelTitle\"\: \"\[1-3\] Dolphin Ride\"\,\n    \"path_down\"\: \"to1-4\"\,\n    \"path_left\"\: \"to1-3\"\,\n    \"path_right\"\: \"toSpecialChallenge\"\n}\n";
 ID:752;X:-198976;Y:-200448;D:-1;XTRA:"{\n    \"name\"\: \"to1-3\"\,\n    \"points\"\: \"-32\,0\, 34\,0\"\,\n    \"smoothness\"\: 0.5\n}\n";
 ID:800;X:-198880;Y:-200448;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-B8 Kore (Hard Mode).lvlx\"\,\n    \"levelTitle\"\: \"Kore (Hard Mode)\"\,\n    \"path_left\"\: \"toSpecialChallenge\"\n}\n";
 ID:752;X:-198912;Y:-200448;D:-1;XTRA:"{\n    \"name\"\: \"toSpecialChallenge\"\,\n    \"points\"\: \"-32\,0\, 34\,0\"\,\n    \"smoothness\"\: 0.5\n}\n";
+ID:752;X:-198944;Y:-200416;D:-1;XTRA:"{\n    \"name\"\: \"to1-4\"\,\n    \"points\"\: \"0\,-32\, 0\,34\"\,\n    \"smoothness\"\: 0.5\n}\n";
+ID:801;X:-198944;Y:-200384;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-4 Barrels of Fun.lvlx\"\,\n    \"levelTitle\"\: \"\[1-4\] Barrels of Fun\"\,\n    \"path_left\"\: \"\"\,\n    \"path_right\"\: \"\"\,\n    \"path_up\"\: \"to1-4\"\n}\n";
 NPC_END
 LAYERS
 LR:"Default";
