@@ -1,0 +1,30 @@
+What's so different about these compared to the ones we already got?
+
+Well, buckle up partner because we got a lot of stuff that's different.
+
+
+Firstly, we have some wonderful new sprites by C.A.K.B. (Cosmic Blooper). Please credit him.
+
+Next, you can launch the player further than before. This won't fix any bugs, but if you launch the player up or to the side it should work better in that regard.
+Next, are some new extra settings.
+
+You can set a timer that counts down. When that reaches 0, the player is automatically ejected. 
+You can also make a barrel start flipping in the opposite direction after a certain amount of ticks, just like how some of them were in the original DKC.
+And finally, you can cause it to explode when used, just like in DKC Returns.
+
+There's also a config called "playerCharacter". You can set this via a txt file. It allows only a certain player to enter a barrel, and there are five examples included.
+This can work on any barrel of any type, and the numbering is based on how each character is kept as a value.
+Basically, doing "playerCharacter = 1" would mean that only Mario can enter that barrel.
+You can see a full list of character values here:
+https://docs.codehaus.moe/#/constants/characters
+
+And of course, there are new barrel types.
+
+* Booster Barrels rocket a player in the direction they're facing. Like a straight barrel, they can't rotate by themselves.
+They will keep moving until either they touch a terminus BGO, or if their timer extra setting reaches 0 (if enabled of course).
+
+* Tracker Barrels follow a player either horizontally or vertically. Useful for making platforming easier, or they might become an obstacle if they're positioned towards a wall of spikes.
+
+* Steerable barrels let you have full control over where the barrel moves. They're useful with the timer extra setting as they let you control how long the player stays in them. Be warned though, you'll still take damage if an enemy or hurt block touches the barrel, and the barrel will instantly warp back to its starting point when it ejects you. On the plus side, it lets you collect powerups while inside.
+
+* Boo barrels are a type of barrel that phase in and out of existence. You'll be unable to enter them while they're invisible, so time them to land in one as it reappears!

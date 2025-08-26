@@ -1,0 +1,9 @@
+[1]
+gravity=0.5
+lifetime=195
+frames=8
+framestyle=0
+framespeed=8
+priority=FOREGROUND
+spawnBindX=MID
+spawnBindY=MID

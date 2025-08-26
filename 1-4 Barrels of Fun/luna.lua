@@ -14,14 +14,14 @@ local luigiChallengeOff = luigiChallengeOff or true
 local bossChallengeOff = luigiChallengeOff or true
 
 --Boss Template by AdvancedTrash
-local bossName = Kore -- For name draw
+local bossName = "Queen B" -- For name draw
 local barMax = 15 -- This is how much HP is on one bar (damage 3 for all but fireball)
-local bossMaxHP = bossMaxHP or 21 -- Set in NPC Creator too, couldn't pull the HP data directly for some reason
-local bossCurrentHP = bossCurrentHP or 21 -- Set in NPC Creator too, couldn't pull the HP data directly for some reason
-local BOSS_ID = 1000 -- This will be the boss that is drawn, later we may want to do a table
+local bossMaxHP = bossMaxHP or 12 -- Set in NPC Creator too, couldn't pull the HP data directly for some reason
+local bossCurrentHP = bossCurrentHP or 12 -- Set in NPC Creator too, couldn't pull the HP data directly for some reason
+local BOSS_ID = 898 -- This will be the boss that is drawn, later we may want to do a table
 local bossImmuneNPC = {[416] = true} -- NPC Creator was hurting itself in the bar display
 local damageAll = 3 -- All damage except fireball
-local damageFireball = 1 -- Fireball damage
+local damageFireball = 3 -- Fireball damage
 local bossHurtCooldown = 0 --this is because of spin jump
 local bossHurtCooldownTime = 10 --this is because of spin jump
 
@@ -164,7 +164,7 @@ function onDraw()
         purpleHPbar:draw{color = Color.white .. myOpacity}
         Graphics.drawImage(imgBorder, 400 - imgBorder.width/2, 547, myOpacity)
         textplus.print{
-                text = string.format("Kore"),
+                text = string.format(bossName),
                 font = minFont,
                 priority = 5,
                 pivot = Sprite.align.TOP,
@@ -270,10 +270,15 @@ function onTick()
 end
 
 local function applyBossDamage(dmg)
-    if dmg <= 0 or bossChallengeOff then return end
+    local boss = NPC.get(BOSS_ID)[1]
+    if not boss or not boss.isValid then return end
+    if boss.data.invincible then return end 
+
     bossCurrentHP = math.max(0, bossCurrentHP - dmg)
     redistributeBarsFrom(bossCurrentHP)
+
     if bossCurrentHP <= 0 then
+        myOpacityChange = -0.05
         triggerEvent("BossWin")
     end
 end

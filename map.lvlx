@@ -2,7 +2,7 @@ HEAD
 TL:"map";CPID:"SMBX2";
 HEAD_END
 SECTION
-SC:0;L:-200000;R:-198400;T:-200608;B:-200000;MZ:24;MF:"music/Melodies Of The River \[1 = Original\].spc";BG:0;XTRA:"{\n    \"darkness\"\: {\n        \"falloff\"\: 1\n    }\n}\n";
+SC:0;L:-200000;R:-198400;T:-200608;B:-200000;MZ:24;MF:"music/HoldingMyThoughtsInMyHeart.spc";BG:0;XTRA:"{\n    \"darkness\"\: {\n        \"falloff\"\: 1\n    }\n}\n";
 SECTION_END
 BLOCK
 ID:758;X:-199712;Y:-200384;W:64;H:64;
@@ -11,7 +11,7 @@ ID:758;X:-199104;Y:-200320;W:64;H:64;
 BLOCK_END
 NPC
 ID:813;X:-199776;Y:-200416;D:-1;XTRA:"{\n    \"destroyAfterWin\"\: true\,\n    \"levelFilename\"\: \"1-C The Koopa Kastle.lvlx\"\,\n    \"levelTitle\"\: \"1-C The Koopa Kastle\"\,\n    \"path_down\"\: \"tohome2\"\,\n    \"path_left\"\: \"tolock\"\,\n    \"path_right\"\: \"tomap\"\,\n    \"path_up\"\: \"tohome\"\,\n    \"unlock_down\"\: 0\,\n    \"unlock_right\"\: 2\,\n    \"unlock_up\"\: 0\n}\n";
-ID:753;X:-200000;Y:-200608;D:-1;XTRA:"{\n    \"customMusicPath\"\: \"music/BuriedInTheSnow.spc\"\,\n    \"music\"\: 2\,\n    \"restrictCamera\"\: true\n}\n";
+ID:753;X:-200000;Y:-200608;D:-1;XTRA:"{\n    \"customMusicPath\"\: \"music/Tifa.spc\"\,\n    \"music\"\: 2\,\n    \"restrictCamera\"\: true\n}\n";
 ID:751;X:-199776;Y:-200416;D:-1;LR:"Top";LA:"Top";
 ID:752;X:-199744;Y:-200416;D:-1;XTRA:"{\n    \"name\"\: \"tomap\"\,\n    \"points\"\: \"-32\,0\, 676\,-32\"\,\n    \"smoothness\"\: 0.5\n}\n";
 ID:753;X:-199200;Y:-200608;D:-1;XTRA:"{\n    \"backgroundName\"\: \"sky\"\,\n    \"customMusicPath\"\: \"music/04 Streets of New York.spc\"\,\n    \"music\"\: 2\,\n    \"restrictCamera\"\: true\n}\n";
