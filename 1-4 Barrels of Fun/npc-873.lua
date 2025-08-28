@@ -1,6 +1,6 @@
 --NPCManager is required for setting basic NPC properties
 local npcManager = require("npcManager")
-
+local TARGET_NPC = 898
 --Create the library table
 local sampleNPC = {}
 --NPC_ID is dynamic based on the name of the library file
@@ -111,6 +111,7 @@ npcManager.registerHarmTypes(npcID,
 --Register events
 function sampleNPC.onInitAPI()
 	npcManager.registerEvent(npcID, sampleNPC, "onTickEndNPC")
+	registerEvent(sampleNPC, "onNPCHarm")
 	--npcManager.registerEvent(npcID, sampleNPC, "onTickEndNPC")
 	--npcManager.registerEvent(npcID, sampleNPC, "onDrawNPC")
 	--registerEvent(sampleNPC, "onNPCKill")
@@ -187,6 +188,21 @@ function sampleNPC.onTickEndNPC(v)
 	else
 		v.friendly = false
 	end
+end
+
+function sampleNPC.onNPCHarm(evt, victim, reason, culprit)
+    if not culprit or culprit.__type ~= "NPC" then return end
+    if culprit.id ~= npcID then return end
+    if victim.id ~= TARGET_NPC then return end
+
+    if not (culprit:mem(0x136, FIELD_BOOL) or culprit:mem(0x12C, FIELD_WORD) > 0) then
+        return
+    end
+
+    local cx = culprit.x + culprit.width  * 0.5
+    local cy = culprit.y + culprit.height * 0.5
+    culprit:kill(HARM_TYPE_OFFSCREEN)
+    Animation.spawn(873, cx, cy)
 end
 
 --Gotta return the library table!

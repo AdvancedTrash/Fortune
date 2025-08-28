@@ -67,3 +67,43 @@ function onInputUpdate()
         player.dropItemKeyPressing = false
     end
 end
+
+--Power-up freeze
+local FREEZE_FRAMES = 42
+local freezeTimer = 0
+
+function onInitAPI()
+    registerEvent(nil, "onTick")
+    registerEvent(nil, "onPostNPCCollect")
+end
+
+local function isPowerup(id)
+    local cfg = NPC.config[id]
+    return (cfg and (cfg.ispowerup or cfg.isPowerup or cfg.isPowerUp)) 
+           or id == 185   -- Super Mushroom
+           or id == 183  -- Fire Flower
+           or id == 34  -- Leaf
+           or id == 169 -- Tanooki
+           or id == 277 -- Ice Flower
+           or id == 273
+end
+
+function onPostNPCCollect(n, p)
+    if not p or not n.isValid then return end
+    if isPowerup(n.id) then
+        freezeTimer = math.max(freezeTimer, FREEZE_FRAMES)
+    end
+end
+
+function onTick()
+    if freezeTimer > 0 then
+        freezeTimer = freezeTimer - 1
+
+        Defines.levelFreeze = true
+
+        player.speedX = 0
+        if player.speedY > 0 then player.speedY = 0 end
+    else
+        Defines.levelFreeze = false
+    end
+end
