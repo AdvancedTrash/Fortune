@@ -12,7 +12,11 @@ local sameSectionCount = {}
 local timerChallengeOff = timerChallengeOff or true
 local luigiChallengeOff = luigiChallengeOff or true
 local bossChallengeOff = luigiChallengeOff or true
-local flameChomp = require("npcs/ai/fireChomp")
+local slm = require("simpleLayerMovement")
+
+--DK Barrels
+slm.addLayer{name = "dkbarrel1",speed = 132,verticalMovement = slm.MOVEMENT_COSINE,verticalSpeed = 112,verticalDistance = 1.0}
+slm.addLayer{name = "dkbarrel2",speed = 96,verticalMovement = slm.MOVEMENT_COSINE,verticalSpeed = 78,verticalDistance = 1.5}
 
 --Boss Template by AdvancedTrash
 local bossName = "Queen B" -- For name draw
@@ -321,16 +325,4 @@ function onNPCHarm(eventObj, v, reason, culprit)
         applyBossDamage(dmg)
         bossHurtCooldown = bossHurtCooldownTime
     end
-end
-
--- This makes respawn rooms fookin' work with Flame Chomp
-local function ensureTailObject(v)
-    local d = v and v.data and v.data._basegame
-    if d and d.tailObject == nil then d.tailObject = {} end
-end
-
-local _kill = flameChomp.onPostNPCKill
-flameChomp.onPostNPCKill = function(v, reason)
-    ensureTailObject(v)
-    return _kill(v, reason)
 end
