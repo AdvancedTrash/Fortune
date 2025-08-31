@@ -1,1 +1,2 @@
 dotimercountdown=false
+pausegame=true

@@ -27,8 +27,9 @@ local levels = {
 	{"1-1 Adventure Away.lvlx",40000,10000}, -- Adventure Away
 	{"1-2 Cavern Depths.lvlx",40000,10000}, -- Cavern Depths
 	{"1-3 Dolphin Ride.lvlx",40000,10000}, -- Dolphin Ride
+    {"1-4 Barrels of Fun.lvlx",40000,10000}, -- Barrels of Fun
 	{"1-C The Koopa Kastle.lvlx",40000,10000}, -- Koopa Kastle
-	{"1-B8 Kore (Hard Mode).lvlx", 10000, 10000}
+	{"1-B8 Kore (Hard Mode).lvlx", 10000, 10000}, --World 1: Challenge 8 (Kore Hard Mode)
 	
 }
 

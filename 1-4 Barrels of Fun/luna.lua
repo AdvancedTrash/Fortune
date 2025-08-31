@@ -16,7 +16,7 @@ local slm = require("simpleLayerMovement")
 
 --DK Barrels
 slm.addLayer{name = "dkbarrel1",speed = 132,verticalMovement = slm.MOVEMENT_COSINE,verticalSpeed = 112,verticalDistance = 1.0}
-slm.addLayer{name = "dkbarrel2",speed = 96,verticalMovement = slm.MOVEMENT_COSINE,verticalSpeed = 78,verticalDistance = 1.5}
+slm.addLayer{name = "dkbarrel2",speed = 96,verticalMovement = slm.MOVEMENT_COSINE,verticalSpeed = 78,verticalDistance = -1.5}
 
 --Boss Template by AdvancedTrash
 local bossName = "Queen B" -- For name draw
@@ -239,10 +239,9 @@ function onEvent(eventName)
 
     if eventName == "boss" then
         bossChallengeOff = false
-        Audio.MusicChange(0, "music/20 Boss Bossanova.spc", 30)
         myOpacityChange = 0.05
     elseif eventName == "BossWin" then
-        Audio.MusicChange(0, "music/17 Stickerbrush Symphony.spc", 30)
+        Audio.MusicChange(1, "music/17 Stickerbrush Symphony.spc", 30)
         myOpacityChange = -0.05
     end
 
