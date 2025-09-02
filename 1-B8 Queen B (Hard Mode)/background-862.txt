@@ -1,0 +1,4 @@
+image = background-862.png
+frames=2
+framespeed=8
+grid=16

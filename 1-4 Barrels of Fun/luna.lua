@@ -1,7 +1,7 @@
 local minTimer = require("minTimer")
 local textplus = require("textplus")
 local minFont = textplus.loadFont("minFont.ini")
-local timer1 = minTimer.create{initValue = minTimer.toTicks{hrs = 0, mins = 0, secs = 20}, x = 150, y = 552}
+local timer1 = minTimer.create{initValue = minTimer.toTicks{hrs = 0, mins = 0, secs = 30}, x = 150, y = 552, dontHandleFail = true}
 local emergencyClose = false
 local LuigiGame = Graphics.loadImage("LuigiGame.png")
 local myOpacity = 0
@@ -17,6 +17,20 @@ local slm = require("simpleLayerMovement")
 --DK Barrels
 slm.addLayer{name = "dkbarrel1",speed = 132,verticalMovement = slm.MOVEMENT_COSINE,verticalSpeed = 112,verticalDistance = 1.0}
 slm.addLayer{name = "dkbarrel2",speed = 96,verticalMovement = slm.MOVEMENT_COSINE,verticalSpeed = 78,verticalDistance = -1.5}
+slm.addLayer{name = "dkbarrel3",speed = 128,horizontalMovement = slm.MOVEMENT_COSINE,horizontalSpeed = 78,horizontalDistance = 2.0}
+
+--Barrel Blast
+--Scoring for Mini Game at end
+local levelName = Level.filename()
+local data = SaveData.checklist[levelName]
+local currentScore = 0
+local highScore = data.miniGameHighScore or 0
+local timerChallengeOff = timerChallengeOff or true
+local luigiChallengeOff = luigiChallengeOff or true
+local minigameImgBorder = Graphics.loadImageResolved("../bars/minigameBorder.png")
+local imgBack = Graphics.loadImageResolved("../bars/hpBackdrop.png")
+local imgDamage = Graphics.loadImageResolved("../bars/hpSliceDamage.png")
+local imgDummy = Graphics.loadImageResolved("../bars/hpDummy.png")
 
 --Boss Template by AdvancedTrash
 local bossName = "Queen B" -- For name draw
@@ -27,8 +41,8 @@ local BOSS_ID = 898 -- This will be the boss that is drawn, later we may want to
 local bossImmuneNPC = {[416] = true} -- NPC Creator was hurting itself in the bar display
 local damageAll = 3 -- All damage except fireball
 local damageFireball = 3 -- Fireball damage
-local bossHurtCooldown = 0 --this is because of spin jump
-local bossHurtCooldownTime = 20 --this is because of spin jump
+local bossHurtCooldown = 0
+local bossHurtCooldownTime = 20 
 
 --Set bars
 local greenHP = 0 
@@ -53,6 +67,20 @@ local imgByName = {
 }
 
 --draw all bars
+local minigamebar = Sprite.bar{
+   x = camera.width/2 + 265,
+   y = 552,
+   width = 178,
+   height = 12,
+   pivot = Sprite.align.TOP,
+   value = math.min(1, math.max(0, currentScore / 60)),
+   texture = imgByName.green,
+   trailspeed = 1,
+   trailtexture = imgDamage,
+   bgtexture = imgDummy,
+   borderwidth = 0
+}
+
 local greenHPbar = Sprite.bar{
    x = camera.width/2 - 15,
    y = 552,
@@ -146,9 +174,10 @@ redistributeBarsFrom(bossCurrentHP)
 function onDraw()
     if luigiChallengeOff == false then
         Graphics.drawImage(LuigiGame, 35, 482, myOpacity)
-
+        minigamebar:draw{color = Color.white .. myOpacity}
+        Graphics.drawImage(minigameImgBorder, 400 - minigameImgBorder.width/2 + 280, 547, myOpacity)
         textplus.print{
-                text = string.format("Luigi Block Challenge 3: Block Heads!"),
+                text = string.format("Luigi Block Challenge 4: Barrel Blast!"),
                 font = minFont,
                 priority = 5,
                 wave = 1,
@@ -156,6 +185,24 @@ function onDraw()
                 x = camera.width/2, y = 32,
                 xscale = 2, yscale = 2,
                 color = Color.fromHexRGBA(0x66CC66FF) * myOpacity
+        }
+
+        textplus.print{
+                text = string.format("High Score: %d", highScore or 0),
+                font = minFont,
+                priority = 5,
+                x = 216, y = 568,
+                xscale = 2, yscale = 2,
+                color = Color.fromHexRGBA(0x98FF98FF) * myOpacity
+        }
+
+        textplus.print{
+                text = string.format("Score: %d", currentScore or 0),
+                font = minFont,
+                priority = 5,
+                x = 216, y = 552,
+                xscale = 2, yscale = 2,
+                color = Color.fromHexRGBA(0xFFFFFFFF) * myOpacity
         }
     end
     
@@ -204,10 +251,7 @@ local function closeTimer()
 end
 
 function onPlayerKill(p)
-    if bossChallengeOff == false then
-        Audio.MusicChange(0, "music/17 Stickerbrush Symphony.spc", 30)
-    end 
-
+    currentScore = 0
     bossChallengeOff = true
     bossCurrentHP = bossMaxHP
     redistributeBarsFrom(bossCurrentHP)
@@ -224,15 +268,31 @@ function onWarpEnter(p)
 end
 
 function onEvent(eventName)
-    if eventName == "timerStart" and Layer.get("reward").isHidden then
+    if eventName == "minigameStart" and Layer.get("minigameMastery").isHidden then
         timer1:start()
+        Layer.get("minigame"):show(false)
+        Audio.MusicChange(3, "music/16a Token Tango.spc", 30)
         luigiChallengeOff = false
         emergencyClose = false
         myOpacityChange = 0.05
-    elseif eventName == "timerEnd" and minTimer.activeTimer.id == timer1.id then
-        timer1:close(minTimer.WIN_CLEAR, true)
-        Layer.get("reward"):show(true)
+    elseif eventName == "minigameStop" and minTimer.activeTimer.id == timer1.id then
+        
         luigiChallengeOff = true
+        data.miniGameWon = true
+
+        if currentScore > highScore then
+            highScore = currentScore
+            data.miniGameHighScore = currentScore
+        end
+
+        if currentScore >= 50 then
+            Layer.get("minigameMastery"):show(false)
+            data.miniGameMastered = true
+        end
+
+        timer1:close(minTimer.WIN_CLEAR, true)
+        Audio.MusicChange(3, "music/Final Fantasy VII - Cait Sith's Theme.spc", 30)
+        currentScore = 0
         myOpacityChange = -0.05
         emergencyClose = false
     end
@@ -277,6 +337,7 @@ function onTick()
             moveTimer = 0
         end
     end
+    minigamebar.value = math.min(1, math.max(0, currentScore / 60))
 end
 
 local STATE = {
@@ -298,6 +359,17 @@ local function applyBossDamage(dmg)
     if bossCurrentHP <= 0 then
         myOpacityChange = -0.05
         triggerEvent("BossWin")
+    end
+end
+
+function onPostNPCCollect(npc,p)
+    if luigiChallengeOff == true then return end
+    if npc.id ~= 33 and npc.id ~= 258 then return end
+
+    if npc.id == 33 then
+        currentScore = currentScore + 1
+    elseif npc.id == 258 then
+        currentScore = currentScore + 5
     end
 end
 

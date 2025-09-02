@@ -29,7 +29,8 @@ local levels = {
 	{"1-3 Dolphin Ride.lvlx",40000,10000}, -- Dolphin Ride
     {"1-4 Barrels of Fun.lvlx",40000,10000}, -- Barrels of Fun
 	{"1-C The Koopa Kastle.lvlx",40000,10000}, -- Koopa Kastle
-	{"1-B8 Kore (Hard Mode).lvlx", 10000, 10000}, --World 1: Challenge 8 (Kore Hard Mode)
+    {"1-B8 Queen B (Hard Mode).lvlx",10000,10000}, --World 1: Challenge 8 (Queen B Hard Mode)
+	{"1-B12 Kore (Hard Mode).lvlx", 10000, 10000}, --World 1: Challenge 12 (Kore Hard Mode)
 	
 }
 

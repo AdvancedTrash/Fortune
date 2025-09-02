@@ -1,0 +1,17 @@
+[background2]
+name = "SMW Night (Carnival)"
+fill-color = black
+
+[Layer1]
+depth = INFINITE
+img = "background2-29.png"
+repeatX = true
+alignY = BOTTOM
+frames = 4
+framespeed = 12
+
+[Layer2]
+depth = 200
+img = "bgcarnival.png"
+repeatX = true
+alignY = BOTTOM

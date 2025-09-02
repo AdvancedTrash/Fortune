@@ -28,9 +28,10 @@ local levels2 = {
 	{"1-1 Adventure Away.lvlx",true,true,false}, -- Adventure Away
 	{"1-2 Cavern Depths.lvlx",false,true,true}, -- Cavern Depths
     {"1-3 Dolphin Ride.lvlx",true,false,true}, -- Dolphin Ride
-    {"1-4 Barrels of Fun.lvlx", true,true,false}, -- Barrels of Fun
+    {"1-4 Barrels of Fun.lvlx", true,true,true}, -- Barrels of Fun
 	{"1-C The Koopa Kastle.lvlx",true,true,false}, -- Koopa Kastle
-    {"1-B8 Kore (Hard Mode).lvlx",true,false,false} -- Bonus 8: Kore Hard Mode
+    {"1-B8 Queen B (Hard Mode).lvlx",true,false,false}, -- Bonus 8: Queen B Hard Mode
+    {"1-B12 Kore (Hard Mode).lvlx",true,false,false} -- Bonus 12: Kore Hard Mode
 	
 }
 

@@ -1,0 +1,9 @@
+{
+	"mainPage": "index.html",
+	"allowedCharacters": [1],
+	"allowTwoPlayer": false,
+    "current-version": [0, 1, 10],
+	"episodeIcon": "logo.png",
+    "stars": "50"
+
+}

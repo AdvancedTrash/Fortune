@@ -1,0 +1,36 @@
+{
+	"style" : "groupbox",
+	"title" : "Zinger Settings",
+	"layout": [
+
+		{
+			"control": "combobox",
+			"name": "algorithm",
+			"title": "Zinger Algorithm",
+			"elements": ["Stationary", "Horizontal Back and Forth", "Vertical back and Forth", "Circle (Up)", "Circle (Down)", "Horizontal Continuous", "Vertical Continuous", "Crescent (Facing Up)", "Crescent (Facing Down)", "Crescent (Facing Left)", "Crescent (Facing Right)"],
+			"value-default": 0
+		},
+		{
+			"control": "spinBox",
+			"type": "double",
+			"name": "aspeed",
+			"title": "Speed",
+			"tooltip": "Alters the Zinger's speed. <u>Recommended to keep roughly between 0 and 5.</u>",
+			"value-default": 1,
+			"value-min": -100,
+			"value-max": 100,
+			"single-step": 0.5
+		},
+		{
+			"control": "spinBox",
+			"type": "int",
+			"name": "aamplitude",
+			"title": "Amplitude",
+			"tooltip": "Adjusts how far the Zinger moves, does not work for Stationary, Horizontal and Vertical Continuous settings. <u>Recommended to keep roughly between 0 and 150.</u>",
+			"value-default": 100,
+			"value-min": 1,
+			"value-max": 1000,
+			"single-step": 1
+		}
+		]
+}
