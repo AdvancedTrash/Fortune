@@ -159,3 +159,4 @@ end                                       -- close the function
 function onStart()
     Defines.npc_throwfriendlytimer = 10
 end
+

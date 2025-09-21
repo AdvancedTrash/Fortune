@@ -60,14 +60,15 @@ function twirl.onTick() for k, p in ipairs(Player.get()) do
 		or p:mem(0x06,FIELD_BOOL)	-- In quicksand
 	) end
 	local function canTwirl() return (
+			not Defines.levelFreeze and         
 			not isTwirling[k] and
 			not isOnGround() and
-			not p:mem(0x50,FIELD_BOOL) and -- Spinning
+			not p:mem(0x50,FIELD_BOOL) and
 			not isUnderwater() and
 			not isOnMount() and
 			not unmounting[k] and
-			not p:mem(0x44, FIELD_BOOL) and -- Riding a rainbow shell
-			not p:mem(0x12E, FIELD_BOOL) and -- Ducking
+			not p:mem(0x44, FIELD_BOOL) and
+			not p:mem(0x12E, FIELD_BOOL) and
 			not p:mem(0x13C, FIELD_BOOL) and
 			not p.holdingNPC and
 			not p.isMega and
@@ -78,7 +79,7 @@ function twirl.onTick() for k, p in ipairs(Player.get()) do
 			(p.character == 1 or p.character == 2 or p.character == 4 or p.character == 7 or p.character == 15)
 	) end
 
-	if p.keys.altJump and cooldown[k] > twirl.cooldown then
+	if (not Defines.levelFreeze) and p.keys.altJump and cooldown[k] > twirl.cooldown then
 		isTwirling[k] = true
 	elseif canTwirl() then
 		isTwirling[k] = false

@@ -1,0 +1,175 @@
+{
+	"style" : "groupbox",
+	"title" : "Layer Controller Settings",
+	"layout": [
+		{
+			"control": "group",
+			"name": "movement",
+			"title": "Movement Settings",
+			"children": [
+				{
+					"control": "spinBox",
+					"name": "radiusX",
+					"title": "Radius X",
+					"tooltip": "Horizontal radius, in blocks, of the circle (or ellipse) that the layer will move in. Negative numbers will horizontally flip its path.",
+					"type": "double",
+					"value-default": 2,
+					"value-min": -1000,
+					"value-max": 1000,
+					"decimals": 2,
+					"single-step": 1
+				},
+				{
+					"control": "spinBox",
+					"name": "radiusY",
+					"title": "Radius Y",
+					"tooltip": "Vertical radius, in blocks, of the circle (or ellipse) that the layer will move in. Negative numbers will vertically flip its path.",
+					"type": "double",
+					"value-default": 2,
+					"value-min": -1000,
+					"value-max": 1000,
+					"decimals": 2,
+					"single-step": 1
+				},
+				{
+					"control": "spinBox",
+					"name": "startAngle",
+					"title": "Start Angle",
+					"tooltip": "Angle that the rotation is considered to start at. At 0, the layer will start in its topmost position and move down. At 180, it will start in its bottommost position and move up.",
+					"type": "int",
+					"value-default": 0,
+					"value-min": -360,
+					"value-max": 360,
+					"single-step": 45
+				}
+			]
+		},
+		{
+			"control": "group",
+			"name": "timing",
+			"title": "Timing Settings",
+			"children": [
+				{
+					"control": "spinBox",
+					"name": "movementDuration",
+					"title": "Movement Duration",
+					"tooltip": "How long, in seconds, it takes for the layer to move from one end of the line to the other.",
+					"type": "double",
+					"value-default": 4,
+					"value-min": 0.05,
+					"value-max": 100,
+					"decimals": 2,
+					"single-step": 0.25
+				},
+				{
+					"control": "spinBox",
+					"name": "waitDuration",
+					"title": "Wait Duration",
+					"tooltip": "How long, in seconds, the layer waits before beginning another movement.",
+					"type": "double",
+					"value-default": 0,
+					"value-min": 0,
+					"value-max": 100,
+					"decimals": 2,
+					"single-step": 0.25
+				},
+				{
+					"control": "comboBox",
+					"name": "mode",
+					"title": "Timing Mode",
+					"tooltip": "Controls what type of timer the layer uses for its movement. A <b>global timer</b> counts up for the entire level and will keep layers in-sync with one another. A <b>local timer</b> is specific to this controller and only counts up when it is active. This setting has <b>no effect</b> for controllers activated by events.",
+					"elements": ["Global Timer", "Local Timer"],
+					"value-default": 0
+				},
+				{
+					"control": "checkBox",
+					"name": "pauseDuringForcedState",
+					"title": "Pause During\nForced States",
+					"tooltip": "If ticked, the layer's movement will stop whenever a player is in a \"forced state\" (e.g. taking damage, powering up, etc).",
+					"value-default": true
+				}
+			]
+		},
+		{
+			"control": "group",
+			"name": "easing",
+			"title": "Easing Settings",
+			"children": [
+				{
+					"control": "comboBox",
+					"name": "func",
+					"title": "Function",
+					"tooltip": "Which type of easing function to use when the layer starts/stops moving. \"None\" will result in linear movement.",
+					"elements": ["None", "Sine", "Quad", "Cubic", "Quart", "Quint", "Expo", "Circ", "Back", "Elastic", "Bounce", "Out Bounce"],
+					"value-default": 0
+				},
+				{
+					"control": "description",
+					"text": "You can view some different easing functions at <a href='https://easings.net'>easings.net</a>."
+				}
+			]
+		},
+
+		{
+			"control": "description",
+			"text": ""
+		},
+
+		{
+			"control": "comboBox",
+			"name": "activationMode",
+			"title": "Activation Mode",
+			"tooltip": "How and when the layer is active.<br><b>Always Active:</b> The layer is permanently moving.<br><b>Active within Range:</b> The layer only moves while the player is within a certain range. Good for performance.<br><b>Activated by Event:</b> The layer will only move after a certain event has been triggered.",
+			"elements": ["Always Active", "Active within Range", "Activated by Event"],
+			"value-default": 1,
+			"children": [
+				[],
+				[
+					{
+						"control": "spinBox",
+						"name": "activationMargin",
+						"title": "Activation Margin",
+						"tooltip": "Additional space around the controller within which it should be active. If set to 0, the layer only moves while the controller is on screen.",
+						"type": "int",
+						"value-default": 15,
+						"value-min": 0,
+						"value-max": 1000
+					}
+				],
+				[
+					{
+						"control": "lineEdit",
+						"name": "activationEventName",
+						"title": "Event Name",
+						"tooltip": "The name of the event that should activate the controller.",
+						"value-default": 0
+					},
+					{
+						"control": "spinBox",
+						"name": "eventActivationMoveCount",
+						"title": "Move Times",
+						"tooltip": "How many times the layer should move as a result of the event being triggered.",
+						"type": "int",
+						"value-min": 1,
+						"value-max": 100,
+						"value-default": 1,
+						"single-step": 1
+					}
+				]
+			]
+		},
+
+		{
+			"control": "description",
+			"text": ""
+		},
+
+		{
+			"control": "checkBox",
+			"name": "debug",
+			"title": "Debug",
+			"tooltip": "Displays extra visuals to demonstrate how the layer moves. <b>Only displays while testing in the editor.</b>",
+			"value-default": false
+		}
+	]
+}
