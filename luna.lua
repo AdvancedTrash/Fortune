@@ -40,21 +40,17 @@ local legalMoveSet = nil         -- set from rules
 local legalAttackSet = nil       -- set from rules
 local TERRAIN_IMG = cardGameFortune.TERRAIN_IMG
 local END_TURN_PLAYER = 1
-local endTurnLatch     = false
-local endTurnPrevTurn  = nil
-local endTurnCooldown  = 0
+local endTurnLatch      = false
+local endTurnCooldown   = 0
+local endTurnPrevTurn   = 1
 
 local function canHumanEndTurn(s)
     if not s then return false end
-    if s.whoseTurn ~= END_TURN_PLAYER then return false end
+    if s.whoseTurn ~= 1 then return false end           -- only P1 ends P1's turn
+    if cardGameFortune.anyAnimating and cardGameFortune.anyAnimating() then return false end
     if cardGameFortune.aiState and cardGameFortune.aiState.busy then return false end
-    if not BOARD_OPEN then return false end
     return true
 end
-
-
-
-
 
 -- ===========================
 -- LEVEL RANK SETUP
@@ -176,6 +172,11 @@ function onTick()
             Freeze.pop()
         end
     end
+
+    if endTurnCooldown > 0 then
+        endTurnCooldown = endTurnCooldown - 1
+        if endTurnCooldown == 0 then endTurnLatch = false end
+    end
 end
 
 function onTickEnd()
@@ -222,6 +223,16 @@ local RIGHT_W = 300
 local rightPanelX = SCREEN_W - BORDER - RIGHT_W
 local rightPanelY = BORDER
 
+-- Can the player act on grid/hand?
+local function canActNow()
+    local s = cardGameFortune.peek()
+    if not s or s.whoseTurn ~= 1 then return false end          -- only P1 acts
+    if cardGameFortune.anyAnimating and cardGameFortune.anyAnimating() then return false end
+    if cardGameFortune.aiState and cardGameFortune.aiState.busy then return false end
+    return true
+end
+
+
 local function gridSize()
     local s = cardGameFortune.peek()
     return (s.cols or 7), (s.rows or 7)
@@ -261,6 +272,7 @@ tex = function(path)
     return img
 end
 
+--Terrain Image
 local TERRAIN_TEX = {}
 local function terrImg(terr)
     local texpath = cardGameFortune.TERRAIN_IMG[terr]    
@@ -297,6 +309,8 @@ local TX_FILL      = tex("cardgame/texturetransparent.png")
 local TX_BORDER_W  = tex("cardgame/cell_outline_3slice.png")        -- white
 local TX_BORDER_R  = tex("cardgame/cell_outline_3slice_red.png")    -- red
 local TX_BORDER_B  = tex("cardgame/cell_outline_3slice_blue.png")   -- blue
+local BADGE_ATK = tex("cardgame/attack.png")
+local BADGE_DEF = tex("cardgame/defence.png")
 
 local outlineWhite = Sprite.box{
   width=CELL, height=CELL, texture=TX_FILL, borderwidth=2, bordertexture=TX_BORDER_W
@@ -308,41 +322,41 @@ local outlineBlue  = Sprite.box{
   width=CELL, height=CELL, texture=TX_FILL, borderwidth=2, bordertexture=TX_BORDER_B
 }
 
-local outlineWhite1 = Sprite.box{
-  width = CELL-2, height = CELL-2,
-  texture = TX_FILL, borderwidth = 2, bordertexture = TX_BORDER_W,
-}
-local outlineRed1 = Sprite.box{
-  width = CELL-2, height = CELL-2,
-  texture = TX_FILL, borderwidth = 2, bordertexture = TX_BORDER_R,
-}
-local outlineBlue1 = Sprite.box{
-  width = CELL-2, height = CELL-2,
-  texture = TX_FILL, borderwidth = 2, bordertexture = TX_BORDER_B,
-}
+-- ---- outline sprites (cached per color + inset) ----
+local OUTLINE_CACHE = { red={}, blue={}, white={} }
 
+local function getOutline(which, inset)
+    inset = inset or 0
+    local cache = OUTLINE_CACHE[which]
+    local spr = cache[inset]
+    if not spr then
+        local texBorder = (which=="red")  and TX_BORDER_R
+                       or (which=="blue") and TX_BORDER_B
+                       or                     TX_BORDER_W
+        spr = Sprite.box{
+            width        = CELL - inset*2,
+            height       = CELL - inset*2,
+            texture      = TX_FILL,        -- transparent fill
+            borderwidth  = 2,              -- try 1 if you want even thinner
+            bordertexture= texBorder,
+        }
+        cache[inset] = spr
+    end
+    return spr
+end
 
 local function drawOutlineSprite(spr, x, y, prio)
-  spr.x = x; spr.y = y
-  spr:draw{priority = prio or 5.1}
+    spr.x, spr.y = x, y
+    spr:draw{priority = prio or 5.1}
 end
 
--- which: "red" | "blue" | "white"; inset: 0 (default) or 1 (1px inward)
+-- which: "red"|"blue"|"white"; inset = pixels you want to tuck inward
 local function outlineCell(c, r, which, prio, inset)
-  inset = inset or 0
-  local x = boardX + c*CELL + inset
-  local y = boardY + r*CELL + inset
-
-  if which == "red" then
-    drawOutlineSprite((inset==1 and outlineRed1  or outlineRed),  x, y, prio)
-  elseif which == "blue" then
-    drawOutlineSprite((inset==1 and outlineBlue1 or outlineBlue), x, y, prio)
-  else
-    drawOutlineSprite((inset==1 and outlineWhite1 or outlineWhite), x, y, prio)
-  end
+    inset = inset or 0
+    local x = boardX + c*CELL + inset
+    local y = boardY + r*CELL + inset
+    drawOutlineSprite(getOutline(which, inset), x, y, prio)
 end
-
-
 
 local function fillCell(c, r, col, prio)
     Graphics.drawBox{
@@ -359,6 +373,7 @@ local gridIcons = {
 
 }
 
+--Icon loader
 local function drawIcon(id, col, row)
     local card = cardGameFortune.db[id]
     if not card then return end
@@ -366,6 +381,107 @@ local function drawIcon(id, col, row)
     if not img then return end
     Graphics.drawImageWP(img, boardX + col*CELL, boardY + row*CELL, 5)
 end
+
+-- Convert a unit's (c,r) to screen XY, applying slide animation if present
+local function unitDrawXY(c, r, u)
+    local x = boardX + c*CELL
+    local y = boardY + r*CELL
+    if u and u._anim and u._anim.kind == "slide" then
+        local A = u._anim
+        local t = math.min(1, A.t / A.dur)
+        if A.ease then t = A.ease(t) end
+        local fromX = boardX + A.fromC*CELL
+        local fromY = boardY + A.fromR*CELL
+        local toX   = boardX + A.toC  *CELL
+        local toY   = boardY + A.toR  *CELL
+        x = fromX + (toX - fromX) * t
+        y = fromY + (toY - fromY) * t
+    end
+    return x, y
+end
+
+-- Summon effects
+local function drawSummonFX(cell, c, r, drawX, drawY)
+    local fx = cell and cell._fx
+    if not (fx and fx.kind=="summon") then return end
+
+    -- normalized time 0..1 and fade
+    local k = fx.t / math.max(1, fx.dur)  -- progress
+    local a = 1 - k                        -- inverse progress for fading
+
+    -- Smooth easing (same idea as your slide anim ease)
+    local function ease(t) return t*t*(3 - 2*t) end
+    local ke = ease(k)
+
+    -- cell rect
+    local x = drawX
+    local y = drawY
+    local w = CELL
+    local h = CELL
+
+    -- 1) Quick impact flash (first few frames)
+    if fx.flash and fx.t < fx.flash then
+        local flashA = (1 - (fx.t / fx.flash)) * 0.75
+        Graphics.drawBox{
+            x=x, y=y, width=w, height=h,
+            color = Color(1,1,1, flashA),
+            priority = 5.13
+        }
+    end
+
+    -- 2) Pulsing inset rings (owner-colored), eased
+    local baseInset = 3
+    local pulseMax  = 3            -- how wide the pulse starts
+    local inset1    = baseInset + math.floor(pulseMax * (1 - ke))   -- 6 → 3 over time
+    local inset2    = inset1 + 2
+
+    local which = (cell.owner==1) and "red" or "blue"
+    local ring1 = getOutline(which, inset1)
+    ring1.x, ring1.y = x + inset1, y + inset1
+    ring1:draw{priority=5.12, color=Color(1,1,1, 0.70 * a)}
+
+    local ring2 = getOutline(which, inset2)
+    ring2.x, ring2.y = x + inset2, y + inset2
+    ring2:draw{priority=5.115, color=Color(1,1,1, 0.40 * a)}
+
+    -- 3) Soft “core glow” that expands and fades
+    do
+        local glowA   = 0.35 * a
+        local pad     = math.floor(6 + 6*ke) -- expands slightly
+        Graphics.drawBox{
+            x = x + pad, y = y + pad,
+            width  = w - pad*2,
+            height = h - pad*2,
+            color  = Color(1,1,1, glowA),
+            priority = 5.11
+        }
+    end
+
+    -- 4) Sparkles drifting outward (uses fx.sparks seeded in engine)
+    local cx = x + w*0.5
+    local cy = y + h*0.5
+    if fx.sparks then
+        for _,p in ipairs(fx.sparks) do
+            local pp = math.min(1, p.t / math.max(1, p.dur))
+            local fad = 1 - pp
+            -- drift outward and slightly accelerate
+            local driftX = p.x * (0.6 + 0.7*pp)
+            local driftY = p.y * (0.6 + 0.7*pp)
+            local sx = cx + driftX
+            local sy = cy + driftY
+            local sz = 2 + math.floor(2 * (1-pp))  -- shrink over time
+
+            Graphics.drawBox{
+                x = sx - sz*0.5, y = sy - sz*0.5,
+                width = sz, height = sz,
+                color = Color(1,1,1, 0.85 * fad),
+                priority = 5.14
+            }
+        end
+    end
+end
+
+
 
 -- ===========================
 -- CURSOR + HOVER HELPERS
@@ -592,150 +708,153 @@ end
 -- ===========================
 
 function onInputUpdate()
-        -- disable map toggle on overworld
-        if Level.filename() == "map.lvlx" or Level.isOverworld then
-            player.dropItemKeyPressing = false
-        end
+    -- Disable map toggle on overworld
+    if Level.filename() == "map.lvlx" or Level.isOverworld then
+        player.dropItemKeyPressing = false
+    end
 
-        local myTurn = true
-
+    ----------------------------------------------------------------------
+    -- End-turn latch/cooldown housekeeping (safe even if board is closed)
+    ----------------------------------------------------------------------
+    do
+        local s = cardGameFortune.peek()
         if endTurnLatch then
             if s and s.whoseTurn ~= endTurnPrevTurn then
-                endTurnLatch = false
-                endTurnCooldown = 0
+                endTurnLatch, endTurnCooldown = false, 0
+            elseif endTurnCooldown > 0 then
+                endTurnCooldown = endTurnCooldown - 1
+                if endTurnCooldown == 0 then endTurnLatch = false end
+            end
+        end
+    end
+
+    --------------------------------
+    -- Open/close the board (Drop)
+    --------------------------------
+    if player.rawKeys.dropItem == KEYS_PRESSED then
+        BOARD_OPEN  = not BOARD_OPEN
+        inputLocked = BOARD_OPEN
+        player.dropItemKeyPressing = false
+
+        if BOARD_OPEN then
+            Freeze.push(true)
+            if not cardGameFortune.isOpen() then
+                cardGameFortune.newMatch(12345)
+                cardGameFortune.open()
+
+                -- UI defaults on open
+                focus     = "hand"
+                summonPos = "attack"
+                selectedHandIndex = nil
+
+                local s = cardGameFortune.peek()
+                local h = (s and s.hands and s.hands[1]) or {}
+                for i=1,6 do if h[i] then selectedHandIndex = i; break end end
+
+                centerCursor()
+                moveTimer = 0
+            end
+            swapToMenuMusic()
+        else
+            Freeze.pop()
+            cardGameFortune.close()
+            restoreSectionMusic()
+        end
+    end
+
+    ----------------------------------------------------
+    -- All interactive logic only when the board is open
+    ----------------------------------------------------
+    if BOARD_OPEN then
+        local s      = cardGameFortune.peek()
+        local aiBusy = cardGameFortune.aiState and cardGameFortune.aiState.busy
+        local myTurn = (s and s.whoseTurn == 1 and not aiBusy)
+
+        -- (Keep the latch in sync while open, too)
+        if endTurnLatch then
+            if s and s.whoseTurn ~= endTurnPrevTurn then
+                endTurnLatch, endTurnCooldown = false, 0
             elseif endTurnCooldown > 0 then
                 endTurnCooldown = endTurnCooldown - 1
                 if endTurnCooldown == 0 then endTurnLatch = false end
             end
         end
 
-        -- open/close the board
-        if player.rawKeys.dropItem == KEYS_PRESSED then
-            BOARD_OPEN   = not BOARD_OPEN
-            inputLocked  = BOARD_OPEN      -- tie into the input lock
-            player.dropItemKeyPressing = false
-
-            if BOARD_OPEN then
-                Freeze.push(true)  
-                if not cardGameFortune.isOpen() then
-                    cardGameFortune.newMatch(12345)
-                    cardGameFortune.open()
-                    -- focus + default selection on open
-                    focus = "hand"
-                    summonPos = "attack"
-                    local s = cardGameFortune.peek()
-                    selectedHandIndex = nil
-                    for i=1,6 do
-                        if (s.hands[1] or {})[i] then selectedHandIndex = i; break end
-                    end
-                    centerCursor()
-                    moveTimer = 0
-                end
-                swapToMenuMusic()
-            else
-                Freeze.pop()
-                cardGameFortune.close()
-                restoreSectionMusic()
-            end
+        -- Start AI turn if it's P2 and AI isn't already running
+        if s and s.whoseTurn == 2 and not aiBusy then
+            if cardGameFortune.aiBeginTurn then cardGameFortune.aiBeginTurn() end
         end
-        
-        if BOARD_OPEN then
-            local s = cardGameFortune.peek()
-            local aiBusy = cardGameFortune.aiState and cardGameFortune.aiState.busy
-            local myTurn = (s.whoseTurn == 1) and (not aiBusy)
+        -- Run one AI step when ready
+        if cardGameFortune.aiUpdate then cardGameFortune.aiUpdate() end
 
-                if endTurnLatch then
-                    if s and s.whoseTurn ~= endTurnPrevTurn then
-                        endTurnLatch, endTurnCooldown = false, 0
-                    elseif endTurnCooldown > 0 then
-                        endTurnCooldown = endTurnCooldown - 1
-                        if endTurnCooldown == 0 then endTurnLatch = false end
-                    end
-                end
+        -- If AI just ended, reset P1 UI cleanly
+        if cardGameFortune.aiJustEnded then
+            selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+            focus, summonPos = "hand", "attack"
 
-            -- Start AI turn if it's P2's turn and AI isn't already running
-            if s and s.whoseTurn == 2 and not (cardGameFortune.aiState and cardGameFortune.aiState.busy) then
-                if cardGameFortune.aiBeginTurn then cardGameFortune.aiBeginTurn() end
-            end
+            selectedHandIndex = nil
+            local h = (s and s.hands and s.hands[1]) or {}
+            for i=1,6 do if h[i] then selectedHandIndex = i; break end end
 
-            -- Step AI queue (runs one step when its delay hits 0)
-            if cardGameFortune.aiUpdate then cardGameFortune.aiUpdate() end
-
-            -- If AI just ended, reset P1 UI cleanly
-            if cardGameFortune.aiJustEnded then
-                selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
-                focus     = "hand"
-                summonPos = "attack"
-
-                -- select first card in P1's hand, if any
-                selectedHandIndex = nil
-                local h = (s.hands[1] or {})
-                for i=1,6 do if h[i] then selectedHandIndex = i; break end end
-
-                centerCursor()
-                cardGameFortune.aiJustEnded = false
-            end
+            centerCursor()
+            cardGameFortune.aiJustEnded = false
         end
 
-        -- toggle hand <-> board (not while aiming)
+        ------------------------------------------------
+        -- Toggle hand <-> board (not while aiming)
+        ------------------------------------------------
         if focus ~= "aim" and (player.rawKeys.spinJump == KEYS_PRESSED or player.rawKeys.altJump == KEYS_PRESSED) then
             focus = (focus == "hand") and "board" or "hand"
             if focus == "board" then centerCursor() end
             SFX.play(3)
         end
 
-        -- End Turn (RUN) – only human, only on their turn, only when AI idle, only once
+        -----------------------------------------------------------------
+        -- End Turn (ALT-RUN): only human, on their turn, AI idle, gated
+        -----------------------------------------------------------------
         if player.rawKeys.altRun == KEYS_PRESSED then
-            local s = cardGameFortune.peek()
-            if canHumanEndTurn(s) and (not endTurnLatch) and cardGameFortune.endTurn then
-                endTurnPrevTurn = s.whoseTurn
+            local ss = cardGameFortune.peek()
+            if canHumanEndTurn(ss) and (not endTurnLatch) and cardGameFortune.endTurn then
+                endTurnPrevTurn = ss.whoseTurn
                 endTurnLatch    = true
-                endTurnCooldown = 12  -- small safety window (frames)
+                endTurnCooldown = 12
 
                 cardGameFortune.endTurn()
 
-                -- reset UI for the next player (P2/AI)
+                -- reset UI for next player (likely P2/AI)
                 selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
-                focus     = "hand"
-                summonPos = "attack"
+                focus, summonPos = "hand", "attack"
 
-                -- pick first card in the new player's hand
-                local ss = cardGameFortune.peek()
+                local ns = cardGameFortune.peek()
                 selectedHandIndex = nil
-                local h = (ss.hands[ss.whoseTurn] or {})
-                for i=1,6 do if h[i] then selectedHandIndex = i; break end end
+                local h2 = (ns and ns.hands and ns.hands[ns.whoseTurn]) or {}
+                for i=1,6 do if h2[i] then selectedHandIndex = i; break end end
 
                 centerCursor()
                 SFX.play(3)
             else
-                SFX.play(9)
+                SFX.play(2)
             end
         end
 
-
-
-
+        --------------------------------
         -- ========= HAND mode =========
+        --------------------------------
         if focus == "hand" then
-             if not (BOARD_OPEN and myTurn) then
-                --ignore?--
-             else
+            if myTurn then
                 local function handCycle(dir)
-                local s = cardGameFortune.peek()
-                -- if nothing selected yet, select the first filled slot
-                if not selectedHandIndex then
-                    for i=1,6 do if (s.hands[1] or {})[i] then selectedHandIndex = i; break end end
-                    if not selectedHandIndex then return end
+                    local s2 = cardGameFortune.peek()
+                    if not selectedHandIndex then
+                        for i=1,6 do if (s2.hands[1] or {})[i] then selectedHandIndex = i; break end end
+                        if not selectedHandIndex then return end
+                    end
+                    local i, start = selectedHandIndex, selectedHandIndex
+                    repeat
+                        i = ((i - 1 + dir + 6) % 6) + 1
+                        if (s2.hands[1] or {})[i] then selectedHandIndex = i; SFX.play(3); break end
+                    until i == start
                 end
-                -- move to next filled slot in the given direction (-1 or +1)
-                local i, start = selectedHandIndex, selectedHandIndex
-                repeat
-                    i = ((i - 1 + dir + 6) % 6) + 1
-                    if (s.hands[1] or {})[i] then selectedHandIndex = i; SFX.play(3); break end
-                until i == start
-            end
 
-            -- use arrows to cycle hand slots (does NOT move board)
                 if moveTimer > 0 then moveTimer = moveTimer - 1 end
                 local stepped = false
                 if player.rawKeys.left  == KEYS_PRESSED or (player.rawKeys.left  == KEYS_DOWN and moveTimer == 0) then handCycle(-1); stepped = true end
@@ -754,29 +873,35 @@ function onInputUpdate()
                     SFX.play(3)
                 end
 
-                -- A) hand → aim (press Jump in hand)
+                -- A) hand -> aim
                 if player.rawKeys.jump == KEYS_PRESSED then
-                    local s = cardGameFortune.peek()
-                    if selectedHandIndex == nil then
-                        for i=1,6 do if (s.hands[1] or {})[i] then selectedHandIndex = i; break end end
-                    end
-                    if selectedHandIndex and (s.hands[1] or {})[selectedHandIndex] then
-                        focus = "aim"
-                        centerCursor()      -- <— start aiming from center instead of (0,0)
-                        SFX.play(1)
+                    if not canActNow() then
+                        SFX.play(2)
                     else
-                        SFX.play(3)
+                        local s3 = cardGameFortune.peek()
+                        if selectedHandIndex == nil then
+                            for i=1,6 do if (s3.hands[1] or {})[i] then selectedHandIndex = i; break end end
+                        end
+                        if selectedHandIndex and (s3.hands[1] or {})[selectedHandIndex] then
+                            focus = "aim"
+                            centerCursor()
+                            SFX.play(1)
+                        else
+                            SFX.play(3)
+                        end
                     end
                 end
 
-                -- B) hand ↔ board toggle (spinJump or altJump)
+                -- B) small hand reset if desired
                 if player.rawKeys.altRun == KEYS_PRESSED then
                     selectedHandIndex = nil
                     summonPos = "attack"
                 end
             end
 
-        -- ========= AIM (placing) =========
+        --------------------------------
+        -- ========= AIM mode ==========
+        --------------------------------
         elseif focus == "aim" then
             if moveTimer > 0 then moveTimer = moveTimer - 1 end
             local moved = false
@@ -792,17 +917,21 @@ function onInputUpdate()
             end
 
             if player.rawKeys.jump == KEYS_PRESSED and selectedHandIndex ~= nil then
-                local s = cardGameFortune.peek()
-                local hand = s.hands[1]
+                local s4 = cardGameFortune.peek()
+                local hand = s4.hands[1]
                 if hand and hand[selectedHandIndex] then
-                    local ok = select(1, cardGameFortune.playFromHand(1, selectedHandIndex, cursor.c, cursor.r, summonPos))
-                    if ok then
-                        SFX.play(1)
-                        selectedHandIndex = nil
-                        summonPos = "attack"
-                        focus = "hand"
+                    if not canActNow() then
+                        SFX.play(2)
                     else
-                        SFX.play(3)
+                        local ok = select(1, cardGameFortune.playFromHand(1, selectedHandIndex, cursor.c, cursor.r, summonPos))
+                        if ok then
+                            SFX.play(1)
+                            selectedHandIndex = nil
+                            summonPos = "attack"
+                            focus = "hand"
+                        else
+                            SFX.play(3)
+                        end
                     end
                 end
             end
@@ -812,8 +941,10 @@ function onInputUpdate()
                 SFX.play(3)
             end
 
-        -- ========= BOARD (inspect) =========
-        elseif BOARD_OPEN and focus == "board" then
+        ------------------------------------
+        -- ========= BOARD (inspect) =======
+        ------------------------------------
+        elseif focus == "board" then
             if moveTimer > 0 then moveTimer = moveTimer - 1 end
             local moved = false
             if player.rawKeys.left  == KEYS_PRESSED or (player.rawKeys.left  == KEYS_DOWN and moveTimer == 0) then cursor.c = clamp(cursor.c - 1, 0, GRID_COLS-1); moved = true end
@@ -828,83 +959,156 @@ function onInputUpdate()
                 SFX.play(3)
             end
 
-            local s = cardGameFortune.peek()
+            local sb = cardGameFortune.peek()
             local c, r = cursor.c, cursor.r
-            local cell = s.board[r][c]
-            
-            -- Fortify-to-Defense (RUN) while a friendly, movable non-leader is selected.
-            do
-                if selectedUnit and s then                 -- 's' is from cardGameFortune.peek() above
-                    if s.whoseTurn == 1 then               -- or: if myTurn then ...
-                        local u = s.board[selectedUnit.r] and s.board[selectedUnit.r][selectedUnit.c]
-                        if u and not u.isLeader and not u.summoningSickness and not u.hasMoved and u.owner == s.whoseTurn then
-                            if player.rawKeys.run == KEYS_PRESSED then
-                                local ok = cardGameFortune.fortifyToDefense(selectedUnit.c, selectedUnit.r)
-                                if ok then
-                                    SFX.play(3)
-                                    -- clear selection & previews (consumes the move)
-                                    selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
-                                else
-                                    SFX.play(9)
-                                end
-                            end
-                        end
-                    end
-                end
-            end
+            local cell = sb.board[r] and sb.board[r][c]
 
-
-
-            -- Select / act with Jump
-            if player.rawKeys.jump == KEYS_PRESSED then
-                local s = cardGameFortune.peek()
-                local cell = s.board[r] and s.board[r][c]
-
-                if selectedUnit then
-                    -- Already have something selected: try MOVE first, then ATTACK (non-leader), else cancel.
-                    if legalMoveSet and legalMoveSet[r] and legalMoveSet[r][c] and not s.board[r][c] then
-                        local ok = cardGameFortune.moveUnit(selectedUnit.c, selectedUnit.r, c, r)
-                        if ok then SFX.play(3) end
-                        selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
-
-                    elseif (not selectedUnit.isLeader) and legalAttackSet and legalAttackSet[r] and legalAttackSet[r][c] then
-                        local u = s.board[selectedUnit.r][selectedUnit.c]
-                        if u and not u.isLeader then u.pos = "attack" end
-                        local ok = cardGameFortune.resolveBattle(selectedUnit.c, selectedUnit.r, c, r)
+            -- Fortify to DEF (RUN) while friendly, movable non-leader is selected
+            if selectedUnit and canActNow() then
+                local u = sb.board[selectedUnit.r] and sb.board[selectedUnit.r][selectedUnit.c]
+                if u and not u.isLeader and not u.summoningSickness and not u.hasMoved and u.owner == 1 then
+                    if player.rawKeys.run == KEYS_PRESSED then
+                        local ok = cardGameFortune.fortifyToDefense(selectedUnit.c, selectedUnit.r)
                         SFX.play(ok and 3 or 9)
-                        selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
-
-                    else
-                        -- clicked an illegal square: deselect
-                        selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
-                        SFX.play(2)
-                    end
-
-                else
-                    -- Nothing selected yet: pick our own piece (leader OR unit) on our turn
-                    if cell and cell.owner == s.whoseTurn then
-                        selectedUnit = {c=c, r=r, isLeader = cell.isLeader}
-                        if cell.isLeader then
-                            -- leaders: left/right only
-                            legalMoveSet   = cardGameFortune.legalLeaderMovesFrom(c, r)
-                            legalAttackSet = nil              -- leaders don't attack
-                        else
-                            legalMoveSet   = cardGameFortune.legalMovesFrom(c, r)
-                            legalAttackSet = cardGameFortune.legalAttacksFrom(c, r)
-                        end
-                        SFX.play(1)
+                        if ok then selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil end
                     end
                 end
             end
 
+            -- Select / act (Jump)
+            if player.rawKeys.jump == KEYS_PRESSED then
+                if not canActNow() then
+                    SFX.play(2)
+                else
+                    local s5 = cardGameFortune.peek()
+                    local curCell = s5.board[r] and s5.board[r][c]
+
+                    if selectedUnit then
+                        -- Move first, else attack (non-leader), else cancel
+                        if legalMoveSet and legalMoveSet[r] and legalMoveSet[r][c] and not s5.board[r][c] then
+                            local ok = cardGameFortune.moveUnit(selectedUnit.c, selectedUnit.r, c, r)
+                            if ok then SFX.play(3) end
+                            selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+                        elseif (not selectedUnit.isLeader) and legalAttackSet and legalAttackSet[r] and legalAttackSet[r][c] then
+                            local u2 = s5.board[selectedUnit.r][selectedUnit.c]
+                            if u2 and not u2.isLeader then u2.pos = "attack" end
+                            local ok = cardGameFortune.resolveBattle(selectedUnit.c, selectedUnit.r, c, r)
+                            SFX.play(ok and 3 or 9)
+                            selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+                        else
+                            selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+                            SFX.play(2)
+                        end
+                    else
+                        -- Select our own piece (leader OR unit)
+                        if curCell and curCell.owner == s5.whoseTurn then
+                            selectedUnit = {c=c, r=r, isLeader = curCell.isLeader}
+                            if curCell.isLeader then
+                                legalMoveSet   = cardGameFortune.legalLeaderMovesFrom(c, r)
+                                legalAttackSet = nil
+                            else
+                                legalMoveSet   = cardGameFortune.legalMovesFrom(c, r)
+                                legalAttackSet = cardGameFortune.legalAttacksFrom(c, r)
+                            end
+                            SFX.play(1)
+                        end
+                    end
+                end
+            end
 
             -- Cancel with SpinJump
             if player.rawKeys.spinJump == KEYS_PRESSED or player.rawKeys.altJump == KEYS_PRESSED then
                 selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
                 SFX.play(2)
             end
+        end -- focus branch
+    end -- if BOARD_OPEN
+end -- function onInputUpdate
+
+
+-- Draw one card’s info into the hover panel.
+-- Returns the updated yy after drawing.
+local function drawCardInfo(def, hoverX, yy, HOVER_W, pos, summonPos, extras)
+    if not def then return yy end
+
+    -- name row
+    local nameText = tostring(def.name or "Unknown")
+    local iconW, gap = 16, 2
+    local wTotal = iconW + gap + (#nameText * 16)
+    local function centerRowWidth(w) return (hoverX + HOVER_W*0.5) - math.floor(w/2) end
+    local x = centerRowWidth(wTotal)
+    Graphics.drawImageWP(Graphics.loadImageResolved("cardgame/name.png"), x, yy-6, 5)
+    textplus.print{ text=nameText, x=x+iconW+gap, y=yy, priority=5, font=minFont, xscale=2, yscale=2, color={1.0,0.84,0.3,1} }
+    yy = yy + 32
+
+    -- ATK/DEF (effective if a tile position was provided)
+    local atkText, defText
+    if pos and pos.c and pos.r then
+        local eATK,eDEF,_,delta = cardGameFortune.getEffectiveStats(def, pos.c, pos.r)
+        local bump = (delta ~= 0) and (" ("..((delta>0) and "+" or "")..delta..")") or ""
+        atkText = "ATK: "..eATK..bump
+        defText = "DEF: "..eDEF..bump
+    else
+        atkText = "ATK: "..tostring(def.atk or 0)
+        defText = "DEF: "..tostring(def.def or 0)
+    end
+
+    do
+        local iconW2, gap2, colGap = 16, 2, 24
+        local wATK = iconW2 + gap2 + (#atkText * 16)
+        local wDEF = iconW2 + gap2 + (#defText * 16)
+        local totW = wATK + colGap + wDEF
+
+        local x1 = centerRowWidth(totW)
+        Graphics.drawImageWP(Graphics.loadImageResolved("cardgame/attack.png"),  x1, yy-6, 5)
+        textplus.print{ text=atkText, x=x1+iconW2+gap2, y=yy, priority=5, font=minFont, xscale=2, yscale=2, color={1,0.3,0.3,1} }
+
+        local x2 = centerRowWidth(totW) + wATK + colGap
+        Graphics.drawImageWP(Graphics.loadImageResolved("cardgame/defence.png"), x2, yy-6, 5)
+        textplus.print{ text=defText, x=x2+iconW2+gap2, y=yy, priority=5, font=minFont, xscale=2, yscale=2, color={0.4,0.6,1,1} }
+    end
+    yy = yy + 32
+
+    -- any caller-provided extra lines (must return the next yy)
+    if extras then yy = extras(yy) end
+
+    -- movement, type/tags, cost, description
+    textplus.print{ text=("MOV: "..tostring(def.movementtype or "normal").."    RANGE: "..tostring(def.movement or 0)),
+                    x=hoverX+8, y=yy, priority=5, font=minFont, xscale=2, yscale=2, color={0.91,0.73,0.55,1} }
+    yy = yy + 32
+    textplus.print{ text=("Type: "..tostring(def.type or "?").."   atkType: "..tostring(def.atktype or "?")),
+                    x=hoverX+8, y=yy, priority=5, font=minFont, xscale=2, yscale=2, color={1,1,1,0.85} }
+    yy = yy + 32
+    textplus.print{ text=("Tags: "..tostring(def.subtype1 or "-").."/"..tostring(def.subtype2 or "-")),
+                    x=hoverX+8, y=yy, priority=5, font=minFont, xscale=2, yscale=2, color={1,1,1,0.85} }
+    yy = yy + 32
+    if def.summoncost or def.deckcost then
+        textplus.print{ text=("Cost: "..tostring(def.summoncost or 0).." / "..tostring(def.deckcost or 0)),
+                        x=hoverX+8, y=yy, priority=5, font=minFont, xscale=2, yscale=2, color={1.0,0.84,0.3,1} }
+        yy = yy + 32
+    end
+    -- description (wrapped)
+    local function wrapIntoLines(str, maxPixelWidth, maxLines)
+        local maxChars = math.max(1, math.floor(maxPixelWidth / 16))
+        local out, line = {}, ""
+        for word in tostring(str or ""):gmatch("%S+") do
+            if line == "" then line = word
+            elseif #line + 1 + #word <= maxChars then line = line.." "..word
+            else out[#out+1] = line; line = word; if maxLines and #out >= maxLines then break end
+            end
         end
+        if (not maxLines or #out < maxLines) and line ~= "" then out[#out+1] = line end
+        return out
+    end
+    local lines = wrapIntoLines(def.description or "", (HOVER_W-16) - 8, 8)
+    for i=1,#lines do
+        textplus.print{ text=lines[i], x=hoverX+10, y=yy, priority=5, font=minFont, xscale=2, yscale=2, color={1,1,1,1} }
+        yy = yy + 32
+    end
+
+    return yy
 end
+
 
 -- ===========================
 -- HUD DRAW
@@ -912,6 +1116,11 @@ end
 
 function onHUDDraw()
     if not BOARD_OPEN or not SHOW_LAYOUT then return end
+
+    -- Movement/Summoning Animation call:
+    if cardGameFortune.stepAnimations then cardGameFortune.stepAnimations() end
+    if cardGameFortune.stepFX then cardGameFortune.stepFX() end
+
 
     -- top HP bar
     drawHPBarTop()
@@ -973,29 +1182,62 @@ function onHUDDraw()
     end
 
     -- draw leaders + units (from real state)
-    for r=0,s.rows-1 do
-        for c=0,s.cols-1 do
-            local cell = s.board[r][c]
-            if cell then
-                if cell.isLeader then
-                    local ltex = tex((cell.owner==1) and "cardgame/leader_p1.png" or "cardgame/leader_p2.png")
-                    if ltex then Graphics.drawImageWP(ltex, boardX + c*CELL, boardY + r*CELL, 5) end
-                else
-                    local def = cell.cardId and cardGameFortune.db[cell.cardId]
-                    if def and def.icon then
-                        local itex = tex(def.icon)
-                        if itex then Graphics.drawImageWP(itex, boardX + c*CELL, boardY + r*CELL, 5) end
-                        label(cell.pos == "defense" and "D" or "A", boardX + c*CELL + 48, boardY + r*CELL + 44)
-                    end
-                end
+for r=0,s.rows-1 do
+    for c=0,s.cols-1 do
+        local cell = s.board[r][c]
+        if cell then
+            -- one compute per cell
+            local drawX, drawY = unitDrawXY(c, r, cell)
 
-                do
-                -- owner outline: P1 red / P2 blue
-                outlineCell(c, r, (cell.owner==1) and "red" or "blue", 5.1, 1)
-                end
-            end
-        end
-    end
+            if cell.isLeader then
+                local ltex = tex((cell.owner==1) and "cardgame/leader_p1.png" or "cardgame/leader_p2.png")
+                if ltex then Graphics.drawImageWP(ltex, drawX, drawY, 5.0) end
+                drawSummonFX(cell, c, r, drawX, drawY)
+            else
+                local def = cell.cardId and cardGameFortune.db[cell.cardId]
+                if def and def.icon then
+                    local itex = tex(def.icon)
+                    if itex then Graphics.drawImageWP(itex, drawX, drawY, 5.0) end
+                    drawSummonFX(cell, c, r, drawX, drawY)
+
+                    -- stance badge (image)
+                    do
+                        local isDef = (cell.pos == "defense")
+                        local img   = isDef and BADGE_DEF or BADGE_ATK
+                        if img then
+                            -- fade-in for first N frames after summon
+                            local fadeFrames = 10
+                            local alpha = 1.0
+                            local fx = cell._fx
+                            if fx and fx.kind == "summon" and fx.t < fadeFrames then
+                                local t = fx.t / fadeFrames
+                                -- smoothstep ease for a softer ramp
+                                t = t * t * (3 - 2 * t)
+                                alpha = t
+                            end
+
+                            -- anchor: bottom-right of the cell (your +54 placement)
+                            local bx = drawX + 54 - math.floor(img.width  * 0.5)
+                            local by = drawY + 54 - math.floor(img.height * 0.5)
+
+                            Graphics.drawBox{
+                                texture = img,
+                                x = bx, y = by,
+                                width = img.width, height = img.height,
+                                color = Color(1,1,1, alpha),     -- <- fade-in here
+                                priority = 5.2,
+                            }
+                        end
+                    end
+                end 
+            end 
+            -- owner outline (P1 red / P2 blue)
+            outlineCell(c, r, (cell.owner==1) and "red" or "blue", 5.1, 3)
+        end 
+    end 
+end 
+
+
 
     -- leader icons (small)
     local leader1Tex = tex("cardgame/leader_p1healthicon.png")
@@ -1106,6 +1348,12 @@ function onHUDDraw()
         hx = hx + CARD_W + CARD_GAP
     end
 
+    -- ==== HOVER PANEL CONTENT ====
+    local s      = cardGameFortune.peek()
+    if not s then return end                 -- nothing to show if no match
+    local board  = s.board or {}
+    local hands  = s.hands or {}
+
     ----------------------------------------------------------------
     -- INFO PANEL
     ----------------------------------------------------------------
@@ -1130,92 +1378,57 @@ function onHUDDraw()
         end
     end
 
-    -- helper to draw a card’s info; pos is optional {c=,r=}
-    local function drawCardInfo(def, header, extras, pos)
-        if not def then return end
-
-        -- name row
-        local nameText = tostring(def.name or "Unknown")
-        local iconW, gap = 16, 2
-        local wTotal = iconW + gap + textWidth(nameText)
-        local x = centerRowWidth(wTotal)
-        drawIcon16("cardgame/name.png", x, yy-6, 5)
-        label(nameText, x + iconW + gap, yy, 5, COL_NAME, "left")
-        yy = yy + MF_LINE
-
-        -- ATK / DEF (effective if a tile was provided)
-        local atkText, defText
-        if pos and pos.c and pos.r then
-            local eATK,eDEF,terr,delta = cardGameFortune.getEffectiveStats(def, pos.c, pos.r)
-            local bump = (delta ~= 0) and (" ("..((delta>0) and "+" or "")..delta..")") or ""
-            atkText = "ATK: "..tostring(eATK)..bump
-            defText = "DEF: "..tostring(eDEF)..bump
-        else
-            atkText = "ATK: "..tostring(def.atk or 0)
-            defText = "DEF: "..tostring(def.def or 0)
-        end
-
+    -- ===== HOVER PANEL CONTENT =====
+    if s then
+        -- 1) Unit under cursor
         do
-            local iconW2, gap2, colGap = 16, 2, 24
-            local wATK   = iconW2 + gap2 + textWidth(atkText)
-            local wDEF   = iconW2 + gap2 + textWidth(defText)
-            local totW   = wATK + colGap + wDEF
-
-            local x1 = centerRowWidth(totW)
-            drawIcon16("cardgame/attack.png",  x1, yy-6, 5)
-            label(atkText, x1 + iconW2 + gap2, yy, 5, COL_ATK)
-
-            local x2 = centerRowWidth(totW) + wATK + colGap
-            drawIcon16("cardgame/defence.png", x2, yy-6, 5)
-            label(defText, x2 + iconW2 + gap2, yy, 5, COL_DEF)
+            local row  = s.board[cursor.r]
+            local cell = row and row[cursor.c]
+            if cell and cell.cardId then
+                local def = cardGameFortune.db[cell.cardId]
+                yy = drawCardInfo(def, hoverX, yy, HOVER_W, {c=cursor.c, r=cursor.r}, summonPos, function(y)
+                    label("POS: "..(cell.pos or "attack"), hoverX+8, y, 5, COL_LABEL)
+                    return y + MF_LINE
+                end)
+                shown = true
+            end
         end
-        yy = yy + MF_LINE
 
-        if extras then extras() end
-
-        -- movement, tags, cost, description
-        label("MOV: "..tostring(def.movementtype or "normal")..
-              "    RANGE: "..tostring(def.movement or 0), hoverX+8, yy, 5, COL_MOVE); yy = yy + MF_LINE
-        label("Type: "..tostring(def.type or "?").."   atkType: "..tostring(def.atktype or "?"), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
-        label("Tags: "..tostring(def.subtype1 or "-").."/"..tostring(def.subtype2 or "-"), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
-        if def.summoncost or def.deckcost then
-            label("Cost: "..tostring(def.summoncost or 0).." / "..tostring(def.deckcost or 0), hoverX+8, yy, 5, COL_NAME); yy = yy + MF_LINE
+        -- 2) AIM preview
+        if (not shown) and focus == "aim" and selectedHandIndex ~= nil then
+            local cardId = (s.hands[1] or {})[selectedHandIndex]
+            if cardId then
+                local def = cardGameFortune.db[cardId]
+                yy = drawCardInfo(def, hoverX, yy, HOVER_W, {c=cursor.c, r=cursor.r}, summonPos, function(y)
+                    label("PLACE AS: "..((summonPos=="defense") and "DEFENSE" or "ATTACK"),
+                        hoverX+8, y, 5, COL_LABEL)
+                    return y + MF_LINE
+                end)
+                shown = true
+            end
         end
-        labelWrapped(def.description or "", hoverX+8, yy, HOVER_W-16, 8, 5, COL_WHITE)
-    end
 
-    -- unit under cursor OR AIM preview OR hand-only view
-    if not shown and (focus == "board" or focus == "aim") then
-        local cell = s.board[cursor.r][cursor.c]
-        if cell and cell.cardId then
-            local def = cardGameFortune.db[cell.cardId]
-            drawCardInfo(def, nil, function()
-                label("POS: "..(cell.pos or "attack"), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
-            end, {c=cursor.c, r=cursor.r})
-            shown = true
-        elseif focus == "aim" and selectedHandIndex ~= nil and (s.hands[1] or {})[selectedHandIndex] then
-            local def = cardGameFortune.db[(s.hands[1])[selectedHandIndex]]
-            drawCardInfo(def, nil, function()
-                label("PLACE AS: "..((summonPos=="defense") and "DEFENSE" or "ATTACK"), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
-            end, {c=cursor.c, r=cursor.r})
-            shown = true
+        -- 3) Hand-only
+        if (not shown) and focus == "hand" and selectedHandIndex ~= nil then
+            local cardId = (s.hands[1] or {})[selectedHandIndex]
+            if cardId then
+                local def = cardGameFortune.db[cardId]
+                yy = drawCardInfo(def, hoverX, yy, HOVER_W, nil, summonPos, function(y)
+                    label("PLACE AS: "..((summonPos=="defense") and "DEFENSE" or "ATTACK"),
+                        hoverX+8, y, 5, COL_LABEL)
+                    return y + MF_LINE
+                end)
+                shown = true
+            end
         end
     end
 
-    if not shown and focus == "hand" and selectedHandIndex ~= nil then
-        local cardId = (s.hands[1] or {})[selectedHandIndex]
-        if cardId then
-            local def = cardGameFortune.db[cardId]
-            drawCardInfo(def, nil, function()
-                label("PLACE AS: "..((summonPos=="defense") and "DEFENSE" or "ATTACK"), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
-            end) -- no tile → base stats
-            shown = true
-        end
-    end
-
+    -- default hint if nothing shown (either because not s, or no content)
     if not shown then
-        label((focus=="hand") and "(select a card in your hand)" or "(move the cursor over a unit)", hoverX+8, hoverY+30, 5, COL_LABEL)
+        label(((focus=="hand") and "(select a card in your hand)" or "(move the cursor over a unit)"),
+            hoverX+8, hoverY+30, 5, COL_LABEL)
     end
+
 
     -- footer counters
     label("Deck:"..tostring(s.deckCounts[1]).."  Hand:"..tostring(#s.hands[1]), handX + 300, handY + CARD_H + 16)

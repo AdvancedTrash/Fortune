@@ -469,7 +469,7 @@ end
 -- Return a set { [r]={[c]=true,...}, ... } of reachable tiles for this unit
 function cardGameFortune.legalMovesFrom(c,r)
   local cell = STATE.board[r][c]
-  if (not cell) or cell.isLeader or cell.summoningSickness or cell.hasMoved then
+  if (not cell) or cell.isLeader or cell.summoningSickness or cell.hasMoved or cell.hasAttacked then
     return {}
   end
   local def = cardGameFortune.db[cell.cardId]
@@ -511,6 +511,39 @@ function cardGameFortune.legalMovesFrom(c,r)
     end
   end
   return set
+end
+
+-- ── Config ─────────────────────────────────────────────────────────────
+cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE = 8   -- tweak: frames per tile step
+-- Easing (0..1 -> 0..1), smoothstep
+local function easeSmooth(t) return t*t*(3 - 2*t) end
+
+-- Is any unit currently animating?
+function cardGameFortune.anyAnimating()
+    local s = STATE; if not s then return false end
+    for r=0,s.rows-1 do
+        for c=0,s.cols-1 do
+            local u = s.board[r][c]
+            if u and u._anim and u._anim.kind == "slide" then return true end
+        end
+    end
+    return false
+end
+
+-- Advance all animations by 1 frame
+function cardGameFortune.stepAnimations()
+    local s = STATE; if not s then return end
+    for r=0,s.rows-1 do
+        for c=0,s.cols-1 do
+            local u = s.board[r][c]
+            if u and u._anim and u._anim.kind == "slide" then
+                u._anim.t = u._anim.t + 1
+                if u._anim.t >= u._anim.dur then
+                    u._anim = nil
+                end
+            end
+        end
+    end
 end
 
 
@@ -555,10 +588,37 @@ function cardGameFortune.legalAttacksFrom(c,r)
   return res
 end
 
+-- Start a short summon effect on a unit table `u`
+function cardGameFortune.addSummonFX(u)
+    u._fx = { kind="summon", t=0, dur=22, flash=6, sparks={} }  -- was dur ~18; add flash window
+    for i=1,8 do                                                -- a couple more sparks
+        local ox = -10 + math.random()*20
+        local oy = -10 + math.random()*20
+        local life = 12 + math.random(8)                        -- a tad longer
+        u._fx.sparks[i] = {x=ox, y=oy, t=0, dur=life}
+    end
+end
+
+-- Advance per-frame FX timers
+function cardGameFortune.stepFX()
+    local s = STATE; if not s then return end
+    for r=0,s.rows-1 do
+        for c=0,s.cols-1 do
+            local u = s.board[r] and s.board[r][c]
+            if u and u._fx and u._fx.kind=="summon" then
+                u._fx.t = u._fx.t + 1
+                for _,p in ipairs(u._fx.sparks) do p.t = p.t + 1 end
+                if u._fx.t >= u._fx.dur then u._fx = nil end
+            end
+        end
+    end
+end
+
+
 function cardGameFortune.moveUnit(c1,r1, c2,r2)
-    local s = STATE; if not s then return false,"no state" end
-    local u = s.board[r1] and s.board[r1][c1]
+    local s = STATE; local u = s.board[r1] and s.board[r1][c1]
     if not u then return false,"no unit" end
+    if u.owner ~= s.whoseTurn then return false,"not your unit/turn" end
     if u.hasMoved then return false,"already moved" end
     if s.board[r2] and s.board[r2][c2] then return false,"occupied" end
 
@@ -566,22 +626,34 @@ function cardGameFortune.moveUnit(c1,r1, c2,r2)
                            or  cardGameFortune.legalMovesFrom(c1,r1)
     if not (legal[r2] and legal[r2][c2]) then return false,"illegal dest" end
 
+    -- MOVE: update logic immediately
     s.board[r2][c2] = u
     s.board[r1][c1] = nil
 
-    -- movement sets stance to ATK
-    if not u.isLeader then
-        u.pos = "attack"
-    end
-
+    if not u.isLeader then u.pos = "attack" end
     u.hasMoved = true
+    u.hasAttacked = true
 
-    -- if this was a leader, keep leaderPos in sync (you already added this earlier)
     if u.isLeader and s.leaderPos and s.leaderPos[u.owner] then
         s.leaderPos[u.owner].c, s.leaderPos[u.owner].r = c2, r2
     end
+
+    -- ── NEW: attach a slide animation to this unit ─────────
+    local dist = math.abs(c2 - c1) + math.abs(r2 - r1)
+    local base = cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE
+    u._anim = {
+        kind  = "slide",
+        fromC = c1, fromR = r1,
+        toC   = c2, toR   = r2,
+        t     = 0,
+        dur   = math.max(1, base * math.max(1, dist)),
+        ease  = easeSmooth,
+    }
+    -- ───────────────────────────────────────────────────────
+
     return true
 end
+
 
 -- Switch a unit from ATK to DEF as your "movement" for the turn.
 function cardGameFortune.fortifyToDefense(c,r)
@@ -590,28 +662,30 @@ function cardGameFortune.fortifyToDefense(c,r)
     if not u or u.isLeader then return false,"no unit" end
     if u.owner ~= s.whoseTurn then return false,"not your unit" end
     if u.summoningSickness then return false,"summoning" end
-    if u.hasMoved then return false,"already moved" end   -- consumes the move
+    if u.hasMoved then return false,"already moved" end 
+    if u.hasAttacked then return false,"already attacked" end
     if u.pos == "defense" then return false,"already defense" end
 
     u.pos = "defense"
-    u.hasMoved = true          -- uses up the move
-    -- note: we do NOT touch hasAttacked → you can still attack earlier this turn, then fortify
+    u.hasMoved = true 
+    u.hasAttacked = true         
     return true
 end
 
 -- YGO-like battle resolution, non-random
 function cardGameFortune.resolveBattle(ac,ar, dc,dr)
     local s = STATE; if not s then return false,"no state" end
-
     local A = s.board[ar] and s.board[ar][ac]
     local D = s.board[dr] and s.board[dr][dc]
 
-    if not A.isLeader and A.pos ~= "attack" then
-    A.pos = "attack"
-end
     if (not A) or (not D) then return false,"no piece" end
+    if A.owner ~= s.whoseTurn then return false,"not your turn" end
     if A.owner == D.owner then return false,"same owner" end
     if A.hasAttacked then return false,"already attacked" end
+
+    if not A.isLeader and A.pos ~= "attack" then
+        A.pos = "attack"
+    end
 
     local aDef = cardGameFortune.db[A.cardId]
     local atktype = (aDef and (aDef.atktype or "normal")) or "normal"
@@ -765,6 +839,9 @@ end
 -- Place a card from hand onto [c,r] if empty and affordable
 -- Returns true/false and a message
 function cardGameFortune.playFromHand(player, handIndex, c, r, position)
+    
+    if STATE.whoseTurn ~= player then return false, "not your turn" end
+
     local hand   = STATE.hands[player]
     local cardId = hand[handIndex]
     if not cardId then return false, "No card in that hand slot" end
@@ -774,33 +851,41 @@ function cardGameFortune.playFromHand(player, handIndex, c, r, position)
 
     
     -- position = "attack" or "defense"
-    if not inBounds(c,r) then return false, "Out of bounds" end
-    if STATE.board[r][c] then return false, "Tile occupied" end
+    if not inBounds(c,r) then return false,"Out of bounds" end
+    if STATE.board[r][c] then return false,"Tile occupied" end
 
-    local hand = STATE.hands[player]
-    local cardId = hand[handIndex]
-    if not cardId then return false, "No card in that hand slot" end
-    if not canAfford(player, cardId) then return false, "Not enough energy" end
-    local base = cardGameFortune.db[cardId]
+    local hand     = STATE.hands[player]
+    local cardId   = hand[handIndex]
+    if not cardId then return false,"No card in that hand slot" end
+    if not canAfford(player, cardId) then return false,"Not enough energy" end
+    local base     = cardGameFortune.db[cardId]
 
-    -- remove from hand
+    -- remove from hand + pay
     hand[handIndex] = nil
     local newHand = {}
-    for i=1,#hand do if hand[i]~=nil then newHand[#newHand+1]=hand[i] end end
+    for i=1,#hand do if hand[i] ~= nil then newHand[#newHand+1] = hand[i] end end
     STATE.hands[player] = newHand
     spend(player, cardId)
 
-    local pos = (position == "defense") and "defense" or "attack"
+    local pos   = (position == "defense") and "defense" or "attack"
     local hpVal = (pos == "defense") and (base.def or 0) or (base.atk or 0)
 
-    STATE.board[r][c] = {
-        cardId  = cardId,
-        owner   = player,
-        atk     = base.atk or 0,
-        def     = base.def or 0,
-        hp      = hpVal,
-        pos     = pos,
+    -- build the unit, then place it
+    local u = {
+        cardId = cardId,
+        owner  = player,
+        atk    = base.atk or 0,
+        def    = base.def or 0,
+        hp     = hpVal,
+        pos    = pos,
+        summoningSickness = false,   -- optional: if you use this flag
     }
+    STATE.board[r][c] = u
+
+    -- start summon flair (and optional SFX)
+    cardGameFortune.addSummonFX(u)
+    -- SFX.play(3)
+
     return true, "Placed"
 end
 
@@ -826,6 +911,26 @@ function cardGameFortune.endTurn()
   end
 end
 
+-- Can u at (c,r) hit enemy leader next turn?
+local function ai_potentialLeaderThreatFrom(c,r, u)
+    local s=STATE; local foe=(u.owner==1) and 2 or 1
+    local lp = s.leaderPos and s.leaderPos[foe]; if not lp then return false end
+    return cardGameFortune.ai_unitCanHitTile(u, c, r, lp.c, lp.r)
+end
+
+-- Count enemies newly threatened from (c,r) by u
+local function ai_newThreatsFrom(c,r, u)
+    local s=STATE; local foe=(u.owner==1) and 2 or 1; local n=0
+    for rr=0,s.rows-1 do
+        for cc=0,s.cols-1 do
+            local e=s.board[rr] and s.board[rr][cc]
+            if e and e.owner==foe and not e.isLeader then
+                if cardGameFortune.ai_unitCanHitTile(u, c, r, cc, rr) then n = n + 1 end
+            end
+        end
+    end
+    return n
+end
 
 
 -- Tiny combat calculator (expand later with your full tables/terrain)
@@ -1104,6 +1209,17 @@ end
 -- ───────────────────────────────────────────────────────────
 -- Simple helpers (reuse or keep if you don't have them)
 -- ───────────────────────────────────────────────────────────
+
+local AI = {
+  W_SAFETY    = 100,  -- safety weight in move utility (already high)
+  W_PROGRESS  = 1.5,
+  W_TERRAIN   = 6,
+  W_SUPPORT   = 6,    -- + per friendly adjacent (formation)
+  W_LINE      = 8,    -- + per enemy we threaten from the tile (line control)
+  W_RINGCOVER = 12,   -- + if we newly cover a leader ring square
+  EPS         = 0.25, -- tiny tolerance for “ties”
+}
+
 local function ai_unitsOf(owner)
     local out = {}
     for rr=0,STATE.rows-1 do
@@ -1130,7 +1246,367 @@ local function ai_allEnemySpots(owner)
     return pts
 end
 
-local function ai_manhattan(a,b) return math.abs(a.c-b.c) + math.abs(a.r-b.r) end
+-- Count how many enemy units can hit each tile (not just boolean threat)
+local function ai_buildThreatCount(vsOwner)
+    local T = {}
+    for rr=0,STATE.rows-1 do
+        for cc=0,STATE.cols-1 do
+            local e = STATE.board[rr][cc]
+            if e and not e.isLeader and e.owner ~= vsOwner then
+                local atk = cardGameFortune.legalAttacksFrom(cc,rr)
+                if atk then
+                    for r2,row in pairs(atk) do
+                        T[r2] = T[r2] or {}
+                        for c2,_ in pairs(row) do
+                            T[r2][c2] = (T[r2][c2] or 0) + 1
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return T
+end
+
+-- Manhattan helper
+local function manhattan(c1,r1,c2,r2) return math.abs(c1-c2)+math.abs(r1-r2) end
+
+-- If unit at (c,r) moved away, would any enemy gain LOS to our leader?
+local function ai_isPinnedBlockingLeader(u, c, r)
+    local s=STATE; if not (s and s.leaderPos and s.leaderPos[u.owner]) then return false end
+    local lp = s.leaderPos[u.owner]
+    local foe = (u.owner==1) and 2 or 1
+
+    -- only matters if the piece currently lies on a straight path between some enemy and our leader
+    for er=0,s.rows-1 do
+        for ec=0,s.cols-1 do
+            local e = s.board[er] and s.board[er][ec]
+            if e and e.owner==foe and not e.isLeader then
+                -- does e have straight LOS to (lp.c,lp.r) *with* us removed?
+                local def = cardGameFortune.db[e.cardId]
+                local atktype = (def and def.atktype) or "normal"
+                if atktype ~= "normal" then
+                    -- only ranged lines matter
+                    if (ec==lp.c or er==lp.r) then
+                        -- walk line; treat (c,r) as empty when checking
+                        local dc = (lp.c==ec) and 0 or ((lp.c>ec) and 1 or -1)
+                        local dr = (lp.r==er) and 0 or ((lp.r>er) and 1 or -1)
+                        local x,y = ec+dc, er+dr
+                        local blocked=false
+                        while x~=lp.c or y~=lp.r do
+                            local occ = s.board[y][x]
+                            if occ and not (x==c and y==r) then blocked=true; break end
+                            x,y = x+dc, y+dr
+                        end
+                        if not blocked then
+                            return true  -- moving would open a shot to our leader
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return false
+end
+
+-- How much damage could u deal from (c,r) next turn, assuming this posture?
+local function ai_potentialDamageNext(c, r, u, asDefense)
+    local s=STATE; if not s or not u then return 0 end
+    if asDefense then return 0 end  -- staying DEF rarely attacks next turn (keep simple)
+
+    local defU = cardGameFortune.db[u.cardId]
+    local atktype = (defU and (defU.atktype or "normal")) or "normal"
+    local best = 0
+    for tr=0,s.rows-1 do
+        for tc=0,s.cols-1 do
+            local e = s.board[tr] and s.board[tr][tc]
+            if e and e.owner ~= u.owner and not e.isLeader then
+                if cardGameFortune.ai_unitCanHitTile(u, c, r, tc, tr) then
+                    local melee = (atktype=="normal")
+                    local atkC, atkR = melee and tc or c, melee and tr or r
+                    local aATK = select(1, cardGameFortune.getEffectiveStats(defU, atkC, atkR))
+                    local defE = cardGameFortune.db[e.cardId]
+                    local eATK, eDEF = cardGameFortune.getEffectiveStats(defE, tc, tr)
+                    local rhs = (e.pos=="attack") and eATK or eDEF
+                    best = math.max(best, math.max(0, aATK - rhs))
+                end
+            end
+        end
+    end
+    return best
+end
+
+
+-- helper: count empty adjacent tiles (for better summon geometry)
+local function countEmptyAdj(c,r)
+    local s = STATE; local n = 0
+    for dr=-1,1 do for dc=-1,1 do
+        if not (dr==0 and dc==0) then
+            local cc, rr = c+dc, r+dr
+            if cc>=0 and rr>=0 and cc<s.cols and rr<s.rows and (not s.board[rr][cc]) then
+                n = n + 1
+            end
+        end
+    end end
+    return n
+end
+
+-- ── Wall / board-shaping constants
+local WALL = {
+  DEF_MIN        = 7,     -- consider units with DEF ≥ this “tanky”
+  ATK_MAX        = 7,     -- …and with modest ATK (avoid over-committing attackers)
+  LINE_BONUS     = 10,    -- + per adjacent friendly wall segment
+  RING_BONUS     = 18,    -- + if guarding own leader ring
+  CHOKE_BONUS    = 14,    -- + if tile is a choke
+  FILL_GAP_BONUS = 22,    -- + if this tile plugs a gap near leader
+  KEEP_WALL_PEN  = 35,    -- − if moving this unit opens a shot to leader
+}
+
+local function ai_isWallUnit(u)
+  if not u or u.isLeader then return false end
+  local def = cardGameFortune.db[u.cardId]; if not def then return false end
+  return (def.def or 0) >= WALL.DEF_MIN and (def.atk or 0) <= WALL.ATK_MAX
+end
+
+local function ai_adjWallCount(c,r, owner)
+  local s=STATE; local n=0
+  for dr=-1,1 do for dc=-1,1 do
+    if not (dr==0 and dc==0) then
+      local x,y = c+dc, r+dr
+      if x>=0 and y>=0 and x<s.cols and y<s.rows then
+        local v = s.board[y][x]
+        if v and v.owner==owner and ai_isWallUnit(v) then n=n+1 end
+      end
+    end
+  end end
+  return n
+end
+
+local function ai_countSafeMovesFor(owner, cap)
+    local s=STATE; cap = cap or 12
+    local cnt = 0
+    for r=0,s.rows-1 do
+        for c=0,s.cols-1 do
+            local u=s.board[r] and s.board[r][c]
+            if u and u.owner==owner and not u.isLeader then
+                local legal = cardGameFortune.legalMovesFrom(c,r)
+                if legal then
+                    for rr,row in pairs(legal) do
+                        for cc,_ in pairs(row) do
+                            local d = cardGameFortune.ai_expectedDamageAt(cc, rr, u, false)
+                            local here = cardGameFortune.ai_expectedDamageAt(c, r, u, u.pos=="defense")
+                            if d + 0.01 <= here then
+                                cnt = cnt + 1
+                                if cnt>=cap then return cnt end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return cnt
+end
+
+local function ai_centerControl(owner)
+    local s=STATE; local score=0
+    local c1 = math.floor(s.cols/3); local c2 = s.cols - 1 - c1
+    local r1 = math.floor(s.rows/3); local r2 = s.rows - 1 - r1
+    for r=r1,r2 do
+        for c=c1,c2 do
+            local u=s.board[r] and s.board[r][c]
+            if u and u.owner==owner then
+                local d = cardGameFortune.ai_expectedDamageAt(c, r, u, u.pos=="defense")
+                if d==0 then score = score + 1 end -- safe central occupancy
+            end
+        end
+    end
+    return score
+end
+
+local function ai_ringGuardCount(owner)
+    local s=STATE; local lp=s.leaderPos and s.leaderPos[owner]; if not lp then return 0 end
+    local n=0
+    for dr=-1,1 do for dc=-1,1 do
+        if not (dr==0 and dc==0) then
+            local x,y=lp.c+dc, lp.r+dr
+            local u=s.board[y] and s.board[y][x]
+            if u and u.owner==owner and not u.isLeader then n=n+1 end
+        end
+    end end
+    return n
+end
+
+local function ai_openingSpear(owner)
+    local s=STATE; local lp=s.leaderPos and s.leaderPos[owner]; if not lp then return end
+    if ai_ringGuardCount(owner) < 2 then return end
+    local hand=s.hands and s.hands[owner] or {}
+    -- try to place a ranged piece one row behind ring, aimed center
+    for i=1,#hand do
+        local cid = hand[i]; local def=cardGameFortune.db[cid]
+        if def and def.atktype and def.atktype~="normal" then
+            for _,offset in ipairs{{0,-2},{1,-2},{-1,-2},{0,-3}} do
+                local cc,rr = lp.c+offset[1], lp.r+offset[2]
+                if inBounds(cc,rr) and (not s.board[rr][cc]) and cardGameFortune.canSummonAt(owner, cc, rr, cid) then
+                    local pos = "attack"
+                    cardGameFortune.playFromHand(owner, i, cc, rr, pos)
+                    return
+                end
+            end
+        end
+    end
+end
+
+
+-- crude choke detector: tile has ≤2 exits that aren’t offboard/occupied
+local function ai_isChokeTile(c,r)
+  local s=STATE; local exits=0
+  for _,d in ipairs{{1,0},{-1,0},{0,1},{0,-1}} do
+    local x,y=c+d[1], r+d[2]
+    if x>=0 and y>=0 and x<s.cols and y<s.rows and (not s.board[y][x]) then exits=exits+1 end
+  end
+  return exits<=2
+end
+
+-- would moving (c,r) leave a clear straight line from some enemy ranged to our leader?
+local function ai_wallGapIfMoved(u, c, r)
+  local s=STATE; if not (s and s.leaderPos and s.leaderPos[u.owner]) then return false end
+  local lp = s.leaderPos[u.owner]
+  local foe = (u.owner==1) and 2 or 1
+  for er=0,s.rows-1 do
+    for ec=0,s.cols-1 do
+      local e = s.board[er] and s.board[er][ec]
+      if e and e.owner==foe and not e.isLeader then
+        local def = cardGameFortune.db[e.cardId]
+        if def and def.atktype and def.atktype~="normal" then
+          if (ec==lp.c or er==lp.r) then
+            local dc = (lp.c==ec) and 0 or ((lp.c>ec) and 1 or -1)
+            local dr = (lp.r==er) and 0 or ((lp.r>er) and 1 or -1)
+            local x,y = ec+dc, er+dr
+            local blocked=false
+            while x~=lp.c or y~=lp.r do
+              local occ = s.board[y][x]
+              if occ and not (x==c and y==r) then blocked=true; break end -- treat (c,r) as empty
+              x,y = x+dc, y+dr
+            end
+            if not blocked then return true end
+          end
+        end
+      end
+    end
+  end
+  return false
+end
+
+-- does (c,r) sit on an empty square between an enemy ranged unit and our leader?
+local function ai_plugsLeaderGap(c,r, owner)
+  local s=STATE; if not s or not (s.leaderPos and s.leaderPos[owner]) then return false end
+  local lp = s.leaderPos[owner]
+  local foe = (owner==1) and 2 or 1
+  for er=0,s.rows-1 do
+    for ec=0,s.cols-1 do
+      local e = s.board[er] and s.board[er][ec]
+      if e and e.owner==foe and not e.isLeader then
+        local def = cardGameFortune.db[e.cardId]
+        if def and def.atktype and def.atktype~="normal" then
+          if (ec==lp.c or er==lp.r) then
+            -- check the line and see if (c,r) is one of the empty blockers
+            local dc = (lp.c==ec) and 0 or ((lp.c>ec) and 1 or -1)
+            local dr = (lp.r==er) and 0 or ((lp.r>er) and 1 or -1)
+            local x,y = ec+dc, er+dr
+            while x~=lp.c or y~=lp.r do
+              if x==c and y==r and (not s.board[y][x]) then return true end
+              x,y = x+dc, y+dr
+            end
+          end
+        end
+      end
+    end
+  end
+  return false
+end
+
+
+-- Module-level LOS threat test (melee adjacent, ranged/volley straight LOS)
+function cardGameFortune.ai_unitCanHitTile(e, ec, er, c, r)
+    if not e or e.isLeader then return false end
+    if ec==nil or er==nil or c==nil or r==nil then return false end
+    local def = cardGameFortune.db[e.cardId]
+    local atktype = (def and def.atktype) or "normal"
+
+    if atktype == "normal" then
+        -- melee: 8-way adjacency
+        return math.max(math.abs(ec - c), math.abs(er - r)) == 1
+    else
+        -- ranged/volley: straight LOS, blocked by first piece
+        if ec ~= c and er ~= r then return false end
+        local dc = (c == ec) and 0 or ((c > ec) and 1 or -1)
+        local dr = (r == er) and 0 or ((r > er) and 1 or -1)
+        local x, y = ec + dc, er + dr
+        while x ~= c or y ~= r do
+            if STATE.board[y][x] then return false end
+            x, y = x + dc, y + dr
+        end
+        return true
+    end
+end
+
+-- best destination for the leader this turn (or nil to stay)
+local function ai_bestLeaderMove(owner)
+    local s = STATE; if not (s and s.leaderPos and s.leaderPos[owner]) then return nil end
+    local lp = s.leaderPos[owner]; local c0, r0 = lp.c, lp.r
+    local L = s.board[r0] and s.board[r0][c0]; if not (L and L.isLeader and not L.hasMoved) then return nil end
+
+    local legal = cardGameFortune.legalLeaderMovesFrom(c0, r0); if not legal then return nil end
+
+    -- NEW: build multi-threat counts (how many enemies can hit a tile)
+    local threats = ai_buildThreatCount(owner)
+
+    local danger_here = cardGameFortune.ai_expectedDamageAt(c0, r0, L, true)
+    local empty_here  = countEmptyAdj(c0, r0)
+
+    local foe = (owner==1) and 2 or 1
+    local foeLP = s.leaderPos and s.leaderPos[foe]
+
+    local best, bestScore, bestKey = nil, -1e9, nil
+    for rr, row in pairs(legal) do
+        for cc,_ in pairs(row) do
+            -- hard filter: avoid tiles attacked by 2+ enemies
+            local multi = (threats[rr] and threats[rr][cc]) or 0
+            if multi < 2 then
+                local danger = cardGameFortune.ai_expectedDamageAt(cc, rr, L, true)
+
+                -- never pick a strictly worse tile than staying
+                if danger <= danger_here then
+                    local score = 0
+
+                    -- strongly prefer safer tiles
+                    score = score + (danger_here - danger) * 50
+
+                    -- prefer tiles with more empty adjacents (easier guarding/summoning)
+                    score = score + (countEmptyAdj(cc, rr) - empty_here) * 8
+
+                    -- mild bias to increase distance from enemy leader
+                    if foeLP then
+                        local dNow = math.abs(c0-foeLP.c) + math.abs(r0-foeLP.r)
+                        local dNew = math.abs(cc-foeLP.c) + math.abs(rr-foeLP.r)
+                        score = score + (dNew - dNow) * 2
+                    end
+
+                    -- NEW: penalize even single extra attackers a bit (multi-threath intensity)
+                    score = score - multi * 40
+
+                    -- deterministic tiebreaker without bit-shifts
+                    local key = rr * s.cols + cc
+                    if (score > bestScore) or (score==bestScore and (not bestKey or key < bestKey)) then
+                        best, bestScore, bestKey = {c=cc, r=rr}, score, key
+                    end
+                end
+            end
+        end
+    end
+    return best
+end
 
 -- Score a preview for owner (higher = better)
 local function ai_scorePreview(prev, owner)
@@ -1162,6 +1638,13 @@ local function ai_isBad(prev, owner)
     local noPayoff = (not prev.destroyDefender) and (not prev.leaderDamage or prev.leaderDamage.player == owner)
     return selfLD or (prev.destroyAttacker and noPayoff)
 end
+
+local function ai_isEarlyGame()
+    local s=STATE
+    local t = (s.turn or s.turnNo or s.fullturns or 0)
+    return t <= 4
+end
+
 
 local function ai_findUnitCell(u)
     for rr=0,STATE.rows-1 do
@@ -1220,37 +1703,162 @@ local function ai_buildThreatMap(vsOwner) -- squares enemy can attack
     return T
 end
 
-
-local function ai_bestMoveToward(c,r, owner)
-    local legal = cardGameFortune.legalMovesFrom(c,r)
-    if not legal then return nil end
-
-    local goal = ai_enemyLeaderPos(owner)
-    if not goal then return nil end
-
-    local threats = ai_buildThreatMap(owner)  -- tiles enemy can hit next
-    local best, bestD, bestSafe = nil, math.huge, nil
-
-    for rr,row in pairs(legal) do
-        for cc,_ in pairs(row) do
-            local here = {c=cc,r=rr}
-            local d = math.abs(here.c - goal.c) + math.abs(here.r - goal.r)
-
-            -- prefer non-threatened squares if possible
-            local threatened = threats[rr] and threats[rr][cc]
-
-            -- track best safe option
-            if not threatened and d < bestD then
-                bestD, bestSafe = d, here
+local function ai_adjFriendlyCount(c,r, owner)
+    local s=STATE; local n=0
+    for dr=-1,1 do for dc=-1,1 do
+        if not (dr==0 and dc==0) then
+            local x,y=c+dc,r+dr
+            if x>=0 and y>=0 and x<s.cols and y<s.rows then
+                local u=s.board[y][x]
+                if u and u.owner==owner and not u.isLeader then n=n+1 end
             end
+        end
+    end end
+    return n
+end
 
-            -- always track best (in case all are threatened)
-            if d < bestD or (best and d == bestD and threatened == false) then
-                bestD, best = d, here
+local function ai_threatenedEnemiesFrom(c,r, u)
+    local s=STATE; local n=0
+    for er=0,s.rows-1 do
+        for ec=0,s.cols-1 do
+            local e=s.board[er] and s.board[er][ec]
+            if e and e.owner~=u.owner and not e.isLeader then
+                if cardGameFortune.ai_unitCanHitTile(u, c, r, ec, er) then
+                    n = n + 1
+                end
             end
         end
     end
-    return bestSafe or best
+    return n
+end
+
+
+-- Find a reachable tile this turn from which we can attack something good next turn,
+local function ai_bestFlankMove(c,r, owner)
+    local s=STATE; local u=s.board[r] and s.board[r][c]
+    if not u or u.isLeader or u.owner~=owner or u.hasMoved or u.summoningSickness then return nil end
+    local legal = cardGameFortune.legalMovesFrom(c,r); if not legal then return nil end
+    local hereDanger = cardGameFortune.ai_expectedDamageAt(c, r, u, u.pos=="defense")
+
+    local best, bestScore = nil, -1e9
+    for rr,row in pairs(legal) do
+        for cc,_ in pairs(row) do
+            local thereDanger = cardGameFortune.ai_expectedDamageAt(cc, rr, u, false)  -- after move: ATK
+            -- Skip flanks that are strictly more dangerous than staying
+            if thereDanger <= hereDanger then
+                -- From (cc,rr), what can we hit next turn?
+                local value = 0
+                for tr=0,s.rows-1 do
+                    for tc=0,s.cols-1 do
+                        local e = s.board[tr] and s.board[tr][tc]
+                        if e and e.owner ~= owner and not e.isLeader then
+                            -- Could we attack e from (cc,rr) next turn?
+                            local canHit = cardGameFortune.ai_unitCanHitTile(u, cc, rr, tc, tr)
+                            if canHit then
+                                local uDef = cardGameFortune.db[u.cardId]
+                                local melee = ((uDef and (uDef.atktype or "normal"))=="normal")
+                                local atkC, atkR = melee and tc or cc, melee and tr or rr
+                                local aATK = select(1, cardGameFortune.getEffectiveStats(uDef, atkC, atkR))
+
+                                local eDef = cardGameFortune.db[e.cardId]
+                                local eATK, eDEF = cardGameFortune.getEffectiveStats(eDef, tc, tr)
+                                local rhs = (e.pos=="attack") and eATK or eDEF
+                                local dmg = math.max(0, aATK - rhs)
+
+                                -- kill is great, any damage is ok, leaders are highest value
+                                value = math.max(value, (dmg>0) and ( (dmg>=rhs) and 200 or (dmg*15) ) or 0)
+                            end
+                        end
+                    end
+                end
+                -- favor safer tiles; mild progress to enemy leader
+                local goal = s.leaderPos and s.leaderPos[(owner==1) and 2 or 1]
+                local progress = goal and (20 - (math.abs(cc-goal.c)+math.abs(rr-goal.r))) or 0
+                local score = value*1.0 - thereDanger*4 + progress*0.5
+
+                if score > bestScore then best, bestScore = {c=cc,r=rr}, score end
+            end
+        end
+    end
+    return best
+end
+
+
+local function ai_bestMoveToward(c,r, owner)
+    local s=STATE; local u=s.board[r] and s.board[r][c]
+    if not u or u.isLeader or u.owner~=owner or u.hasMoved or u.summoningSickness then return nil end
+
+    local legal = cardGameFortune.legalMovesFrom(c,r); if not legal then return nil end
+    local hereDanger = cardGameFortune.ai_expectedDamageAt(c, r, u, u.pos=="defense")
+    local wallBreakPenalty = 0
+        if ai_isWallUnit(u) and ai_wallGapIfMoved(u, c, r) then
+        wallBreakPenalty = WALL.KEEP_WALL_PEN
+        end
+    local threats = ai_buildThreatCount(owner)
+    local goal = s.leaderPos and s.leaderPos[(owner==1) and 2 or 1]
+
+    local best, bestScore, bestKey = nil, -1e9, nil
+    for rr,row in pairs(legal) do
+        for cc,_ in pairs(row) do
+            local thereDanger = cardGameFortune.ai_expectedDamageAt(cc, rr, u, false) -- after move: ATK
+            local _,_,_,delta = cardGameFortune.getEffectiveStats(cardGameFortune.db[u.cardId], cc, rr)
+
+            local multi   = (threats[rr] and threats[rr][cc]) or 0
+            local support = ai_adjFriendlyCount(cc,rr, owner)
+
+            -- hard rule: don't step onto 2+ threat squares unless we have at least equal cover
+            local blocked = (multi >= 2 and support < multi)
+            if not blocked then
+                local score = 0
+                -- 1) Safety first
+                score = score - thereDanger * AI.W_SAFETY
+                if thereDanger >= hereDanger - AI.EPS then score = score - 50 end
+
+                -- 2) Formation
+                score = score + support * AI.W_SUPPORT
+                score = score + ai_threatenedEnemiesFrom(cc,rr, u) * AI.W_LINE
+
+                -- 3) Extra penalty for multi-threat exposure; mild bonus if covered
+                if multi >= 2 then score = score - (multi-1)*25 end
+                score = score + math.min(support, multi) * 6
+
+                -- 4) Leader ring cover + terrain + progress
+                if s.leaderPos and s.leaderPos[owner] then
+                    local lp = s.leaderPos[owner]
+                    if math.max(math.abs(cc-lp.c), math.abs(rr-lp.r)) == 1 then
+                        score = score + AI.W_RINGCOVER
+                    end
+                end
+                score = score + (delta or 0) * AI.W_TERRAIN
+                if goal then
+                    local d = math.abs(cc-goal.c)+math.abs(rr-goal.r)
+                    score = score + (20 - d) * AI.W_PROGRESS
+                end
+                -- WALL shaping
+                score = score + ai_adjWallCount(cc,rr, owner) * WALL.LINE_BONUS
+                if ai_isChokeTile(cc,rr) then score = score + WALL.CHOKE_BONUS end
+                if STATE.leaderPos and STATE.leaderPos[owner] and ai_isWallUnit(u) then
+                        local lp = STATE.leaderPos[owner]
+                    if math.max(math.abs(cc-lp.c), math.abs(rr-lp.r)) == 1 then
+                        score = score + WALL.RING_BONUS
+                    end
+                end
+                score = score - wallBreakPenalty
+
+
+                local key = rr * s.cols + cc
+                if (score > bestScore) or (score==bestScore and (not bestKey or key < bestKey)) then
+                    best, bestScore, bestKey = {c=cc,r=rr, danger=thereDanger}, score, key
+                end
+            end
+        end
+    end
+
+    -- Only move if it’s strictly safer than staying OR formation gain is significant
+    if best and (best.danger + AI.EPS < hereDanger or bestScore > 0) then
+        return best
+    end
+    return nil
 end
 
 -- bounds
@@ -1267,18 +1875,94 @@ local function ai_enemyLeaderPos(owner)
     return nil
 end
 
+-- tiles strictly between (c1,r1) and (c2,r2) on a straight line (no diagonals)
+local function ai_lineBetween(c1,r1, c2,r2)
+    local out = {}
+    if c1 ~= c2 and r1 ~= r2 then return out end
+    local dc = (c2==c1) and 0 or ((c2>c1) and 1 or -1)
+    local dr = (r2==r1) and 0 or ((r2>r1) and 1 or -1)
+    local c, r = c1 + dc, r1 + dr
+    while c ~= c2 or r ~= r2 do
+        out[#out+1] = {c=c, r=r}
+        c, r = c + dc, r + dr
+    end
+    return out
+end
+
+-- Try to move ANY unit onto a lane tile that currently gives a ranged enemy LOS to our leader.
+-- Chooses the reachable lane tile with the lowest expected danger.
+local function ai_tryInterpose(owner)
+    local s=STATE; if not (s and s.leaderPos and s.leaderPos[owner]) then return false end
+    local lp = s.leaderPos[owner]               -- our leader
+    local foe = (owner==1) and 2 or 1
+    local best = nil
+
+    -- 1) collect empty "lane tiles" that, if occupied, would break LOS
+    local targets = {}
+    for er=0,s.rows-1 do
+        for ec=0,s.cols-1 do
+            local e = s.board[er] and s.board[er][ec]
+            if e and e.owner==foe and not e.isLeader then
+                -- use your LOS test so empty lanes count
+                if cardGameFortune.ai_unitCanHitTile(e, ec, er, lp.c, lp.r) then
+                    -- any empty square on the line would stop the shot
+                    for _,t in ipairs(ai_lineBetween(ec,er, lp.c,lp.r)) do
+                        if not s.board[t.r][t.c] then
+                            targets[#targets+1] = {c=t.c, r=t.r}
+                        end
+                    end
+                end
+            end
+        end
+    end
+    if #targets==0 then return false end
+
+    -- 2) find a friendly unit that can reach one of those tiles safely this turn
+    for r=0,s.rows-1 do
+        for c=0,s.cols-1 do
+            local u = s.board[r] and s.board[r][c]
+            if u and u.owner==owner and not u.isLeader and not u.hasMoved and not u.summoningSickness then
+                local legal = cardGameFortune.legalMovesFrom(c,r)
+                if legal then
+                    local hereDanger = cardGameFortune.ai_expectedDamageAt(c, r, u, u.pos=="defense")
+                    for _,t in ipairs(targets) do
+                        if legal[t.r] and legal[t.r][t.c] then
+                            local thereDanger = cardGameFortune.ai_expectedDamageAt(t.c, t.r, u, false) -- after move: ATK
+                            -- prefer moves that reduce danger or at least don't make it worse
+                            if thereDanger <= hereDanger then
+                                local keyScore = -thereDanger*100 - (math.abs(t.c-lp.c)+math.abs(t.r-lp.r))
+                                if (not best) or keyScore > best.keyScore then
+                                    best = {fromC=c,fromR=r, toC=t.c,toR=t.r, keyScore=keyScore}
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    if best then
+        return cardGameFortune.moveUnit(best.fromC,best.fromR, best.toC,best.toR)
+    end
+    return false
+end
+
+
 -- tiles the enemy can hit next (simple threat map)
 local function ai_buildThreatMap(vsOwner)
     local T = {}
     for rr=0,STATE.rows-1 do
         for cc=0,STATE.cols-1 do
-            local u = STATE.board[rr][cc]
-            if u and (not u.isLeader) and u.owner ~= vsOwner then
-                local atk = cardGameFortune.legalAttacksFrom(cc,rr)
-                if atk then
-                    for r2,row in pairs(atk) do
-                        T[r2] = T[r2] or {}
-                        for c2,_ in pairs(row) do T[r2][c2] = true end
+            local e = STATE.board[rr][cc]
+            if e and (not e.isLeader) and e.owner ~= vsOwner then
+                -- mark all tiles this enemy could hit next (even if empty now)
+                for r2=0,STATE.rows-1 do
+                    for c2=0,STATE.cols-1 do
+                        if cardGameFortune.ai_unitCanHitTile(e, cc, rr, c2, r2) then
+                            T[r2] = T[r2] or {}
+                            T[r2][c2] = true
+                        end
                     end
                 end
             end
@@ -1286,6 +1970,7 @@ local function ai_buildThreatMap(vsOwner)
     end
     return T
 end
+
 
 -- local adjacency check (8-way)
 local function hasAdjacentEnemy(c,r, owner)
@@ -1299,32 +1984,120 @@ local function hasAdjacentEnemy(c,r, owner)
     return false
 end
 
--- decide stance to place: "attack" or "defense"
-local function ai_chooseSummonPos(owner, cid, c, r, threats)
-    local def = cardGameFortune.db[cid]
-    local atktype = (def and (def.atktype or "normal")) or "normal"
+-- Expected damage helper (define on module)
+function cardGameFortune.ai_expectedDamageAt(c, r, u, asDefense)
+    local s = STATE; if not (s and u) then return 0 end
+    local myDef = cardGameFortune.db[u.cardId]
 
-    local aATK, aDEF, terr, delta = cardGameFortune.getEffectiveStats(def, c, r)
-    local threatened  = threats[r] and threats[r][c] or false
-    local adjEnemy    = hasAdjacentEnemy(c,r, owner)
-    local tanky       = (aDEF >= aATK + 2)           -- skewed to DEF
-    local badTerrain  = (delta or 0) < 0             -- unfavourable tile
-
-    -- Ranged units tend to prefer ATK unless they spawn into danger.
-    if atktype == "ranged" then
-        if threatened and (tanky or badTerrain or adjEnemy) then
-            return "defense"
-        end
-        return "attack"
+    local function myStatAt(cc,rr)
+        local aATK, aDEF = cardGameFortune.getEffectiveStats(myDef, cc, rr)
+        if u.isLeader then return aDEF end         -- leaders defend
+        if asDefense then return aDEF end
+        local pos = u.pos or "attack"
+        return (pos == "defense") and aDEF or aATK
     end
 
-    -- Melee: go DEF if we’re threatened or right next to an enemy and DEF is decent/better.
-    if (threatened or adjEnemy or badTerrain) and (tanky or aDEF >= aATK) then
+    local dmg = 0
+    for er=0,s.rows-1 do
+        for ec=0,s.cols-1 do
+            local e = s.board[er] and s.board[er][ec]
+            if e and e.owner ~= u.owner and not e.isLeader then
+                if cardGameFortune.ai_unitCanHitTile(e, ec, er, c, r) then
+                    local eDef  = cardGameFortune.db[e.cardId]
+                    local atktype = (eDef and eDef.atktype) or "normal"
+                    local melee = (atktype == "normal")
+                    -- attacker’s terrain tile for stats:
+                    local atkC, atkR = melee and c or ec, melee and r or er
+                    local eATK = select(1, cardGameFortune.getEffectiveStats(eDef, atkC, atkR))
+                    local margin = eATK - myStatAt(c, r)
+                    if margin > 0 then dmg = dmg + margin end
+                end
+            end
+        end
+    end
+    return dmg
+end
+
+
+-- choose stance by comparing expected damage on this exact tile
+local function ai_chooseSummonPos(owner, cid, c, r, threats)
+    local dummyAtk = { owner=owner, cardId=cid, pos="attack",  isLeader=false }
+    local dummyDef = { owner=owner, cardId=cid, pos="defense", isLeader=false }
+
+    local dmgATK = cardGameFortune.ai_expectedDamageAt(c, r, dummyAtk, false)
+    local dmgDEF = cardGameFortune.ai_expectedDamageAt(c, r, dummyDef, true)
+    local threatened = threats[r] and threats[r][c]
+
+    if threatened or (dmgDEF + 0.01 < dmgATK) then
         return "defense"
     end
-
     return "attack"
 end
+
+
+
+
+-- Decide: fortify here vs move to safer tile vs stay.
+local function ai_decideDefenseOrMove(c, r, owner)
+    local s=STATE; local u=s.board[r] and s.board[r][c]
+    if not u or u.owner~=owner or u.isLeader then return end
+    if u.summoningSickness or u.hasMoved then return end
+
+    local danger_stay = cardGameFortune.ai_expectedDamageAt(c, r, u, u.pos=="defense")
+
+    local canFortify = (u.pos ~= "defense") and (not u.hasAttacked)
+    local danger_fort = canFortify and cardGameFortune.ai_expectedDamageAt(c, r, u, true) or math.huge
+
+    -- If in ATK and we have a good/safe attack now, take it immediately
+    if u.pos=="attack" and (not u.hasAttacked) then
+        local tgt = ai_bestAttackFor(c,r, owner)
+        if tgt then
+            -- quick sanity: don't attack if post-battle square becomes a death trap
+            -- (use current tile danger as proxy; battles happen in-place in your rules)
+            local hereD = cardGameFortune.ai_expectedDamageAt(c, r, u, false)
+            if hereD < 9999 then
+                cardGameFortune.resolveBattle(c,r, tgt.c,tgt.r)
+                return
+            end
+        end
+    end
+
+
+    local mv = ai_bestMoveToward(c,r, owner)
+    local danger_move = mv and cardGameFortune.ai_expectedDamageAt(mv.c, mv.r, u, false) or math.huge
+
+    -- Small nudge: if this is a wall-capable unit on the ring or a choke, prefer fortify in near-ties
+    local fortNudge = 0
+    if ai_isWallUnit(u) then
+        if STATE.leaderPos and STATE.leaderPos[owner] then
+            local lp = STATE.leaderPos[owner]
+            if math.max(math.abs(c - lp.c), math.abs(r - lp.r)) == 1 then
+                fortNudge = fortNudge + 0.5
+            end
+        end
+        if ai_isChokeTile(c, r) then
+            fortNudge = fortNudge + 0.5
+        end
+    end
+
+    -- choose the lowest danger; nudge makes DEF win close calls on key tiles
+    local BEST = math.min(danger_stay, danger_fort, danger_move)
+
+    if mv and danger_move <= BEST then
+        cardGameFortune.moveUnit(c, r, mv.c, mv.r)
+        return
+    end
+
+    if canFortify
+    and (danger_fort + 0.01 < danger_stay + fortNudge)
+    and (danger_fort <= BEST) then
+        cardGameFortune.fortifyToDefense(c, r)  -- consumes move
+        return
+    end
+
+    -- otherwise, staying is fine this turn
+end
+
 
 
 local function ai_trySummon()
@@ -1359,15 +2132,56 @@ local function ai_trySummon()
                                 -- pick stance for THIS tile
                                 local pos = ai_chooseSummonPos(2, cid, c, r, threats)
 
-                                -- score: closer to enemy leader + terrain delta + tiny bonus if DEF chosen on threat
+                                -- score: prefer safer tiles first, then distance/terrain
                                 local def = cardGameFortune.db[cid]
                                 local _,_,_,delta = cardGameFortune.getEffectiveStats(def, c, r)
-                                local dist = (goal and (math.abs(c-goal.c)+math.abs(r-goal.r))) or 999
+                                local dist = (goal and (math.abs(c-goal.c) + math.abs(r-goal.r))) or 999
+
+                                -- compute expected damage for the chosen posture on this tile
+                                local dmg = (pos == "defense")
+                                            and cardGameFortune.ai_expectedDamageAt(c, r, {owner=2, cardId=cid, pos="defense", isLeader=false}, true)
+                                            or  cardGameFortune.ai_expectedDamageAt(c, r, {owner=2, cardId=cid, pos="attack",  isLeader=false}, false)
+
+                                -- strong safety weighting so we don't spawn into magikoopa crossfire
+                                local W_SAFETY   = 18.0     -- increase if you still see risky spawns
+                                local W_DISTANCE = 1.0
+                                local W_TERRAIN  = 0.6
                                 local threatened = threats[r] and threats[r][c] or false
-                                local score = -dist + (delta or 0)*0.6 + ((pos=="defense" and threatened) and 1.5 or 0)
+
+                                local score = -(dmg * W_SAFETY)                         -- biggest influence
+                                            +  (delta or 0) * W_TERRAIN
+                                            -  dist * W_DISTANCE
+                                            +  ((pos=="defense" and threatened) and 1.5 or 0)
+                                -- --- WALL HEURISTICS: encourage board shaping ---
+                                local wallScore = 0
+                                local def = cardGameFortune.db[cid]
+                                local tanky = def and ((def.def or 0) >= WALL.DEF_MIN) and ((def.atk or 0) <= WALL.ATK_MAX)
+                                if tanky then
+                                if ai_plugsLeaderGap(cc,rr, 2) then wallScore = wallScore + WALL.FILL_GAP_BONUS end
+                                if STATE.leaderPos and STATE.leaderPos[2] then
+                                    local lp = STATE.leaderPos[2]
+                                    if math.max(math.abs(cc-lp.c), math.abs(rr-lp.r)) == 1 then
+                                    wallScore = wallScore + WALL.RING_BONUS
+                                    end
+                                end
+                                wallScore = wallScore + ai_adjWallCount(cc,rr, 2) * WALL.LINE_BONUS
+                                if ai_isChokeTile(cc,rr) then wallScore = wallScore + WALL.CHOKE_BONUS end
+                                end
+                                score = score + wallScore
+
+                                -- Aggressive summon bonus: threaten leader / add threats next turn
+                                do
+                                    local dummy = {owner=2, cardId=cid, pos=pos, isLeader=false}
+                                    if ai_potentialLeaderThreatFrom(c, r, dummy) then
+                                        score = score + 20   -- leader pressure
+                                    end
+                                    -- small bonus per enemy we would threaten from that square
+                                    local tmp = ai_newThreatsFrom(c, r, dummy)
+                                    score = score + tmp * 2
+                                end
 
                                 if (not best) or score > best.score then
-                                    best = {i=i, c=c, r=r, pos=pos, score=score}
+                                    best = {i=i, c=c, r=r, pos=pos, score=score, danger=dmg}
                                 end
                             end
                         end
@@ -1383,6 +2197,338 @@ local function ai_trySummon()
     return false
 end
 
+-- ---------- light state snapshot & sandbox ----------
+local function ai_cloneUnit(u)
+    return {
+        owner=u.owner, isLeader=u.isLeader, pos=u.pos, cardId=u.cardId,
+        hasMoved=false, hasAttacked=false, summoningSickness=false,
+    }
+end
+
+local function ai_snapshotState()
+    local s = STATE
+    local snap = { rows=s.rows, cols=s.cols, energy={s.energy[1], s.energy[2]} }
+    snap.board = {}
+    for r=0,s.rows-1 do
+        snap.board[r] = {}
+        for c=0,s.cols-1 do
+            local u = s.board[r][c]
+            snap.board[r][c] = u and ai_cloneUnit(u) or nil
+        end
+    end
+    snap.leaderPos = { [1]=s.leaderPos and {c=s.leaderPos[1].c, r=s.leaderPos[1].r} or nil,
+                       [2]=s.leaderPos and {c=s.leaderPos[2].c, r=s.leaderPos[2].r} or nil }
+    snap.whoseTurn = s.whoseTurn
+    return snap
+end
+
+local function ai_sandbox(fn, snap)
+    local real = STATE
+    STATE = snap
+    local ok, ret = pcall(fn)
+    STATE = real
+    if not ok then return nil end
+    return ret
+end
+
+local function ai_countLeaderEscapes(owner)
+    local s=STATE; local lp=s.leaderPos and s.leaderPos[owner]; if not lp then return 0 end
+    local count = 0
+    for dr=-1,1 do for dc=-1,1 do
+        if not (dr==0 and dc==0) then
+            local x,y=lp.c+dc, lp.r+dr
+            if x>=0 and y>=0 and x<s.cols and y<s.rows and (not s.board[y][x]) then
+                -- treat leader moving there in DEF
+                local dummy = {owner=owner,isLeader=true,pos="defense",cardId=s.board[lp.r][lp.c].cardId}
+                if cardGameFortune.ai_expectedDamageAt(x,y, dummy, true) <=
+                   cardGameFortune.ai_expectedDamageAt(lp.c,lp.r, dummy, true) then
+                    count = count + 1
+                end
+            end
+        end
+    end end
+    return count
+end
+
+local function ai_ringCoverCount(owner)
+    local s=STATE; local lp=s.leaderPos and s.leaderPos[owner]; if not lp then return 0 end
+    local n=0
+    for dr=-1,1 do for dc=-1,1 do
+        if not (dr==0 and dc==0) then
+            local x,y=lp.c+dc, lp.r+dr
+            local u=s.board[y] and s.board[y][x]
+            if u and u.owner==owner and not u.isLeader then n=n+1 end
+        end
+    end end
+    return n
+end
+
+local function ai_losBlockerCount(owner)
+    local s=STATE; local lp=s.leaderPos and s.leaderPos[owner]; if not lp then return 0 end
+    local foe=(owner==1) and 2 or 1
+    local n=0
+    for er=0,s.rows-1 do for ec=0,s.cols-1 do
+        local e=s.board[er] and s.board[er][ec]
+        if e and e.owner==foe and not e.isLeader then
+            local def=cardGameFortune.db[e.cardId]
+            if def and def.atktype and def.atktype~="normal" then
+                if ec==lp.c or er==lp.r then
+                    local dc=(lp.c==ec) and 0 or ((lp.c>ec) and 1 or -1)
+                    local dr=(lp.r==er) and 0 or ((lp.r>er) and 1 or -1)
+                    local x,y=ec+dc,er+dr
+                    local blocked=false
+                    while x~=lp.c or y~=lp.r do
+                        local occ=s.board[y][x]
+                        if occ then blocked=true; n=n+1; break end
+                        x,y=x+dc,y+dr
+                    end
+                end
+            end
+        end
+    end end
+    return n
+end
+
+
+-- ---------- sandboxed “apply” (no animations, just board edits) ----------
+local function ai_applyMove(s, c,r, cc,rr)
+    local u = s.board[r] and s.board[r][c]; if not u then return false end
+    if s.board[rr][cc] then return false end
+    s.board[r][c] = nil
+    s.board[rr][cc] = u
+    if u.isLeader then
+        s.leaderPos[u.owner] = {c=cc, r=rr}
+        -- leaders keep "defense" posture
+    else
+        u.pos = "attack" -- after moving, non-leaders are ATK in our ruleset
+    end
+    return true
+end
+
+local function ai_applyFortify(s, c,r)
+    local u = s.board[r] and s.board[r][c]; if not u or u.isLeader then return false end
+    u.pos = "defense"
+    return true
+end
+
+-- ---------- fast opponent best-attack estimate on sandbox ----------
+local function ai_bestOpponentAttackValue(owner)
+    local foe = (owner==1) and 2 or 1
+    local best = 0
+    for r=0,STATE.rows-1 do
+        for c=0,STATE.cols-1 do
+            local A = STATE.board[r][c]
+            if A and A.owner==foe and not A.isLeader then
+                local atkset = cardGameFortune.legalAttacksFrom(c,r)
+                for rr,row in pairs(atkset) do
+                    for cc,_ in pairs(row) do
+                        local D = STATE.board[rr][cc]
+                        if D and D.owner==owner then
+                            local defA = cardGameFortune.db[A.cardId]
+                            local melee = ((defA and (defA.atktype or "normal"))=="normal")
+                            local atkC,atkR = melee and cc or c, melee and rr or r
+                            local aATK = select(1, cardGameFortune.getEffectiveStats(defA, atkC, atkR))
+
+                            if D.isLeader then
+                                -- treat leader damage as high value
+                                best = math.max(best, aATK * 15)
+                            else
+                                local defD = cardGameFortune.db[D.cardId]
+                                local dATK, dDEF = cardGameFortune.getEffectiveStats(defD, cc, rr)
+                                local rhs = (D.pos=="attack") and dATK or dDEF
+                                local dmg = math.max(0, aATK - rhs)
+                                -- reward kills heavily
+                                local val = (dmg>0) and (dmg*10 + (aATK>rhs and 200 or 0)) or 0
+                                if val > best then best = val end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return best
+end
+
+
+local function ai_isForcingAttack(attacker, ac,ar, tc,tr, owner)
+    local D = STATE.board[tr] and STATE.board[tr][tc]
+    if D and D.owner==owner then return true end -- capture
+    local Lp = STATE.leaderPos and STATE.leaderPos[owner]
+    return (Lp and tc==Lp.c and tr==Lp.r) or false
+end
+
+local function ai_quiescence(owner, maxDepth)
+    maxDepth = maxDepth or 1
+    local foe = (owner==1) and 2 or 1
+    local function q(depth)
+        if depth>maxDepth then return 0 end
+        local best = 0
+        for r=0,STATE.rows-1 do for c=0,STATE.cols-1 do
+            local A = STATE.board[r] and STATE.board[r][c]
+            if A and A.owner==foe and not A.isLeader then
+                local atk = cardGameFortune.legalAttacksFrom(c,r)
+                if atk then for rr,row in pairs(atk) do for cc,_ in pairs(row) do
+                    if ai_isForcingAttack(A,c,r,cc,rr, owner) then
+                        local defA = cardGameFortune.db[A.cardId]
+                        local melee = ((defA and (defA.atktype or "normal"))=="normal")
+                        local atkC,atkR = melee and cc or c, melee and rr or r
+                        local aATK = select(1, cardGameFortune.getEffectiveStats(defA, atkC, atkR))
+                        local val = 0
+                        local D = STATE.board[rr][cc]
+                        if D and D.owner==owner then
+                            if D.isLeader then val = aATK * 15
+                            else
+                                local defD = cardGameFortune.db[D.cardId]
+                                local dATK,dDEF = cardGameFortune.getEffectiveStats(defD, cc, rr)
+                                local rhs = (D.pos=="attack") and dATK or dDEF
+                                local dmg = math.max(0, aATK - rhs)
+                                val = (dmg>0) and (dmg*10 + (aATK>rhs and 200 or 0)) or 0
+                            end
+                        end
+                        best = math.max(best, val)
+                        if depth<maxDepth then
+                            best = math.max(best, val - 0.5*q(depth+1))
+                        end
+                    end
+                end end end
+        end end
+        return best
+    end
+    return q(1)
+end end
+
+-- ---------- board evaluation after our action + their reply (2-ply) ----------
+local AI2 = {
+    W_LEADER_SAFETY = 15,  -- larger = more conservative around leader
+    W_UNIT_SAFETY   = 9,   -- safety for the acting unit
+    W_TERRAIN       = 4,
+    W_SUPPORT       = 4,   -- formation
+    W_LINE          = 6,   -- threats we create from the square
+    W_OPP_REPLY     = 1.0, -- penalty for opponent best reply value
+    EPS             = 0.001,
+    W_LEADER_ESCAPE  = 3,   -- + per safe escape square
+    W_RING_COVER     = 2.5, -- + per friendly on leader ring
+    W_LOS_BLOCKERS   = 5,   -- + per blocker on enemy LOS to leader
+    W_MOBILITY = 0.6,  -- + per safe move available (capped)
+    W_CENTER   = 0.8,  -- + per safe central occupant
+    W_THREAT_LEADER = 6.0,  -- + if we threaten your leader next turn
+    W_THREAT_PIECE  = 1.5,  -- + per enemy we newly threaten
+    W_STAGNATION    = 8.0,  -- - if our move is a no-op shuffle
+}
+
+local function ai_adjFriendlyCount(c,r, owner)
+    local n=0
+    for dr=-1,1 do for dc=-1,1 do
+        if not (dr==0 and dc==0) then
+            local x,y=c+dc,r+dr
+            if x>=0 and y>=0 and x<STATE.cols and y<STATE.rows then
+                local u=STATE.board[y][x]
+                if u and u.owner==owner and not u.isLeader then n=n+1 end
+            end
+        end
+    end end
+    return n
+end
+
+local function ai_threatenedEnemiesFrom(c,r, u)
+    local n=0
+    for er=0,STATE.rows-1 do
+        for ec=0,STATE.cols-1 do
+            local e=STATE.board[er] and STATE.board[er][ec]
+            if e and e.owner~=u.owner and not e.isLeader then
+                if cardGameFortune.ai_unitCanHitTile(u, c, r, ec, er) then
+                    n = n + 1
+                end
+            end
+        end
+    end
+    return n
+end
+
+-- Evaluate after applying an action to unit at (c,r):
+-- action.kind = "stay" | "fortify" | "move", plus toC,toR for move
+local function ai_evalAction2ply(c,r, owner, action)
+    local snap = ai_snapshotState()
+    return ai_sandbox(function()
+        local u = STATE.board[r][c]; if not u then return -1e9 end
+
+        local startDanger = cardGameFortune.ai_expectedDamageAt(c, r, u, u.pos=="defense")
+
+        -- apply our action
+        if action.kind=="move" then
+            if not ai_applyMove(STATE, c,r, action.toC,action.toR) then return -1e9 end
+            c,r = action.toC, action.toR
+        elseif action.kind=="fortify" then
+            if not ai_applyFortify(STATE, c,r) then return -1e9 end
+        elseif action.kind=="stay" then
+            -- no change
+        end
+
+        local me   = STATE.board[r][c]
+        local lp   = STATE.leaderPos and STATE.leaderPos[owner]
+        local terr = 0
+        if me then
+            local defU = cardGameFortune.db[me.cardId]
+            local _,_,_,delta = cardGameFortune.getEffectiveStats(defU, c, r)
+            terr = delta or 0
+        end
+
+        -- our safety after the action
+        local meDanger   = me and cardGameFortune.ai_expectedDamageAt(c, r, me, me.pos=="defense") or 0
+        local leaderDmg  = 0
+        if lp then
+            -- approximate next-turn leader risk after our action
+            local dummyL = STATE.board[lp.r][lp.c]
+            leaderDmg = dummyL and cardGameFortune.ai_expectedDamageAt(lp.c, lp.r, dummyL, true) or 0
+        end
+
+        -- formation value from the resulting square
+        local support = me and ai_adjFriendlyCount(c,r, owner) or 0
+        local lines   = me and ai_threatenedEnemiesFrom(c,r, me) or 0
+
+        -- opponent best single reply
+        local oppBest = ai_bestOpponentAttackValue(owner)
+        local oppQ    = ai_quiescence(owner, 1)  -- extend noisy lines a bit
+        oppBest = math.max(oppBest, oppQ)
+
+
+        local score = 0
+        local escapes = ai_countLeaderEscapes(owner)
+        local cover   = ai_ringCoverCount(owner)
+        local blockers= ai_losBlockerCount(owner)
+        local mob   = ai_countSafeMovesFor(owner, 12)
+        local space = ai_centerControl(owner)
+        local threatLeader = (me and ai_potentialLeaderThreatFrom(c,r, me)) and 1 or 0
+        local newThreats   = me and ai_newThreatsFrom(c,r, me) or 0
+
+        score = score - leaderDmg * AI2.W_LEADER_SAFETY
+        score = score + escapes * AI2.W_LEADER_ESCAPE
+        score = score + cover   * AI2.W_RING_COVER
+        score = score + blockers* AI2.W_LOS_BLOCKERS
+        score = score - meDanger   * AI2.W_UNIT_SAFETY
+        score = score + terr       * AI2.W_TERRAIN
+        score = score + support    * AI2.W_SUPPORT
+        score = score + lines      * AI2.W_LINE
+        score = score - oppBest    * AI2.W_OPP_REPLY
+        score = score + mob   * AI2.W_MOBILITY
+        score = score + space * AI2.W_CENTER
+        score = score + threatLeader * AI2.W_THREAT_LEADER
+        score = score + newThreats   * AI2.W_THREAT_PIECE
+
+        -- Anti-stall: penalize "shuffle" (no displacement)
+        if action.kind=="move" and c== (action.fromC or c) and r==(action.fromR or r) then
+            score = score - AI2.W_STAGNATION
+        end
+
+        -- tiny reward for reducing our own danger vs staying
+        score = score + (startDanger - meDanger)
+
+        return score
+    end, snap)
+end
+
+
 
 
 -- ───────────────────────────────────────────────────────────
@@ -1396,9 +2542,63 @@ function cardGameFortune.aiBeginTurn()
 
     st.busy, st.steps, st.delay = true, {}, 10   -- small think pause
 
-    -- snapshot units (tables) now; we re-find them right before each action
-    local units = {}
-    for _,u in ipairs(ai_unitsOf(2)) do units[#units+1] = u.cell end
+    aiQueue(function()
+        -- Early spear if we already have 2 ring guards
+        ai_openingSpear(2)
+    end, 0)
+
+
+    -- Opening "Fortress": plug leader ring with a tank if early or low LP
+    aiQueue(function()
+        local s=STATE
+        local lowLP = (s.leaderHP and s.leaderHP[2] and s.leaderHP[2] <= 28)
+        if ai_isEarlyGame() or lowLP then
+            local lp = s.leaderPos and s.leaderPos[2]
+            local hand = s.hands and s.hands[2] or {}
+            if lp and hand then
+                for rr=lp.r-1, lp.r+1 do
+                    for cc=lp.c-1, lp.c+1 do
+                        if inBounds(cc,rr) and (not s.board[rr][cc]) then
+                            -- find first tanky card we can afford
+                            for i=1,#hand do
+                                local cid = hand[i]; local def = cardGameFortune.db[cid]
+                                if def and (def.def or 0) >= WALL.DEF_MIN and (def.atk or 0) <= WALL.ATK_MAX then
+                                    if cardGameFortune.canSummonAt(2, cc, rr, cid) then
+                                        cardGameFortune.playFromHand(2, i, cc, rr, "defense")
+                                        return
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end, 0)
+
+
+    --Should leader move?
+    aiQueue(function()
+        local s = STATE
+        if not (s and s.whoseTurn==2 and s.leaderPos and s.leaderPos[2]) then return end
+        local mv = ai_bestLeaderMove(2)
+        if mv then
+            local lp = s.leaderPos[2]
+            cardGameFortune.moveUnit(lp.c, lp.r, mv.c, mv.r)
+        end
+    end)
+
+    aiQueue(function()
+        -- try to body-block any ranged lane to our leader
+        ai_tryInterpose(2)
+    end)
+
+    --Sort units for deterministic action
+    local units = ai_unitsOf(2)
+    table.sort(units, function(a,b)
+    return (a.r==b.r) and (a.c<b.c) or (a.r<b.r)
+    end)
+    for i,u in ipairs(units) do units[i] = u.cell end
 
     -- A) Everyone: take a good attack if we have one
     for _,u in ipairs(units) do
@@ -1410,6 +2610,62 @@ function cardGameFortune.aiBeginTurn()
             if tgt then cardGameFortune.resolveBattle(c,r, tgt.c,tgt.r) end
         end)
     end
+
+    -- A.5) per-unit: two-ply choose stay vs fortify vs move (safest candidate)
+    for _,u in ipairs(units) do
+        aiQueue(function()
+            local c,r = ai_findUnitCell(u); if not c then return end
+            local s=STATE; local me = s.board[r][c]; if not me then return end
+            if me.isLeader or me.hasMoved or me.summoningSickness then return end
+
+            -- candidates
+            local actions = { {kind="stay"} }
+
+            if me.pos~="defense" and not me.hasAttacked then
+                table.insert(actions, {kind="fortify"})
+            end
+
+            -- take up to 3 safest moves as candidates
+            local legal = cardGameFortune.legalMovesFrom(c,r)
+            if legal then
+                local hereDanger = cardGameFortune.ai_expectedDamageAt(c, r, me, me.pos=="defense")
+                local moves = {}
+                for rr,row in pairs(legal) do
+                    for cc,_ in pairs(row) do
+                        local d = cardGameFortune.ai_expectedDamageAt(cc, rr, me, false)
+                        moves[#moves+1] = {c=cc, r=rr, danger=d}
+                    end
+                end
+                table.sort(moves, function(a,b) return a.danger < b.danger end)
+                for i=1, math.min(3, #moves) do
+                    -- only consider moves that are not strictly worse than staying
+                    if moves[i].danger + AI2.EPS <= hereDanger then
+                        table.insert(actions, {kind="move", fromC=c, fromR=r, toC=moves[i].c, toR=moves[i].r})
+                    end
+                end
+            end
+
+            -- evaluate each in sandbox (2-ply) and pick the best
+            local bestAct, bestScore = nil, -1e9
+            for _,act in ipairs(actions) do
+                local sc = ai_evalAction2ply(c,r, 2, act) or -1e9
+                if sc > bestScore then bestScore, bestAct = sc, act end
+            end
+
+            -- execute the chosen real action
+            if bestAct then
+                if bestAct.kind=="move" then
+                    cardGameFortune.moveUnit(c,r, bestAct.toC,bestAct.toR)
+                elseif bestAct.kind=="fortify" then
+                    cardGameFortune.fortifyToDefense(c,r)
+                else
+                    -- stay
+                end
+            end
+        end)
+    end
+
+
 
     -- B) Everyone: step toward enemy leader (avoid threatened tiles), if can move
     for _,u in ipairs(units) do
