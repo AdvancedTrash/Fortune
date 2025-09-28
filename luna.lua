@@ -198,7 +198,7 @@ local SCREEN_W, SCREEN_H = 800, 600
 local BOARD_SIZE = 448
 
 -- Hand config
-local CARD_W, CARD_H = 64, 80
+local CARD_W, CARD_H = 66, 80
 local CARD_GAP       = 2
 local HAND_W         = (CARD_W * 6) + (CARD_GAP * 5)
 local HAND_H         = 84
@@ -206,7 +206,7 @@ local HAND_H         = 84
 -- Discard + Description + Hover
 local DISC_W,  DISC_H  = 72, HAND_H
 local DESC_W,  DESC_H  = 240, HAND_H
-local HOVER_W, HOVER_H = 260, 540
+local HOVER_W, HOVER_H = 260, 520
 
 -- Positions
 local handX = BORDER
@@ -283,6 +283,17 @@ local function terrImg(terr)
         TERRAIN_TEX[terr] = t
     end
     return t
+end
+
+local function drawImageDim(path, x, y, w, h, alpha)
+    if not path then return end
+    local img = IMG[path]
+    if not img then return end
+    gfx.color(0,0,0,255*alpha)
+    gfx.fillRect(x, y, w, h) -- darken behind
+    gfx.color(255,255,255,255)
+    gfx.drawImage(img, x, y, w, h)
+    gfx.color(255,255,255,255) -- reset
 end
 
 
@@ -535,6 +546,9 @@ local COL_ATK   = {1,0.3,0.3,1}    -- red-ish for ATK
 local COL_DEF   = {0.4,0.6,1,1}    -- blue-ish for DEF
 local COL_LABEL = {1,1,1,0.85}
 local COL_MOVE = {0.91, 0.73, 0.55, 1.0}
+local COL_PLUS  = COL_PLUS  or {0, 210, 90, 255}
+local COL_MINUS = COL_MINUS or {210, 60, 60, 255}
+
 
 local function label(s, x, y, prio, col, align)
     textplus.print{
@@ -1335,8 +1349,8 @@ end
         box(hx, hy, CARD_W, CARD_H, 255,255,255, 40)
         if cardId then
             local def = cardGameFortune.db[cardId]
-            if def and def.icon then
-                local img2 = tex(def.icon); if img2 then Graphics.drawImageWP(img2, hx, hy, 5) end
+            if def and def.image then
+                local img2 = tex(def.image); if img2 then Graphics.drawImageWP(img2, hx, hy, 5) end
             end
             if selectedHandIndex == i then
                 Graphics.drawBox{ x=hx-2,y=hy-2,width=CARD_W+4,height=CARD_H+4, color=Color.white..0.5, priority=7 }
@@ -1367,8 +1381,7 @@ end
         if cell and cell.isLeader then
             local who = (cell.owner==1) and "P1 Leader" or "P2 Leader"
             label(who, hoverX+8, yy, 5, COL_NAME); yy = yy + MF_LINE
-            label("POS: "..(cell.pos or "defense").."   HP: "..tostring(cell.hp or 0), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
-            label("Summon: adjacent tiles", hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
+            label("HP: "..tostring(cell.hp or 0), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
             shown = true
 
             -- outline the tile the leader is on
@@ -1380,6 +1393,92 @@ end
 
     -- ===== HOVER PANEL CONTENT =====
     if s then
+            -- 0) BATTLE PREVIEW (if we have a selected unit and the cursor is on a legal enemy target)
+        do
+            if (not shown) and selectedUnit and legalAttackSet then
+                local srow = s.board[cursor.r]
+                local target = srow and srow[cursor.c]
+                if target and target.owner and target.owner ~= s.whoseTurn then
+                    -- quick legality check using the set we already computed on selection
+                    local legalHere = legalAttackSet[cursor.r] and legalAttackSet[cursor.r][cursor.c]
+                    if legalHere then
+                        local ok, pv = cardGameFortune.previewCombat(selectedUnit.c, selectedUnit.r, cursor.c, cursor.r)
+                        if ok and pv then
+                            -- Try to look up a terrain name/BG; fall back gracefully
+                            local rawName = cardGameFortune.terrainNameAt and cardGameFortune.terrainNameAt(cursor.c, cursor.r)
+                            local resolved = cardGameFortune.terrainHudBG and cardGameFortune.terrainHudBG(cursor.c, cursor.r)
+
+                        -- Background: terrain HUD image for the hovered tile (if any)
+                            do
+                                -- BG behind text, above board
+                                local tbg = cardGameFortune.terrainHudBG and cardGameFortune.terrainHudBG(cursor.c, cursor.r)
+                                if tbg then
+                                    local img = tex(tbg)
+                                    if img then
+                                        Graphics.drawImageWP(img, hoverX, hoverY, 4.85)
+                                        Graphics.drawBox{
+                                            x=hoverX, y=hoverY, width=HOVER_W, height=HOVER_H,
+                                            color=Color.black..0.35, priority=4.9
+                                        }
+                                    end
+                                end
+                            end
+
+                            -- Header: show terrain name (fallback to "Terrain" if unknown)
+                            local tname = cardGameFortune.terrainNameAt and cardGameFortune.terrainNameAt(cursor.c, cursor.r) or "Terrain"
+                            label(tname, hoverX+8, yy, 5, COL_NAME); yy = yy + MF_LINE
+
+                            
+                            -- Header
+                            label("Battle Preview", hoverX+8, yy, 5, COL_NAME); yy = yy + MF_LINE
+
+                            -- Attacker lines (Base / Tile / Final)
+                            local aFinal = pv.aATK or 0
+                            local aTile  = pv.aBonus or 0
+                            local aBase  = aFinal - aTile
+                            label(("You (Base):  ATK %d"):format(aBase),    hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
+                            label(("Tile bonus:  %+d ATK"):format(aTile),   hoverX+8, yy, 5, (aTile>=0 and COL_PLUS or COL_MINUS)); yy = yy + MF_LINE
+                            label(("Final:       ATK %d"):format(aFinal),   hoverX+8, yy, 5, COL_ATK); yy = yy + MF_LINE
+
+                            if pv.mode == "vsLEADER" then
+                                local dmg = (pv.leaderDamage and pv.leaderDamage.amount) or aFinal
+                                label(("→ Leader Damage: %d"):format(dmg), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
+                            else
+                                -- Defender stat kind depends on whether we’re hitting ATK or DEF
+                                local tag  = (pv.against == "ATK") and "ATK" or "DEF"
+                                local dFin = (pv.against == "ATK") and (pv.dATK or 0) or (pv.dDEF or 0)
+                                local dTile= pv.dBonus or 0
+                                local dBase= dFin - dTile
+
+                                label(("Enemy (Base): %s %d"):format(tag, dBase),      hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
+                                label(("Tile bonus:   %+d %s"):format(dTile, tag),     hoverX+8, yy, 5, (dTile>=0 and COL_PLUS or COL_MINUS)); yy = yy + MF_LINE
+                                label(("Final:        %s %d"):format(tag, dFin),       hoverX+8, yy, 5, (tag=="ATK" and COL_ATK or COL_DEF)); yy = yy + MF_LINE
+
+                                -- Outcome summary (same as Step A)
+                                local diff = pv.diff or 0
+                                local outcome
+                                if     diff > 0 and pv.against == "ATK" then outcome = "Win (enemy destroyed, LP -" .. diff .. ")"
+                                elseif diff > 0 and pv.against == "DEF" then outcome = "Break Defense (enemy destroyed)"
+                                elseif diff == 0 and pv.against == "ATK" then outcome = "Trade (both destroyed)"
+                                elseif diff == 0 and pv.against == "DEF" then outcome = "Stalemate (no damage)"
+                                else
+                                    if pv.against == "ATK" then
+                                        outcome = "Lose (you destroyed, no LP swing)"
+                                    else
+                                        outcome = "Bounce (you lose " .. math.abs(diff) .. " LP)"
+                                    end
+                                end
+                                label(("Result: %s"):format(outcome), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
+                            end
+
+
+                            shown = true
+                        end
+                    end
+                end
+            end
+        end
+
         -- 1) Unit under cursor
         do
             local row  = s.board[cursor.r]
@@ -1395,6 +1494,28 @@ end
         end
 
         -- 2) AIM preview
+        -- draw terrain background for the hovered tile
+        do
+            local cc, rr = cursor.c, cursor.r  -- hovered board tile
+            local tbg = cardGameFortune.terrainHudBG and cardGameFortune.terrainHudBG(cc, rr)
+            if tbg then
+                local img = tex(tbg)
+                if img then
+                    -- draw above board BG, below text
+                    Graphics.drawImageWP(img, hoverX, hoverY, 4.95)
+                    Graphics.drawBox{
+                        x=hoverX, y=hoverY, width=HOVER_W, height=HOVER_H,
+                        color=Color.black..0.35, priority=4.97
+                    }
+                end
+            end
+
+            -- header with terrain name
+            local tname = cardGameFortune.terrainNameAt and cardGameFortune.terrainNameAt(cc, rr) or "Terrain"
+            label(tname .. " • Summon Preview", hoverX+8, yy, 5, COL_NAME)
+            yy = yy + MF_LINE
+        end
+
         if (not shown) and focus == "aim" and selectedHandIndex ~= nil then
             local cardId = (s.hands[1] or {})[selectedHandIndex]
             if cardId then

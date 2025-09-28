@@ -106,6 +106,26 @@ local function terrainBonus(def, terr)
   return (a == b) and 2 or 0
 end
 
+-- Return a human terrain name for tile (c,r)
+function cardGameFortune.terrainNameAt(c, r)
+    return cardGameFortune.terrainAt(c, r)
+end
+
+
+-- Return HUD background image path for that terrain
+function cardGameFortune.terrainHudBG(c, r)
+    local name = cardGameFortune.terrainNameAt(c, r)
+    if not name then return nil end
+
+    -- Normalize "Ghost House" -> "GhostHouse"
+    local token = (tostring(name):gsub("%s+", ""):gsub("[^%w]", ""))
+
+    -- Your convention:  cardgame/terr_info<TerrainName>[.png]
+    -- We’ll return the path with .png; your tex() usually resolves either way.
+    return "cardgame/terr_info" .. token .. ".png"
+end
+
+
 -- BAD matchups (card subtype2 -> tile terrain that gives -2)
 local TERRAIN_PENALTY = {
   Underground = { Sky=true },
@@ -157,8 +177,8 @@ local TERRAIN_LIST = {
     "Underground","Underwater","Sky","Ghost House","Castle","Volcano",
 }
 local TERRAIN_WEIGHT = {
-    Overworld=20, Forest=10, Mountain=9, Desert=8, Snow=8,
-    Underground=8, Underwater=6, Sky=6, GhostHouse=5, ["Ghost House"]=5, Castle=5, Volcano=5,
+    Overworld=14, Forest=12, Mountain=4, Desert=12, Snow=12,
+    Underground=12, Underwater=12, Sky=4, GhostHouse=8, ["Ghost House"]=5, Castle=8, Volcano=4,
 }
 
 -- Helper: bounds
@@ -1091,8 +1111,8 @@ local CARDS = {
 {
   id          = "unique_id_here",
   name        = "Display Name",
-  image       = "cardgame/default.png",     -- ok to leave as default path for now
-  icon        = "cardgame/default_icon.png",
+  image       = "cardgame/goombacard.png",     -- ok to leave as default path for now
+  icon        = "cardgame/goombaicon.png",
   description = "Short flavor or ability text.",
   type        = "melee",                    -- melee|defensive|grappler|ranged|magic|tower
   atk         = 3,
@@ -1109,7 +1129,7 @@ local CARDS = {
 -- MELEE
     newCard{
         id="goomba", name="Goomba",
-        image="cardgame/goombaicon.png", icon="cardgame/goombaicon.png",
+        image="cardgame/goombacard.png", icon="cardgame/goombaicon.png",
         description="A basic enemy. Weak alone, strong in numbers.",
         type="melee", atk=3, def=2, movement=1,
         movementtype="normal", atktype="normal",
@@ -1120,7 +1140,7 @@ local CARDS = {
 -- DEFENSIVE
     newCard{
         id="green_koopa", name="Green Koopa",
-        image="cardgame/koopaicon.png", icon="cardgame/koopaicon.png",
+        image="cardgame/koopacard.png", icon="cardgame/koopaicon.png",
         description="Hides in its shell when attacked.",
         type="defensive", atk=3, def=4, movement=1,
         movementtype="normal", atktype="normal",
@@ -1131,7 +1151,7 @@ local CARDS = {
 -- GRAPPLER
     newCard{
         id="chargin_chuck", name="Chargin’ Chuck",
-        image="cardgame/chuckicon.png", icon="cardgame/chuckicon.png",
+        image="cardgame/chuckcard.png", icon="cardgame/chuckicon.png",
         description="Rams into foes with football tackles.",
         type="grappler", atk=6, def=5, movement=2,
         movementtype="normal", atktype="normal",
@@ -1142,34 +1162,34 @@ local CARDS = {
 -- RANGED
     newCard{
         id="hammer_bro", name="Hammer Bro",
-        image="cardgame/hammerbroicon.png", icon="cardgame/hammerbroicon.png",
+        image="cardgame/hammerbrocard.png", icon="cardgame/hammerbroicon.png",
         description="Throws hammers from afar.",
         type="ranged", atk=7, def=4, movement=1,
         movementtype="normal", atktype="ranged",
         subtype1="normal", subtype2="overworld",
-        summoncost=3, deckcost=3
+        summoncost=4, deckcost=4
     },
 
 -- MAGIC
     newCard{
         id="magikoopa", name="Magikoopa",
-        image="cardgame/magikoopaicon.png", icon="cardgame/magikoopaicon.png",
+        image="cardgame/magikoopacard.png", icon="cardgame/magikoopaicon.png",
         description="Casts unpredictable magic blasts.",
-        type="magic", atk=12, def=11, movement=1,
-        movementtype="normal", atktype="ranged",
-        subtype1="normal", subtype2="sky",
-        summoncost=4, deckcost=4
+        type="magic", atk=9, def=5, movement=1,
+        movementtype="queen", atktype="ranged",
+        subtype1="normal", subtype2="castle",
+        summoncost=5, deckcost=5
     },
 
 -- TOWER
     newCard{
         id="bill_blaster", name="Bill Blaster",
-        image="cardgame/billblastericon.png", icon="cardgame/billblastericon.png",
+        image="cardgame/billblastercard.png", icon="cardgame/billblastericon.png",
         description="Stationary cannon that fires Bullet Bills.",
-        type="tower", atk=10, def=13, movement=0,
+        type="tower", atk=6, def=12, movement=0,
         movementtype="normal", atktype="volley",
         subtype1="normal", subtype2="airship",
-        summoncost=4, deckcost=4
+        summoncost=6, deckcost=6
     },
 }
 
@@ -2157,15 +2177,17 @@ local function ai_trySummon()
                                 local def = cardGameFortune.db[cid]
                                 local tanky = def and ((def.def or 0) >= WALL.DEF_MIN) and ((def.atk or 0) <= WALL.ATK_MAX)
                                 if tanky then
-                                if ai_plugsLeaderGap(cc,rr, 2) then wallScore = wallScore + WALL.FILL_GAP_BONUS end
+                                if ai_plugsLeaderGap(c, r, 2) then wallScore = wallScore + WALL.FILL_GAP_BONUS end
+
                                 if STATE.leaderPos and STATE.leaderPos[2] then
                                     local lp = STATE.leaderPos[2]
-                                    if math.max(math.abs(cc-lp.c), math.abs(rr-lp.r)) == 1 then
-                                    wallScore = wallScore + WALL.RING_BONUS
+                                    if math.max(math.abs(c - lp.c), math.abs(r - lp.r)) == 1 then
+                                        wallScore = wallScore + WALL.RING_BONUS
                                     end
                                 end
-                                wallScore = wallScore + ai_adjWallCount(cc,rr, 2) * WALL.LINE_BONUS
-                                if ai_isChokeTile(cc,rr) then wallScore = wallScore + WALL.CHOKE_BONUS end
+
+                                wallScore = wallScore + ai_adjWallCount(c, r, 2) * WALL.LINE_BONUS
+                                if ai_isChokeTile(c, r) then wallScore = wallScore + WALL.CHOKE_BONUS end
                                 end
                                 score = score + wallScore
 
