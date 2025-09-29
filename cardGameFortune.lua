@@ -59,6 +59,9 @@ local STATE = {
   seed       = 0,
 }
 
+cardGameFortune.HAND_MAX = 5
+
+
 cardGameFortune.TERRAIN = {
   ["Overworld"]=true, ["Underground"]=true, ["Underwater"]=true, ["Desert"]=true,
   ["Snow"]=true, ["Sky"]=true, ["Forest"]=true, ["Ghost House"]=true,
@@ -534,8 +537,9 @@ function cardGameFortune.legalMovesFrom(c,r)
 end
 
 -- ── Config ─────────────────────────────────────────────────────────────
-cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE = 8   -- tweak: frames per tile step
--- Easing (0..1 -> 0..1), smoothstep
+cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE = 8 
+cardGameFortune.HAND_MAX = 5    -- cap visible hand to 5 cards
+
 local function easeSmooth(t) return t*t*(3 - 2*t) end
 
 -- Is any unit currently animating?
@@ -747,8 +751,16 @@ function cardGameFortune.resolveBattle(ac,ar, dc,dr)
         end
     end
 
-    if destroyD then s.board[dr][dc] = nil end
-    if destroyA then s.board[ar][ac] = nil end
+    -- log to grave before removing from board
+    if destroyD then
+        if D and D.cardId then cardGameFortune.pushToGrave(D.owner, D.cardId, "KO", A and A.cardId) end
+        s.board[dr][dc] = nil
+    end
+    if destroyA then
+        if A and A.cardId then cardGameFortune.pushToGrave(A.owner, A.cardId, "KO", D and D.cardId) end
+        s.board[ar][ac] = nil
+    end
+
 
     if damagePlayer and damageAmt > 0 then
         s.leaderHP = s.leaderHP or {[1]=40,[2]=40}
@@ -781,6 +793,7 @@ function cardGameFortune.newMatch(seed)
   shuffle(d1, nextRand)
   shuffle(d2, nextRand)
   STATE.deck  = { d1, d2 }
+  STATE.grave = { [1] = {}, [2] = {} }
   STATE.hands = { {}, {} }
 
   cardGameFortune.draw(1,5)
@@ -846,6 +859,22 @@ function cardGameFortune.draw(player, n)
   end
 end
 
+function cardGameFortune.pushToGrave(owner, cardId, reason, by)
+    STATE.grave = STATE.grave or { [1]={}, [2]={} } 
+    STATE.grave[owner] = STATE.grave[owner] or {} 
+    local g = STATE.grave[owner]
+    if not cardId then return end
+    g[#g+1] = { cardId = cardId, turn = STATE.turn or 0, by = by, reason = reason or "KO" }
+end
+
+
+function cardGameFortune.lastGrave(owner)
+  local g = STATE and STATE.grave and STATE.grave[owner]
+  if not g or #g == 0 then return nil end
+  return g[#g]
+end
+
+
 -- Simple cost check / spend
 local function canAfford(player, cardId)
   local card = cardGameFortune.db[cardId]; if not card then return false end
@@ -881,11 +910,9 @@ function cardGameFortune.playFromHand(player, handIndex, c, r, position)
     local base     = cardGameFortune.db[cardId]
 
     -- remove from hand + pay
-    hand[handIndex] = nil
-    local newHand = {}
-    for i=1,#hand do if hand[i] ~= nil then newHand[#newHand+1] = hand[i] end end
-    STATE.hands[player] = newHand
+    table.remove(STATE.hands[player], handIndex)
     spend(player, cardId)
+
 
     local pos   = (position == "defense") and "defense" or "attack"
     local hpVal = (pos == "defense") and (base.def or 0) or (base.atk or 0)
@@ -917,7 +944,9 @@ function cardGameFortune.endTurn()
 
   -- start-of-turn resources for the new active player
   STATE.energy[np] = (STATE.energy[np] or 0) + 3
-  cardGameFortune.draw(np, 1)
+    if (#STATE.hands[np] or 0) < (cardGameFortune.HAND_MAX or 5) then
+        cardGameFortune.draw(np, 1)
+    end
 
   -- refresh per-unit action flags for the new active player
   for r=0,STATE.rows-1 do

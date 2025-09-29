@@ -2234,7 +2234,7 @@ littleDialogue.defaultBoxSettings = {
 
 
     -- Typewriter effect related
-    typewriterEnabled = false,     -- If the typewriter effect is enabled.
+    typewriterEnabled = true,     -- If the typewriter effect is enabled.
     typewriterDelayNormal = 2,     -- The usual delay between each character.
     typewriterDelayLong = 16,      -- The extended delay after any of the special delaying characters, listed below.
     typewriterSoundDelay = 5,      -- How long there must between each sound.

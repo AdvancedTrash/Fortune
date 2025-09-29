@@ -1,3 +1,8 @@
+UI = UI or {}
+UI.pending = UI.pending or nil
+UI.modal     = UI.modal     or nil
+UI.graveSide = UI.graveSide or 1
+
 local smwMap = require("smwMap")
 
 -- SMW Costumes
@@ -763,7 +768,7 @@ function onInputUpdate()
 
                 local s = cardGameFortune.peek()
                 local h = (s and s.hands and s.hands[1]) or {}
-                for i=1,6 do if h[i] then selectedHandIndex = i; break end end
+                for i=1,5 do if h[i] then selectedHandIndex = i; break end end
 
                 centerCursor()
                 moveTimer = 0
@@ -808,16 +813,42 @@ function onInputUpdate()
 
             selectedHandIndex = nil
             local h = (s and s.hands and s.hands[1]) or {}
-            for i=1,6 do if h[i] then selectedHandIndex = i; break end end
+            for i=1,5 do if h[i] then selectedHandIndex = i; break end end
 
             centerCursor()
             cardGameFortune.aiJustEnded = false
+            UI.pending = nil
         end
+
+        -- Cancel (B/Esc)
+        if UI.pending and player.rawKeys.altJump == KEYS_PRESSED then
+            UI.pending = nil
+        end
+
+        -- Confirm (A/Jump or Enter)
+        if UI.pending and (player.rawKeys.jump == KEYS_PRESSED or player.rawKeys.start == KEYS_PRESSED) then
+            local p = UI.pending
+            if p.kind == "summon" and p.c and p.r then
+                local ok = cardGameFortune.playFromHand(1, p.fromHand, p.c, p.r, p.pos)
+                if ok then
+                    -- clamp selection to new hand size
+                    local s = cardGameFortune.peek()
+                    selectedHandIndex = math.min(selectedHandIndex or 1, #(s and s.hands[1] or {}))
+                end
+            elseif p.kind == "move" then
+                cardGameFortune.moveUnit(p.fromC, p.fromR, p.toC, p.toR)
+            elseif p.kind == "attack" then
+                cardGameFortune.resolveBattle(p.fromC, p.fromR, p.toC, p.toR)
+            end
+            UI.pending = nil
+        end
+
 
         ------------------------------------------------
         -- Toggle hand <-> board (not while aiming)
         ------------------------------------------------
-        if focus ~= "aim" and (player.rawKeys.spinJump == KEYS_PRESSED or player.rawKeys.altJump == KEYS_PRESSED) then
+        if focus ~= "aim" and player.rawKeys.altJump == KEYS_PRESSED then
+            if UI.pending then end
             focus = (focus == "hand") and "board" or "hand"
             if focus == "board" then centerCursor() end
             SFX.play(3)
@@ -827,6 +858,7 @@ function onInputUpdate()
         -- End Turn (ALT-RUN): only human, on their turn, AI idle, gated
         -----------------------------------------------------------------
         if player.rawKeys.altRun == KEYS_PRESSED then
+            if UI.pending then end
             local ss = cardGameFortune.peek()
             if canHumanEndTurn(ss) and (not endTurnLatch) and cardGameFortune.endTurn then
                 endTurnPrevTurn = ss.whoseTurn
@@ -842,10 +874,11 @@ function onInputUpdate()
                 local ns = cardGameFortune.peek()
                 selectedHandIndex = nil
                 local h2 = (ns and ns.hands and ns.hands[ns.whoseTurn]) or {}
-                for i=1,6 do if h2[i] then selectedHandIndex = i; break end end
+                for i=1,5 do if h2[i] then selectedHandIndex = i; break end end
 
                 centerCursor()
                 SFX.play(3)
+                UI.pending = nil
             else
                 SFX.play(2)
             end
@@ -855,11 +888,12 @@ function onInputUpdate()
         -- ========= HAND mode =========
         --------------------------------
         if focus == "hand" then
+            if UI.pending then end
             if myTurn then
                 local function handCycle(dir)
                     local s2 = cardGameFortune.peek()
                     if not selectedHandIndex then
-                        for i=1,6 do if (s2.hands[1] or {})[i] then selectedHandIndex = i; break end end
+                        for i=1,5 do if (s2.hands[1] or {})[i] then selectedHandIndex = i; break end end
                         if not selectedHandIndex then return end
                     end
                     local i, start = selectedHandIndex, selectedHandIndex
@@ -874,13 +908,12 @@ function onInputUpdate()
                 if player.rawKeys.left  == KEYS_PRESSED or (player.rawKeys.left  == KEYS_DOWN and moveTimer == 0) then handCycle(-1); stepped = true end
                 if player.rawKeys.right == KEYS_PRESSED or (player.rawKeys.right == KEYS_DOWN and moveTimer == 0) then handCycle( 1); stepped = true end
                 if stepped then moveTimer = MOVE_COOLDOWN end
+                if player.rawKeys.down   == KEYS_PRESSED then
+                    UI = UI or {}
+                    UI.modal = "grave"
+                    UI.graveSide = UI.graveSide or 1
+                end
 
-                if player.rawKeys.one   == KEYS_PRESSED then selectedHandIndex = 1 end
-                if player.rawKeys.two   == KEYS_PRESSED then selectedHandIndex = 2 end
-                if player.rawKeys.three == KEYS_PRESSED then selectedHandIndex = 3 end
-                if player.rawKeys.four  == KEYS_PRESSED then selectedHandIndex = 4 end
-                if player.rawKeys.five  == KEYS_PRESSED then selectedHandIndex = 5 end
-                if player.rawKeys.six   == KEYS_PRESSED then selectedHandIndex = 6 end
 
                 if player.rawKeys.run == KEYS_PRESSED then
                     summonPos = (summonPos == "attack") and "defense" or "attack"
@@ -894,7 +927,7 @@ function onInputUpdate()
                     else
                         local s3 = cardGameFortune.peek()
                         if selectedHandIndex == nil then
-                            for i=1,6 do if (s3.hands[1] or {})[i] then selectedHandIndex = i; break end end
+                            for i=1,5 do if (s3.hands[1] or {})[i] then selectedHandIndex = i; break end end
                         end
                         if selectedHandIndex and (s3.hands[1] or {})[selectedHandIndex] then
                             focus = "aim"
@@ -917,40 +950,58 @@ function onInputUpdate()
         -- ========= AIM mode ==========
         --------------------------------
         elseif focus == "aim" then
+            if UI.pending then end
             if moveTimer > 0 then moveTimer = moveTimer - 1 end
             local moved = false
-            if player.rawKeys.left  == KEYS_PRESSED or (player.rawKeys.left  == KEYS_DOWN and moveTimer == 0) then cursor.c = clamp(cursor.c - 1, 0, GRID_COLS-1); moved = true end
-            if player.rawKeys.right == KEYS_PRESSED or (player.rawKeys.right == KEYS_DOWN and moveTimer == 0) then cursor.c = clamp(cursor.c + 1, 0, GRID_COLS-1); moved = true end
-            if player.rawKeys.up    == KEYS_PRESSED or (player.rawKeys.up    == KEYS_DOWN and moveTimer == 0) then cursor.r = clamp(cursor.r - 1, 0, GRID_ROWS-1); moved = true end
-            if player.rawKeys.down  == KEYS_PRESSED or (player.rawKeys.down  == KEYS_DOWN and moveTimer == 0) then cursor.r = clamp(cursor.r + 1, 0, GRID_ROWS-1); moved = true end
-            if moved then moveTimer = MOVE_COOLDOWN end
+            if not UI.pending then
+                if player.rawKeys.left  == KEYS_PRESSED or (player.rawKeys.left  == KEYS_DOWN and moveTimer == 0) then cursor.c = clamp(cursor.c - 1, 0, GRID_COLS-1); moved = true end
+                if player.rawKeys.right == KEYS_PRESSED or (player.rawKeys.right == KEYS_DOWN and moveTimer == 0) then cursor.c = clamp(cursor.c + 1, 0, GRID_COLS-1); moved = true end
+                if player.rawKeys.up    == KEYS_PRESSED or (player.rawKeys.up    == KEYS_DOWN and moveTimer == 0) then cursor.r = clamp(cursor.r - 1, 0, GRID_ROWS-1); moved = true end
+                if player.rawKeys.down  == KEYS_PRESSED or (player.rawKeys.down  == KEYS_DOWN and moveTimer == 0) then cursor.r = clamp(cursor.r + 1, 0, GRID_ROWS-1); moved = true end
+                if moved then moveTimer = MOVE_COOLDOWN end
+            end
 
             if player.rawKeys.run == KEYS_PRESSED then
                 summonPos = (summonPos == "attack") and "defense" or "attack"
                 SFX.play(3)
             end
 
+            if player.rawKeys.altJump == KEYS_PRESSED then
+                UI.pending = nil                 
+                selectedHandIndex = nil          
+                focus = "hand"                  
+                SFX.play(2)
+                return
+            end
+
             if player.rawKeys.jump == KEYS_PRESSED and selectedHandIndex ~= nil then
-                local s4 = cardGameFortune.peek()
-                local hand = s4.hands[1]
-                if hand and hand[selectedHandIndex] then
-                    if not canActNow() then
-                        SFX.play(2)
-                    else
-                        local ok = select(1, cardGameFortune.playFromHand(1, selectedHandIndex, cursor.c, cursor.r, summonPos))
-                        if ok then
-                            SFX.play(1)
-                            selectedHandIndex = nil
-                            summonPos = "attack"
-                            focus = "hand"
-                        else
-                            SFX.play(3)
-                        end
-                    end
+                local s4   = cardGameFortune.peek()
+                local hand = s4 and s4.hands and s4.hands[1]
+                local cid  = hand and hand[selectedHandIndex]
+                if not cid then SFX.play(2); return end
+                if not canActNow() then SFX.play(2); return end
+
+                local def  = cardGameFortune.db[cid]
+                local cost = (def and def.summoncost) or 0
+                if (s4.energy and (s4.energy[1] or 0) < cost) then
+                    SFX.play(2)           
+                    return 
                 end
+
+                -- Start a pending summon (confirm will execute later)
+                UI.pending = {
+                    kind    = "summon",
+                    cardId  = cid,
+                    fromHand= selectedHandIndex,
+                    pos     = (summonPos or "attack"),
+                    c       = cursor.c,
+                    r       = cursor.r,
+                }
+                SFX.play(1)
             end
 
             if player.rawKeys.altRun == KEYS_PRESSED then
+                selectedHandIndex = nil
                 focus = "hand"
                 SFX.play(3)
             end
@@ -959,13 +1010,16 @@ function onInputUpdate()
         -- ========= BOARD (inspect) =======
         ------------------------------------
         elseif focus == "board" then
+            if UI.pending then end
             if moveTimer > 0 then moveTimer = moveTimer - 1 end
             local moved = false
-            if player.rawKeys.left  == KEYS_PRESSED or (player.rawKeys.left  == KEYS_DOWN and moveTimer == 0) then cursor.c = clamp(cursor.c - 1, 0, GRID_COLS-1); moved = true end
-            if player.rawKeys.right == KEYS_PRESSED or (player.rawKeys.right == KEYS_DOWN and moveTimer == 0) then cursor.c = clamp(cursor.c + 1, 0, GRID_COLS-1); moved = true end
-            if player.rawKeys.up    == KEYS_PRESSED or (player.rawKeys.up    == KEYS_DOWN and moveTimer == 0) then cursor.r = clamp(cursor.r - 1, 0, GRID_ROWS-1); moved = true end
-            if player.rawKeys.down  == KEYS_PRESSED or (player.rawKeys.down  == KEYS_DOWN and moveTimer == 0) then cursor.r = clamp(cursor.r + 1, 0, GRID_ROWS-1); moved = true end
-            if moved then moveTimer = MOVE_COOLDOWN end
+            if not UI.pending then
+                if player.rawKeys.left  == KEYS_PRESSED or (player.rawKeys.left  == KEYS_DOWN and moveTimer == 0) then cursor.c = clamp(cursor.c - 1, 0, GRID_COLS-1); moved = true end
+                if player.rawKeys.right == KEYS_PRESSED or (player.rawKeys.right == KEYS_DOWN and moveTimer == 0) then cursor.c = clamp(cursor.c + 1, 0, GRID_COLS-1); moved = true end
+                if player.rawKeys.up    == KEYS_PRESSED or (player.rawKeys.up    == KEYS_DOWN and moveTimer == 0) then cursor.r = clamp(cursor.r - 1, 0, GRID_ROWS-1); moved = true end
+                if player.rawKeys.down  == KEYS_PRESSED or (player.rawKeys.down  == KEYS_DOWN and moveTimer == 0) then cursor.r = clamp(cursor.r + 1, 0, GRID_ROWS-1); moved = true end
+                if moved then moveTimer = MOVE_COOLDOWN end
+            end
 
             if player.rawKeys.altRun == KEYS_PRESSED then
                 selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
@@ -1000,15 +1054,12 @@ function onInputUpdate()
                     if selectedUnit then
                         -- Move first, else attack (non-leader), else cancel
                         if legalMoveSet and legalMoveSet[r] and legalMoveSet[r][c] and not s5.board[r][c] then
-                            local ok = cardGameFortune.moveUnit(selectedUnit.c, selectedUnit.r, c, r)
-                            if ok then SFX.play(3) end
-                            selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+                            UI.pending = { kind="move", fromC=selectedUnit.c, fromR=selectedUnit.r, toC=c, toR=r }
+                            SFX.play(1)
+
                         elseif (not selectedUnit.isLeader) and legalAttackSet and legalAttackSet[r] and legalAttackSet[r][c] then
-                            local u2 = s5.board[selectedUnit.r][selectedUnit.c]
-                            if u2 and not u2.isLeader then u2.pos = "attack" end
-                            local ok = cardGameFortune.resolveBattle(selectedUnit.c, selectedUnit.r, c, r)
-                            SFX.play(ok and 3 or 9)
-                            selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+                            UI.pending = { kind="attack", fromC=selectedUnit.c, fromR=selectedUnit.r, toC=c, toR=r }
+                            SFX.play(1)
                         else
                             selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
                             SFX.play(2)
@@ -1031,7 +1082,7 @@ function onInputUpdate()
             end
 
             -- Cancel with SpinJump
-            if player.rawKeys.spinJump == KEYS_PRESSED or player.rawKeys.altJump == KEYS_PRESSED then
+            if player.rawKeys.altJump == KEYS_PRESSED then
                 selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
                 SFX.play(2)
             end
@@ -1039,9 +1090,7 @@ function onInputUpdate()
     end -- if BOARD_OPEN
 end -- function onInputUpdate
 
-
 -- Draw one card’s info into the hover panel.
--- Returns the updated yy after drawing.
 local function drawCardInfo(def, hoverX, yy, HOVER_W, pos, summonPos, extras)
     if not def then return yy end
 
@@ -1331,20 +1380,13 @@ end
         fillCell(cursor.c, cursor.r, col, 5.2)
     end
 
-
-
-
-    -- section titles
-    label("DISC",              discX+8, descY+8)
-    label("DESCRIPTION BOX",   descX+8, descY+8)
-
     -- hand panel
     Graphics.drawBox{
         x=handX-8, y=handY+22, width=(CARD_W+CARD_GAP)*6 - CARD_GAP + 16, height=CARD_H+20,
         color=Color(0,0,0,0.35), priority=5
     }
     local hx, hy = handX, handY-2
-    for i=1,6 do
+    for i=1,5 do
         local cardId = (s.hands[1] or {})[i]
         box(hx, hy, CARD_W, CARD_H, 255,255,255, 40)
         if cardId then
@@ -1354,13 +1396,53 @@ end
             end
             if selectedHandIndex == i then
                 Graphics.drawBox{ x=hx-2,y=hy-2,width=CARD_W+4,height=CARD_H+4, color=Color.white..0.5, priority=7 }
-                label((summonPos=="defense") and "DEF" or "ATK", hx+4, hy+CARD_H+2)
+                label((summonPos=="defense") and "DEF" or "ATK", hx+6, hy+CARD_H-24)
             end
         else
             label(tostring(i), hx+4, hy+4)
         end
         hx = hx + CARD_W + CARD_GAP
     end
+
+    -- slot 6 → Graveyard button (shows last KO thumbnail)
+    local gx, gy = hx, hy  -- hx was advanced by the loop
+    box(gx, gy, CARD_W, CARD_H, 255,255,255, 60)
+    label("GRV", gx+6, gy+6, 6, Color.white)
+
+    local last = nil
+    do
+        -- prefer the most recent overall
+        local a = cardGameFortune.lastGrave(1)
+        local b = cardGameFortune.lastGrave(2)
+        if     (a and b) then last = (a.turn or 0) >= (b.turn or 0) and a or b
+        elseif (a)       then last = a
+        elseif (b)       then last = b
+        end
+    end
+
+
+    if last then
+        local def = cardGameFortune.db[last.cardId]
+        if def and def.image then
+            local img2 = tex(def.image)
+            if img2 then
+                Graphics.drawBox{ x=hx-2,y=hy-2,width=CARD_W+4,height=CARD_H+4, color=Color.black..0.5, priority=7 }
+                tex(def.image); if img2 then Graphics.drawImageWP(img2, hx, hy, 5) end
+            end
+        end
+    end
+
+
+    -- open modal on keyboard '6' (already handled) or mouse click
+    if UI and UI.modal ~= "grave" then
+        local mx,my = player.rawKeys.mouseX or 0, player.rawKeys.mouseY or 0
+        if mx>=gx and mx<=gx+CARD_W and my>=gy and my<=gy+CARD_H then
+            if player.rawKeys.leftClick == KEYS_PRESSED then
+                UI.modal = "grave"; UI.graveSide = UI.graveSide or 1
+            end
+        end
+    end
+
 
     -- ==== HOVER PANEL CONTENT ====
     local s      = cardGameFortune.peek()
@@ -1428,44 +1510,35 @@ end
                             local tname = cardGameFortune.terrainNameAt and cardGameFortune.terrainNameAt(cursor.c, cursor.r) or "Terrain"
                             label(tname, hoverX+8, yy, 5, COL_NAME); yy = yy + MF_LINE
 
-                            
-                            -- Header
-                            label("Battle Preview", hoverX+8, yy, 5, COL_NAME); yy = yy + MF_LINE
-
                             -- Attacker lines (Base / Tile / Final)
                             local aFinal = pv.aATK or 0
                             local aTile  = pv.aBonus or 0
                             local aBase  = aFinal - aTile
-                            label(("You (Base):  ATK %d"):format(aBase),    hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
-                            label(("Tile bonus:  %+d ATK"):format(aTile),   hoverX+8, yy, 5, (aTile>=0 and COL_PLUS or COL_MINUS)); yy = yy + MF_LINE
-                            label(("Final:       ATK %d"):format(aFinal),   hoverX+8, yy, 5, COL_ATK); yy = yy + MF_LINE
+                            label(("ATK %d"):format(aFinal),   hoverX+8, yy, 5, COL_ATK); yy = yy + MF_LINE
 
                             if pv.mode == "vsLEADER" then
                                 local dmg = (pv.leaderDamage and pv.leaderDamage.amount) or aFinal
-                                label(("→ Leader Damage: %d"):format(dmg), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
+                                label(("- %d"):format(dmg), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
                             else
                                 -- Defender stat kind depends on whether we’re hitting ATK or DEF
                                 local tag  = (pv.against == "ATK") and "ATK" or "DEF"
                                 local dFin = (pv.against == "ATK") and (pv.dATK or 0) or (pv.dDEF or 0)
                                 local dTile= pv.dBonus or 0
                                 local dBase= dFin - dTile
-
-                                label(("Enemy (Base): %s %d"):format(tag, dBase),      hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
-                                label(("Tile bonus:   %+d %s"):format(dTile, tag),     hoverX+8, yy, 5, (dTile>=0 and COL_PLUS or COL_MINUS)); yy = yy + MF_LINE
-                                label(("Final:        %s %d"):format(tag, dFin),       hoverX+8, yy, 5, (tag=="ATK" and COL_ATK or COL_DEF)); yy = yy + MF_LINE
+                                label(("%s %d"):format(tag, dFin),       hoverX+8, yy, 5, (tag=="ATK" and COL_ATK or COL_DEF)); yy = yy + MF_LINE
 
                                 -- Outcome summary (same as Step A)
                                 local diff = pv.diff or 0
                                 local outcome
-                                if     diff > 0 and pv.against == "ATK" then outcome = "Win (enemy destroyed, LP -" .. diff .. ")"
-                                elseif diff > 0 and pv.against == "DEF" then outcome = "Break Defense (enemy destroyed)"
-                                elseif diff == 0 and pv.against == "ATK" then outcome = "Trade (both destroyed)"
-                                elseif diff == 0 and pv.against == "DEF" then outcome = "Stalemate (no damage)"
+                                if     diff > 0 and pv.against == "ATK" then outcome = "Win (-" .. diff ..")"
+                                elseif diff > 0 and pv.against == "DEF" then outcome = "Win"
+                                elseif diff == 0 and pv.against == "ATK" then outcome = "Trade"
+                                elseif diff == 0 and pv.against == "DEF" then outcome = "Stalemate"
                                 else
                                     if pv.against == "ATK" then
-                                        outcome = "Lose (you destroyed, no LP swing)"
+                                        outcome = "Lose (-".. math.abs(diff) ..")"
                                     else
-                                        outcome = "Bounce (you lose " .. math.abs(diff) .. " LP)"
+                                        outcome = "Bounce (-" .. math.abs(diff) ..")"
                                     end
                                 end
                                 label(("Result: %s"):format(outcome), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
@@ -1528,32 +1601,58 @@ end
                 shown = true
             end
         end
+    end
 
-        -- 3) Hand-only
-        if (not shown) and focus == "hand" and selectedHandIndex ~= nil then
-            local cardId = (s.hands[1] or {})[selectedHandIndex]
-            if cardId then
-                local def = cardGameFortune.db[cardId]
-                yy = drawCardInfo(def, hoverX, yy, HOVER_W, nil, summonPos, function(y)
-                    label("PLACE AS: "..((summonPos=="defense") and "DEFENSE" or "ATTACK"),
-                        hoverX+8, y, 5, COL_LABEL)
-                    return y + MF_LINE
-                end)
-                shown = true
+
+            -- footer counters
+            label("Deck:"..tostring(s.deckCounts[1]).."  Hand:"..tostring(#s.hands[1]).."  Energy:"..tostring(s.energy[1] or 0), handX, handY + CARD_H + 16)
+
+        -- =========================
+        -- Graveyard modal (simple)
+        -- =========================
+    if UI.modal == "grave" then
+            local s = cardGameFortune.peek()
+            local g1 = (s and s.grave and s.grave[1]) or {}
+            local g2 = (s and s.grave and s.grave[2]) or {}
+
+            -- darken screen
+            Graphics.drawBox{ x=0,y=0,width=SCREEN_W,height=SCREEN_H, color=Color(0,0,0,0.55), priority=9.8 }
+
+            local W, H = 520, 360
+            local X, Y = math.floor((SCREEN_W-W)/2), math.floor((SCREEN_H-H)/2)
+            Graphics.drawBox{ x=X, y=Y, width=W, height=H, color=Color(0,0,0,0.85), priority=9.9 }
+            Graphics.drawBox{ x=X, y=Y, width=W, height=H, color=Color.white..0.06, priority=9.91 }
+
+            label("Graveyard", X+12, Y+10, 9.92, {1,1,1,1})
+
+            local colW = math.floor((W-24)/2)
+            local function drawCol(list, x0)
+                local y0 = Y + 40
+                local maxRows = 12
+                local start = math.max(1, #list - maxRows + 1)
+                for i=start,#list do
+                    local e = list[i]
+                    local def = e and e.cardId and cardGameFortune.db[e.cardId]
+                    local name = def and def.name or ("ID "..tostring(e and e.cardId or "?"))
+                    local why  = e and e.reason or "KO"
+                    label(name, x0+8, y0, 9.93, {1,1,1,1})
+                    label(why,  x0+colW-8, y0, 9.93, {1,1,1,0.75}, "right")
+                    y0 = y0 + 24
+                end
             end
-        end
+
+            -- P1 left / P2 right
+            drawCol(g1, X+6)
+            drawCol(g2, X+12+colW)
+
+            -- Close hint
+            label("Spin Jump to exit", X+W-320, Y+H-24, 9.93, {1,1,1,0.8})
+
+            -- simple close 
+            if player.rawKeys.altJump == KEYS_PRESSED then
+                UI.modal = nil
+            end
     end
-
-    -- default hint if nothing shown (either because not s, or no content)
-    if not shown then
-        label(((focus=="hand") and "(select a card in your hand)" or "(move the cursor over a unit)"),
-            hoverX+8, hoverY+30, 5, COL_LABEL)
-    end
-
-
-    -- footer counters
-    label("Deck:"..tostring(s.deckCounts[1]).."  Hand:"..tostring(#s.hands[1]), handX + 300, handY + CARD_H + 16)
-    label("Energy:"..tostring(s.energy[1] or 0), handX + 576, handY + CARD_H + 16)
 end
 
 
