@@ -7383,7 +7383,6 @@ ID:554;X:-139964;Y:-140156;D:-1;
 ID:800;X:-139484;Y:-141224;D:1;LR:"minigame";XTRA:"{\n    \"aamplitude\"\: 150\,\n    \"algorithm\"\: 0\n}\n";
 ID:800;X:-138940;Y:-141224;D:-1;LR:"minigame";XTRA:"{\n    \"aamplitude\"\: 150\,\n    \"algorithm\"\: 0\n}\n";
 ID:600;X:-198048;Y:-201504;D:1;LR:"dkbarrel3";XTRA:"{\n    \"interval\"\: 180\,\n    \"power\"\: 15\,\n    \"rotSpeed\"\: 2\,\n    \"startAngle\"\: 90\n}\n";
-ID:956;X:-199616;Y:-200448;D:-1;XTRA:"{\n    \"activationMode\"\: 0\,\n    \"easing\"\: {\n        \"func\"\: 1\n    }\,\n    \"movement\"\: {\n        \"distanceX\"\: 25\n    }\,\n    \"timing\"\: {\n        \"movementDuration\"\: 50\n    }\n}\n";
 NPC_END
 DOORS
 IX:-195296;IY:-200768;OX:-179616;OY:-180448;DT:1;ID:1;OD:1;

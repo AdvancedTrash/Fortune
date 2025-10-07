@@ -1,0 +1,115 @@
+{
+  "style": "groupbox",
+  "title": "Background Area Settings",
+  "layout": [
+	{
+		"control": "spinbox",
+		"name": "id",
+		"title": "Background Area ID",
+		"type": "int",
+		"tooltip": "the ID of the background area. Each background area should have a unique ID! Use this ID for the background positioner to draw this background area.",
+		"value-default": 0,
+		"value-min": 0,
+		"value-max": 1000,
+		"single-step": 1
+	},
+	{
+		"control": "description",
+		"text": ""
+	},
+	{
+		"control": "spinbox",
+		"name": "scale",
+		"title": "Scale",
+		"type": "double",
+		"decimals":2,
+		"tooltip": "the scale the background area is drawn at.",
+		"value-default": 1,
+		"value-min": 0.1,
+		"value-max": 2,
+		"single-step": 0.1
+	},
+	{
+		"control": "spinbox",
+		"name": "rotation",
+		"title": "Rotation",
+		"type": "int",
+		"tooltip": "by how many degrees the area is rotated when drawn.",
+		"value-default": 0,
+		"value-min": 0,
+		"value-max": 360,
+		"single-step": 5
+	},
+	{
+		"control": "spinbox",
+		"name": "drawPriority",
+		"title": "Priority",
+		"type": "int",
+		"tooltip": "at which render priority the area is drawn.",
+		"value-default": -95,
+		"value-min": -99,
+		"value-max": 0,
+		"single-step": 5
+	},
+	{
+		"control": "color",
+		"name": "color",
+		"title": "Backdrop Colour",
+		"tooltip": "The colour of the backdrop. The farther back the section is (based on scale), the more it will be tinted in this colour. The lower the alpha value, the weaker the effect is",
+		"value-default": "#ffffffff",
+		"alpha-channel": true,
+		"placeholder": "pick Colour"
+		
+	},
+	{
+		"control": "description",
+		"text": ""
+	},
+	{
+		"control": "spinbox",
+		"name": "leftMargin",
+		"title": "Left Edge Margin",
+		"type": "int",
+		"tooltip": "how many pixels the camera can reach out over the left edge of the area when inside. Not affected by scale.",
+		"value-default": 120,
+		"value-min": -1000,
+		"value-max": 1000,
+		"single-step": 32
+	},
+	{
+		"control": "spinbox",
+		"name": "rightMargin",
+		"title": "Right Edge Margin",
+		"type": "int",
+		"tooltip": "how many pixels the camera can reach out over the right edge of the area when inside. Not affected by scale.",
+		"value-default": 120,
+		"value-min": -1000,
+		"value-max": 1000,
+		"single-step": 32
+	},
+	{
+		"control": "spinbox",
+		"name": "topMargin",
+		"title": "Top Edge Margin",
+		"type": "int",
+		"tooltip": "how many pixels the camera can reach out over the top edge of the area when inside. Not affected by scale.",
+		"value-default": 120,
+		"value-min": -1000,
+		"value-max": 1000,
+		"single-step": 32
+	},
+	{
+		"control": "spinbox",
+		"name": "bottomMargin",
+		"title": "Bottom Edge Margin",
+		"type": "int",
+		"tooltip": "how many pixels the camera can reach out over the bottom edge of the area when inside. Not affected by scale.",
+		"value-default": 0,
+		"value-min": -1000,
+		"value-max": 1000,
+		"single-step": 32
+	}
+	]
+}
+
+

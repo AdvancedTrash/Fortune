@@ -1,0 +1,8 @@
+[first]
+import=AI_SINGLE
+framespeed=4
+frames=4
+xAlign=MID
+yAlign=MID
+xScale = 1.5
+yScale = 1.5

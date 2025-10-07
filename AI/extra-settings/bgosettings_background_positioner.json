@@ -1,0 +1,27 @@
+{
+  "style": "groupbox",
+  "title": "Background Positioner Settings",
+  "layout": [
+	{
+		"control": "spinbox",
+		"name": "id",
+		"title": "Background Area ID",
+		"type": "int",
+		"tooltip": "The ID of the background area that is drawn here.",
+		"value-default": 0,
+		"value-min": 0,
+		"value-max": 1000,
+		"single-step": 1
+	},
+	{
+		"control": "comboBox",
+		"name": "anchor",
+		"title" : "Anchor Position",
+		"tooltip": "How the background area will be orientated relative to the positioner. 'Bottom Center' for instance means that the bgo is placed on the bottom center of where the area is meant to show up.",
+		"elements": ["Center","Top Center","Bottom Center","Left Center", "Right Center", "Top Left", "Bottom Left", "Top Right", "Bottom Left"],
+		"value-default": "Center"
+	}
+	]
+}
+
+

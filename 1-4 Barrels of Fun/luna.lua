@@ -13,6 +13,7 @@ local timerChallengeOff = timerChallengeOff or true
 local luigiChallengeOff = luigiChallengeOff or true
 local bossChallengeOff = luigiChallengeOff or true
 local slm = require("simpleLayerMovement")
+local layerControllers = require("layerControllers")
 
 --DK Barrels
 slm.addLayer{name = "dkbarrel1",speed = 132,verticalMovement = slm.MOVEMENT_COSINE,verticalSpeed = 112,verticalDistance = 1.0}

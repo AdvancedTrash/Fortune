@@ -1,9 +1,34 @@
 
 local cardGameFortune = { db = {} }
 
--- ───────────────────────────────────────────────────────────
--- CARD REGISTRATION (yours, unchanged)
--- ───────────────────────────────────────────────────────────
+-- === Duel: Challenger registry ===========================================
+cardGameFortune.challengers = cardGameFortune.challengers or {
+  koopa_card_man = { name = "Koopa Card Man", deckId = 1 },
+  -- add more challengers here…
+}
+
+-- Begin a duel by challenger key
+function cardGameFortune.beginNPCBattle(challengerKey)
+  local entry = cardGameFortune.challengers[challengerKey]
+  if not entry then return end
+
+  -- stash for post-match rewards etc.
+  STATE = STATE or {}
+  STATE.npcDeckID   = entry.deckId
+  STATE.opponentKey = challengerKey
+
+  -- fresh match using that deck
+  cardGameFortune.newMatch()    -- this already places leaders / terrain
+  if UI then
+    UI.mode = "hand"            -- start in hand focus
+    UI.action = UI.action or {}
+    UI.action.focused = false
+  end
+end
+
+
+
+-- CARD REGISTRATION
 function cardGameFortune.register(card)
   assert(card.id, "card.id required")
   assert(not cardGameFortune.db[card.id], ("duplicate card id: %s"):format(card.id))
@@ -18,6 +43,8 @@ function cardGameFortune.register(card)
     movement    = card.movement or 0,
     movementtype= card.movementtype or "normal",
     atktype     = card.atktype or "melee",
+    meleeReach  = card.meleeReach  or 1, --Melee
+    attackrange = card.attackrange or 1, --Ranged
     type        = card.type or "normal",
     subtype1    = card.subtype1 or "normal",
     subtype2    = card.subtype2 or "normal",
@@ -101,6 +128,8 @@ local function canEnter(def, terr)
   return true
 end
 
+cardGameFortune.canEnter = canEnter
+
 -- +2 terrain bonus if subtype2 equals tile terrain (case-insensitive friendly)
 local function terrainBonus(def, terr)
   if not def then return 0 end
@@ -180,8 +209,8 @@ local TERRAIN_LIST = {
     "Underground","Underwater","Sky","Ghost House","Castle","Volcano",
 }
 local TERRAIN_WEIGHT = {
-    Overworld=14, Forest=12, Mountain=4, Desert=12, Snow=12,
-    Underground=12, Underwater=12, Sky=4, GhostHouse=8, ["Ghost House"]=5, Castle=8, Volcano=4,
+    Overworld=10, Forest=10, Mountain=6, Desert=10, Snow=10,
+    Underground=10, Underwater=10, Sky=6, GhostHouse=9, ["Ghost House"]=5, Castle=9, Volcano=6,
 }
 
 -- Helper: bounds
@@ -292,25 +321,189 @@ local function T_generate(seed, rows, cols, opts)
     return g
 end
 
--- Keep a neutral ring around each leader so you can always act on turn 1
-local function T_neutralizeLeaderRings(g, ringTerr, radius)
-    ringTerr = ringTerr or "Overworld"
-    radius = radius or 1
-    if not (STATE and STATE.leaderPos) then return end
-    for owner=1,2 do
-        local p = STATE.leaderPos[owner]
-        if p then
-            for dr=-radius,radius do
-                for dc=-radius,radius do
-                    local c, r = p.c + dc, p.r + dr
-                    if T_in(STATE, c, r) then
-                        g[r][c] = ringTerr
-                    end
-                end
-            end
+-- Passability + corridor tools
+local IMPASSABLE = { Sky=true, Volcano=true, Mountain=true }
+
+local function isPassableTerr(t) return not IMPASSABLE[t] end
+
+-- random passable terrain, biased to match neighbors so it blends in
+local PASSABLE_SET = {
+  Overworld=true, Forest=true, Desert=true, Snow=true,
+  Underground=true, Underwater=true, ["Ghost House"]=true, Castle=true
+}
+local PASSABLE_LIST = {}
+for name,_ in pairs(PASSABLE_SET) do PASSABLE_LIST[#PASSABLE_LIST+1] = name end
+
+local function randomPassable() return PASSABLE_LIST[math.random(#PASSABLE_LIST)] end
+local function neighborOrRandomPassable(g, r, c)
+  local pick = {}
+  local dirs = {{1,0},{-1,0},{0,1},{0,-1}}
+  for i=1,4 do
+    local rr,cc = r+dirs[i][2], c+dirs[i][1]
+    local t = g[rr] and g[rr][cc]
+    if t and isPassableTerr(t) and PASSABLE_SET[t] then pick[#pick+1] = t end
+  end
+  if #pick>0 then return pick[math.random(#pick)] end
+  return randomPassable()
+end
+
+-- ── Mirror helpers
+local function mirrorC(cols, c)         -- horizontal mirror (0-based cols)
+    return (cols - 1) - c
+end
+
+local function isImpassableTerr(t)
+    return (IMPASSABLE and IMPASSABLE[t]) == true
+end
+
+-- Carve this cell passable and mirror the carve if the opposite side is impassable
+local function carvePassableMirrored(g, cols, r, c)
+    local to = neighborOrRandomPassable(g, r, c)
+    g[r][c] = to
+
+    local mc = mirrorC(cols, c)
+    if mc ~= c then
+        local mt = g[r] and g[r][mc]
+        if mt and isImpassableTerr(mt) then
+            g[r][mc] = to
         end
     end
 end
+
+-- BFS reachability on passable tiles
+local function pathExists(g, cols, rows, c0,r0, c1,r1)
+  local seen = {}
+  local function key(c,r) return r*10000 + c end
+  local q = {{c=c0,r=r0}}; seen[key(c0,r0)] = true
+  local head = 1
+  local dirs = {{1,0},{-1,0},{0,1},{0,-1}}
+  while q[head] do
+    local cur = q[head]; head = head + 1
+    if cur.c==c1 and cur.r==r1 then return true end
+    for i=1,4 do
+      local cc,rr = cur.c+dirs[i][1], cur.r+dirs[i][2]
+      if cc>=0 and cc<cols and rr>=0 and rr<rows then
+        local t = g[rr] and g[rr][cc]
+        if t and isPassableTerr(t) then
+          local k = key(cc,rr)
+          if not seen[k] then
+            seen[k] = true; q[#q+1] = {c=cc,r=rr}
+          end
+        end
+      end
+    end
+  end
+  return false
+end
+
+-- A* that returns a list of cells; we’ll only convert IMPASSABLE cells on that path
+local function aStarPath(g, cols, rows, c0,r0, c1,r1)
+  local function h(c,r) return math.abs(c-c1) + math.abs(r-r1) end
+  local function key(c,r) return r*10000 + c end
+  local open, gCost, fCost, came = {}, {}, {}, {}
+  local function push(c,r)
+    local k = key(c,r); fCost[k] = (gCost[k] or 0) + h(c,r); open[#open+1] = {c=c,r=r,k=k}
+  end
+  gCost[key(c0,r0)] = 0; push(c0,r0)
+  local dirs = {{1,0},{-1,0},{0,1},{0,-1}}
+
+  while #open>0 do
+    table.sort(open, function(a,b) return fCost[a.k] < fCost[b.k] end)
+    local cur = table.remove(open,1)
+    if cur.c==c1 and cur.r==r1 then
+      local path, k = {}, cur.k
+      while k do
+        local r = math.floor(k/10000); local c = k - r*10000
+        path[#path+1] = {c=c,r=r}
+        k = came[k]
+      end
+      return path
+    end
+    for i=1,4 do
+      local cc,rr = cur.c+dirs[i][1], cur.r+dirs[i][2]
+      if cc>=0 and cc<cols and rr>=0 and rr<rows then
+        local t = g[rr] and g[rr][cc]
+        if t then
+          local step = isPassableTerr(t) and 1 or 6  -- prefer passable, allow carving if needed
+          local nk   = key(cc,rr)
+          local ng   = (gCost[cur.k] or 1e9) + step
+          if ng < (gCost[nk] or 1e9) then
+            gCost[nk] = ng; came[nk] = cur.k; push(cc,rr)
+          end
+        end
+      end
+    end
+  end
+  return nil
+end
+
+-- Only fix impassables in the 1-tile summon ring; don't repaint the whole ring
+local function softenLeaderRing(g, cols, rows, p)
+  for dr=-1,1 do
+    for dc=-1,1 do
+      local c, r = p.c+dc, p.r+dr
+      if c>=0 and c<cols and r>=0 and r<rows then
+        local t = g[r][c]
+        if t and not isPassableTerr(t) then
+          g[r][c] = neighborOrRandomPassable(g, r, c)
+        end
+      end
+    end
+  end
+end
+
+-- Puncture any fully-impassable rows with 1–2 holes; align holes across consecutive rows
+local function punctureImpassableRows(g, cols, rows)
+  local lastHoleCol = nil
+  for r=0,rows-1 do
+    local allBlock = true
+    for c=0,cols-1 do
+      local t = g[r][c]; if t and isPassableTerr(t) then allBlock=false; break end
+    end
+    if allBlock then
+      local hole = lastHoleCol or math.random(0, cols-1)
+      -- drill 1–2 holes in this row; keep first aligned with last row to form a “road”
+      local holes = { hole }
+      if math.random() < 0.35 then
+        local extra = math.max(0, math.min(cols-1, hole + (math.random(0,1)==0 and -2 or 2)))
+        holes[#holes+1] = extra
+      end
+      for i=1,#holes do
+        local c = holes[i]
+        carvePassableMirrored(g, cols, r, c)
+      end
+      lastHoleCol = hole
+    else
+      lastHoleCol = nil
+    end
+  end
+end
+
+
+-- Keep a neutral ring around each leader so you can always act on turn 1
+local function T_neutralizeLeaderRings(g, ringTerr, radius)
+  ringTerr = ringTerr or "Overworld"
+  radius   = radius or 1
+  local s = STATE
+  if not (s and s.leaderPos and s.leaderPos[1] and s.leaderPos[2]) then return end
+  local normalDef = { subtype1 = "normal" }  -- “ground” unit
+
+  for owner=1,2 do
+    local p = s.leaderPos[owner]
+    for dr=-radius,radius do
+      for dc=-radius,radius do
+        local c, r = p.c + dc, p.r + dr
+        if c>=0 and r>=0 and c<s.cols and r<s.rows then
+          local terr = g[r][c]
+          if not cardGameFortune.canEnter(normalDef, terr) then
+            g[r][c] = ringTerr
+          end
+        end
+      end
+    end
+  end
+end
+
 
 -- Safe millisecond timestamp for seeding (works with or without lunatime)
 local function nowMs()
@@ -325,6 +518,215 @@ local function nowMs()
     return os.time()*1000
 end
 
+-- Should help terrain generation not be impossible after checking the below functions
+local function terrWalkableForGround(terr)
+  return not (terr == "Mountain" or terr == "Sky" or terr == "Volcano")
+end
+
+local function bfsReachable(s, c0,r0, c1,r1)
+  local Q, seen = {{c=c0,r=r0}}, {}
+  local function key(c,r) return r.."|"..c end
+  seen[key(c0,r0)] = true
+  while #Q>0 do
+    local t = table.remove(Q,1)
+    if t.c==c1 and t.r==r1 then return true end
+    for _,d in ipairs{{1,0},{-1,0},{0,1},{0,-1}} do
+      local cc,rr = t.c+d[1], t.r+d[2]
+      if cc>=1 and cc<=s.cols and rr>=1 and rr<=s.rows and not seen[key(cc,rr)] then
+        local terr = s.terrain[rr][cc]
+        if terrWalkableForGround(terr) then
+          seen[key(cc,rr)] = true
+          Q[#Q+1] = {c=cc,r=rr}
+        end
+      end
+    end
+  end
+  return false
+end
+
+-- Tiles the leaders cannot path through.
+local IMPASSABLE_TERRAIN = {
+    Sky=true, Volcano=true, Mountain=true, ["Ghost House"]=false, -- tweak as you like
+}
+
+-- Return terrain name for (c,r), or nil
+local function terrNameAt(s, c, r)
+    if not (s and s.terrain and s.terrain[r] and s.terrain[r][c]) then return nil end
+    local t = s.terrain[r][c]
+    -- terrain already stored as name strings in your generator; if you ever switch to ids,
+    -- translate here (e.g., s.terrainNames[id])
+    return t
+end
+
+-- Passability check (treat nil as passable so we don't crash during early boot)
+local function isPassable(s, c, r)
+    if not (s and s.cols and s.rows) then return false end
+    if c < 1 or r < 1 or c > s.cols or r > s.rows then return false end
+    local name = terrNameAt(s, c, r)
+    if not name then return true end
+    return not IMPASSABLE_TERRAIN[name]
+end
+
+-- Simple BFS to test if target is reachable via passable tiles
+local function pathExists(s, c0, r0, c1, r1)
+    if not (isPassable(s,c0,r0) and isPassable(s,c1,r1)) then return false end
+    local qh, qt = 1, 1
+    local Qc, Qr = {c0}, {r0}
+    local seen = {}
+    local key = function(c,r) return r * 10000 + c end
+    seen[key(c0,r0)] = true
+    local deltas = {{1,0},{-1,0},{0,1},{0,-1}}
+
+    while qh <= qt do
+        local c, r = Qc[qh], Qr[qh]; qh = qh + 1
+        if c == c1 and r == r1 then return true end
+        for i=1,4 do
+            local nc, nr = c + deltas[i][1], r + deltas[i][2]
+            local k = key(nc,nr)
+            if not seen[k] and isPassable(s,nc,nr) then
+                qt = qt + 1
+                Qc[qt], Qr[qt] = nc, nr
+                seen[k] = true
+            end
+        end
+    end
+    return false
+end
+
+-- Carve a straight(-ish) corridor by setting tiles to "Overworld"
+local function carveCorridor(s, fromC, fromR, toC, toR, maxSteps)
+    if not (s and s.terrain) then return end
+    local name = "Overworld"
+    local dc = (toC > fromC) and 1 or ((toC < fromC) and -1 or 0)
+    local dr = (toR > fromR) and 1 or ((toR < fromR) and -1 or 0)
+    local c, r = fromC, fromR
+    maxSteps = maxSteps or (s.cols + s.rows)
+
+    -- carve outward from the start toward the target
+    for _=1,maxSteps do
+        if s.terrain[r] and s.terrain[r][c] then
+            s.terrain[r][c] = name
+            local mc = mirrorC(s.cols, c)
+            if mc ~= c then
+                local mt = s.terrain[r][mc]
+                if mt and isImpassableTerr(mt) then
+                    s.terrain[r][mc] = name
+                end
+            end
+        end
+        if c == toC and r == toR then break end
+        -- greedy step (Manhattan)
+        if math.abs(toC - c) > math.abs(toR - r) then
+            c = c + dc
+        else
+            r = r + dr
+        end
+        -- clamp (paranoia)
+        if c < 1 then c = 1 elseif c > s.cols then c = s.cols end
+        if r < 1 then r = 1 elseif r > s.rows then r = s.rows end
+    end
+end
+
+-- Public: make map valid with minimal changes (no guaranteed straight lane)
+function cardGameFortune.ensureLeaderConnectivity()
+  local s = STATE
+  if not (s and s.terrain and s.leaderPos and s.leaderPos[1] and s.leaderPos[2]) then return true end
+
+  local g    = s.terrain
+  local rows = s.rows or (#g)
+  local cols = s.cols or (#g[0] or #g[1])
+
+  local p1 = s.leaderPos[1]
+  local p2 = s.leaderPos[2]
+  if not (p1 and p2) then return true end
+
+  -- 1) soften just the summon rings
+  softenLeaderRing(g, cols, rows, p1)
+  softenLeaderRing(g, cols, rows, p2)
+
+  -- 2) puncture any full impassable rows
+  punctureImpassableRows(g, cols, rows)
+
+  -- 3) final check; if still blocked, carve minimal A* path by changing only impassables along that path
+  if not pathExists(g, cols, rows, p1.c, p1.r, p2.c, p2.r) then
+    local path = aStarPath(g, cols, rows, p1.c, p1.r, p2.c, p2.r)
+    if path then
+      for i=#path,1,-1 do
+        local n = path[i]
+        local t = g[n.r][n.c]
+        if t and not isPassableTerr(t) then
+            carvePassableMirrored(g, cols, n.r, n.c)
+        end
+      end
+    end
+  end
+
+  return true
+end
+
+function cardGameFortune.uiInvokeAction(id)
+    if UI and UI.modal then return end
+
+    if     id == "hand"    then cardGameFortune.uiFocusHand()
+    elseif id == "board"   then cardGameFortune.uiFocusBoard()
+    elseif id == "guide"   then cardGameFortune.uiOpenGuide()
+    elseif id == "grave"   then cardGameFortune.uiOpenGrave()
+    elseif id == "end"     then cardGameFortune.endTurn()
+    elseif id == "restart" then cardGameFortune.requestRestartMatch()
+    elseif id == "concede" then cardGameFortune.requestConcede()
+    end
+
+    -- leave bar focus after an action except modal opens (grave/guide)
+    if not (id=="grave" or id=="guide") then
+        if UI then UI.action.focused = false end
+    end
+end
+
+function cardGameFortune.uiFocusHand()
+  -- Clear board cursors and ensure hand selection is active
+  if UI then
+    UI.mode = "hand"
+    UI.selectedSummon = nil
+    UI.selectedBoard  = nil
+  end
+end
+
+function cardGameFortune.uiFocusBoard()
+  if UI then
+    UI.mode = "board"
+    UI.selectedHand   = nil
+  end
+end
+
+function cardGameFortune.uiOpenGrave()
+  if UI then
+    UI.modal = "grave"
+    UI.graveSide = UI.graveSide or 1
+  end
+end
+
+function cardGameFortune.uiOpenGuide()
+  if UI then
+    UI.modal = "guide"
+  end
+end
+
+function cardGameFortune.requestRestartMatch()
+  if UI then UI.modal = "confirm_restart" end
+end
+
+function cardGameFortune.requestConcede()
+  if UI then UI.modal = "confirm_concede" end
+end
+
+function cardGameFortune.beginNPCBattle(npcDeckID)
+  STATE.npcDeckID = npcDeckID
+  cardGameFortune.newMatch()
+    if UI then
+        UI.mode = "hand"                 
+        UI.action.focused = false
+    end
+end
 
 -- Public API
 function cardGameFortune.regenTerrain(opts)
@@ -332,7 +734,8 @@ function cardGameFortune.regenTerrain(opts)
     s.terrainSeed = s.terrainSeed or nowMs()
     s.terrain = T_generate(s.terrainSeed, s.rows, s.cols, opts or {mirror="vertical"})
     -- make sure leaders exist before neutralizing rings
-    T_neutralizeLeaderRings(s.terrain, "Overworld", 1)
+    T_neutralizeLeaderRings(s.terrain, ringTerr, 1)
+    cardGameFortune.ensureLeaderConnectivity(s.terrain)
 end
 
 -- terrainAt(c,r) convenience (keeps your existing calls working)
@@ -340,7 +743,6 @@ function cardGameFortune.terrainAt(c,r)
     local s = STATE
     return (s and s.terrain and s.terrain[r] and s.terrain[r][c]) or "Overworld"
 end
-
 
 -- returns effective ATK/DEF on tile, tile terrain, and the signed delta (+2/-2/0)
 function cardGameFortune.getEffectiveStats(def, c, r)
@@ -437,6 +839,8 @@ local function inBounds(c,r)
     return STATE and c>=0 and r>=0 and c<STATE.cols and r<STATE.rows
 end
 
+cardGameFortune.inBounds = inBounds
+
 local function isEmpty(c,r)
     return inBounds(c,r) and (not STATE.board[r][c])
 end
@@ -449,11 +853,16 @@ local function terrainAt(c,r)
     return "Overworld"
 end
 
--- entry rules are soft for now; expand later
+local function terrainBlocksLOS(terr)
+    return terr == "Mountain" or terr == "Volcano"
+end
+
+-- tile entry rules
 local function canEnterTile(def, c, r)
-    -- Everyone can enter every tile for now (we’ll tighten when terrain rules harden)
-    -- You already have subtype1 = normal|flying|ghost|lava if you want to branch.
-    return inBounds(c,r) and (not STATE.board[r][c])
+    if not inBounds(c,r) then return false end
+    if STATE.board[r][c] then return false end
+    local terr = terrainAt(c,r)
+    return cardGameFortune.canEnter(def, terr)
 end
 
 local function neighbors8(c,r)
@@ -537,7 +946,7 @@ function cardGameFortune.legalMovesFrom(c,r)
 end
 
 -- ── Config ─────────────────────────────────────────────────────────────
-cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE = 8 
+cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE = 12 
 cardGameFortune.HAND_MAX = 5    -- cap visible hand to 5 cards
 
 local function easeSmooth(t) return t*t*(3 - 2*t) end
@@ -575,6 +984,10 @@ end
 local function rayFirstHit(c,r, dc,dr, owner)
   local x,y = c+dc, r+dr
   while inBounds(x,y) do
+    local terr = terrainAt(x,y)
+    if terrainBlocksLOS(terr) then
+        return nil,nil  -- LOS blocked before reaching a unit
+    end
     local u = STATE.board[y][x]
     if u then
       if u.owner ~= owner then return x,y end
@@ -585,32 +998,83 @@ local function rayFirstHit(c,r, dc,dr, owner)
   return nil,nil
 end
 
-function cardGameFortune.legalAttacksFrom(c,r)
-  local res = {}
-  local A = STATE.board[r][c]; if not A or A.isLeader or A.hasAttacked then return res end
-  local def = cardGameFortune.db[A.cardId]
-  local atktype = def and def.atktype or "normal"
+-- Manhattan helper
+local function manhattan(c1,r1,c2,r2) return math.abs(c1-c2)+math.abs(r1-r2) end
 
-  if atktype == "normal" then
-    -- adjacent 8-way
-    for _,n in ipairs({{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}}) do
-      local nc, nr = c+n[1], r+n[2]
-      if inBounds(nc,nr) then
-        local D = STATE.board[nr][nc]
-        if D and D.owner ~= A.owner then
-          res[nr] = res[nr] or {}; res[nr][nc] = true
-        end
-      end
-    end
-  else
-    -- ray cast in 4 directions (volley/ranged); stop at first unit
-    for _,d in ipairs({{1,0},{-1,0},{0,1},{0,-1}}) do
-      local nc,nr = rayFirstHit(c,r, d[1],d[2], A.owner)
-      if nc then res[nr] = res[nr] or {}; res[nr][nc] = true end
-    end
-  end
-  return res
+local function manhattan(c1,r1,c2,r2)
+    return math.abs(c1-c2) + math.abs(r1-r2)
 end
+
+function cardGameFortune.legalAttacksFrom(c,r)
+    local res = {}
+    local A = STATE.board[r][c]; if not A or A.isLeader or A.hasAttacked then return res end
+
+    local def     = cardGameFortune.db[A.cardId]
+    local atktype = def and def.atktype or "normal"
+    local reach   = def and def.meleeReach or 1   -- NEW: “melee reach” (default 1)
+
+    if atktype == "normal" then
+        -- Adjacent 8-way (your original behavior)
+        for _,n in ipairs({{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}}) do
+            local nc, nr = c+n[1], r+n[2]
+            if inBounds(nc,nr) then
+                local D = STATE.board[nr][nc]
+                if D and D.owner ~= A.owner then
+                    res[nr] = res[nr] or {}; res[nr][nc] = true
+                end
+            end
+        end
+
+        -- Melee with reach: allow targets at Manhattan distance 2
+        -- only if we can step one ORTHOGONAL tile closer (that tile must be empty).
+        if reach >= 2 then
+            for rr = 0, STATE.rows-1 do
+                for cc = 0, STATE.cols-1 do
+                    local D = STATE.board[rr][cc]
+                    if D and D.owner ~= A.owner then
+                        local d = manhattan(c,r,cc,rr)
+                        if d == 2 then
+                            -- candidates for a one-step orthogonal “approach”
+                            local cand = {}
+                            local dc, dr = cc - c, rr - r
+                            if dc ~= 0 then table.insert(cand, {c + (dc>0 and 1 or -1), r}) end
+                            if dr ~= 0 then table.insert(cand, {c, r + (dr>0 and 1 or -1)}) end
+
+                            for _,st in ipairs(cand) do
+                                local sc, sr = st[1], st[2]
+                                if inBounds(sc,sr) and (STATE.board[sr][sc] == nil) then
+                                    res[rr] = res[rr] or {}; res[rr][cc] = true
+                                    break
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+            -- Ranged / volley: ray in 4 dirs up to attackrange, stop at first unit
+        else
+            local range = (def and def.attackrange) or math.huge
+            for _,d in ipairs({{1,0},{-1,0},{0,1},{0,-1}}) do
+                local cc, rr = c, r
+                for step = 1, range do
+                    cc = cc + d[1]; rr = rr + d[2]
+                    if not cardGameFortune.inBounds(cc, rr) then break end
+                    local V = STATE.board[rr][cc]
+                    if V then
+                        if V.owner ~= A.owner then
+                            res[rr] = res[rr] or {}; res[rr][cc] = true
+                        end
+                        break -- stop at first unit (ally or enemy)
+                    end
+                    -- keep going through empty cells
+                end
+            end
+        end
+    return res
+end
+
 
 -- Start a short summon effect on a unit table `u`
 function cardGameFortune.addSummonFX(u)
@@ -638,8 +1102,51 @@ function cardGameFortune.stepFX()
     end
 end
 
+local function _sign(x) return (x>0 and 1) or (x<0 and -1) or 0 end
 
-function cardGameFortune.moveUnit(c1,r1, c2,r2)
+-- set a single slide animation on this unit
+local function _setSlide(u, c1,r1, c2,r2, framesPerTile)
+    local base = (framesPerTile or cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE or 12)
+    u._anim = {
+        kind = "slide",
+        fromC = c1, fromR = r1,
+        toC   = c2, toR   = r2,
+        t     = 0,
+        dur   = math.max(1, base),  -- one-tile slide
+        ease  = easeSmooth,
+    }
+end
+
+-- Chain L-shaped slides: first along the dominant axis (or always X then Y)
+function cardGameFortune._animateOrthogonalSlides(u, c1,r1, c2,r2, framesPerTile)
+    local path = {}
+    local dc, dr = c2 - c1, r2 - r1
+    local horizFirst = math.abs(dc) >= math.abs(dr)  -- or set true to always go X then Y
+
+    local c, r = c1, r1
+    if horizFirst then
+        while c ~= c2 do c = c + _sign(dc); path[#path+1] = {c=c, r=r} end
+        while r ~= r2 do r = r + _sign(dr); path[#path+1] = {c=c, r=r} end
+    else
+        while r ~= r2 do r = r + _sign(dr); path[#path+1] = {c=c, r=r} end
+        while c ~= c2 do c = c + _sign(dc); path[#path+1] = {c=c, r=r} end
+    end
+
+    Routine.run(function()
+        local pc, pr = c1, r1
+        for i=1,#path do
+            local tc, tr = path[i].c, path[i].r
+            _setSlide(u, pc, pr, tc, tr, framesPerTile)
+            -- let the slide play for its duration; your renderer advances u._anim.t each frame
+            local frames = math.max(1, framesPerTile or cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE or 8)
+            for f=1,frames do Routine.waitFrames(1) end
+            pc, pr = tc, tr
+        end
+    end)
+end
+
+
+function cardGameFortune.moveUnit(c1,r1, c2,r2, opts)   -- <— add opts
     local s = STATE; local u = s.board[r1] and s.board[r1][c1]
     if not u then return false,"no unit" end
     if u.owner ~= s.whoseTurn then return false,"not your unit/turn" end
@@ -647,33 +1154,24 @@ function cardGameFortune.moveUnit(c1,r1, c2,r2)
     if s.board[r2] and s.board[r2][c2] then return false,"occupied" end
 
     local legal = u.isLeader and cardGameFortune.legalLeaderMovesFrom(c1,r1)
-                           or  cardGameFortune.legalMovesFrom(c1,r1)
+                               or  cardGameFortune.legalMovesFrom(c1,r1)
     if not (legal[r2] and legal[r2][c2]) then return false,"illegal dest" end
 
-    -- MOVE: update logic immediately
+    -- apply move
     s.board[r2][c2] = u
     s.board[r1][c1] = nil
 
     if not u.isLeader then u.pos = "attack" end
     u.hasMoved = true
-    u.hasAttacked = true
+
+    local keep = opts and opts.keepAttack
+    if not keep then u.hasAttacked = true end
 
     if u.isLeader and s.leaderPos and s.leaderPos[u.owner] then
         s.leaderPos[u.owner].c, s.leaderPos[u.owner].r = c2, r2
     end
 
-    -- ── NEW: attach a slide animation to this unit ─────────
-    local dist = math.abs(c2 - c1) + math.abs(r2 - r1)
-    local base = cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE
-    u._anim = {
-        kind  = "slide",
-        fromC = c1, fromR = r1,
-        toC   = c2, toR   = r2,
-        t     = 0,
-        dur   = math.max(1, base * math.max(1, dist)),
-        ease  = easeSmooth,
-    }
-    -- ───────────────────────────────────────────────────────
+    cardGameFortune._animateOrthogonalSlides(u, c1, r1, c2, r2, cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE)
 
     return true
 end
@@ -761,7 +1259,6 @@ function cardGameFortune.resolveBattle(ac,ar, dc,dr)
         s.board[ar][ac] = nil
     end
 
-
     if damagePlayer and damageAmt > 0 then
         s.leaderHP = s.leaderHP or {[1]=40,[2]=40}
         s.leaderHP[damagePlayer] = math.max(0, (s.leaderHP[damagePlayer] or 40) - damageAmt)
@@ -793,8 +1290,8 @@ function cardGameFortune.newMatch(seed)
   shuffle(d1, nextRand)
   shuffle(d2, nextRand)
   STATE.deck  = { d1, d2 }
-  STATE.grave = { [1] = {}, [2] = {} }
   STATE.hands = { {}, {} }
+  STATE.grave = { [1]={}, [2]={} }
 
   cardGameFortune.draw(1,5)
   cardGameFortune.draw(2,5)
@@ -810,6 +1307,8 @@ function cardGameFortune.newMatch(seed)
     STATE.board[STATE.leaderPos[2].r][STATE.leaderPos[2].c] = {
         owner=2, hp=STATE.leaderHP[2] or 40, pos="defense", isLeader=true
     }
+    
+    cardGameFortune.ensureLeaderConnectivity()
 
     cardGameFortune.regenTerrain()
 end
@@ -860,13 +1359,13 @@ function cardGameFortune.draw(player, n)
 end
 
 function cardGameFortune.pushToGrave(owner, cardId, reason, by)
-    STATE.grave = STATE.grave or { [1]={}, [2]={} } 
-    STATE.grave[owner] = STATE.grave[owner] or {} 
-    local g = STATE.grave[owner]
+    local s = STATE; if not s then return end
+    s.grave = s.grave or { [1]={}, [2]={} }
+    s.grave[1] = s.grave[1] or {}
+    s.grave[2] = s.grave[2] or {}
     if not cardId then return end
-    g[#g+1] = { cardId = cardId, turn = STATE.turn or 0, by = by, reason = reason or "KO" }
+    table.insert(s.grave[owner], {cardId=cardId, reason=reason or "KO", by=by, turn=s.turn or 0})
 end
-
 
 function cardGameFortune.lastGrave(owner)
   local g = STATE and STATE.grave and STATE.grave[owner]
@@ -1128,7 +1627,11 @@ function cardGameFortune.peek()
     hands      = { shallowCopy(STATE.hands[1]), shallowCopy(STATE.hands[2]) },
     deckCounts = { #STATE.deck[1], #STATE.deck[2] },
     discardCounts = { #STATE.discard[1], #STATE.discard[2] },
-    board      = STATE.board, -- ok to pass by ref for drawing (read-only by convention)
+    board      = STATE.board,
+    grave = {
+  shallowCopy( (STATE.grave and STATE.grave[1]) or {} ),
+  shallowCopy( (STATE.grave and STATE.grave[2]) or {} ),
+    },
   }
 end
 
@@ -1183,7 +1686,7 @@ local CARDS = {
         image="cardgame/chuckcard.png", icon="cardgame/chuckicon.png",
         description="Rams into foes with football tackles.",
         type="grappler", atk=6, def=5, movement=2,
-        movementtype="normal", atktype="normal",
+        movementtype="normal", meleeReach = 2, atktype="normal",
         subtype1="normal", subtype2="overworld",
         summoncost=3, deckcost=3
     },
@@ -1194,7 +1697,7 @@ local CARDS = {
         image="cardgame/hammerbrocard.png", icon="cardgame/hammerbroicon.png",
         description="Throws hammers from afar.",
         type="ranged", atk=7, def=4, movement=1,
-        movementtype="normal", atktype="ranged",
+        movementtype="normal", attackrange = 2, atktype="ranged", 
         subtype1="normal", subtype2="overworld",
         summoncost=4, deckcost=4
     },
@@ -1205,7 +1708,7 @@ local CARDS = {
         image="cardgame/magikoopacard.png", icon="cardgame/magikoopaicon.png",
         description="Casts unpredictable magic blasts.",
         type="magic", atk=9, def=5, movement=1,
-        movementtype="queen", atktype="ranged",
+        movementtype="queen", attackrange = 4, atktype="ranged",
         subtype1="normal", subtype2="castle",
         summoncost=5, deckcost=5
     },
@@ -1216,7 +1719,7 @@ local CARDS = {
         image="cardgame/billblastercard.png", icon="cardgame/billblastericon.png",
         description="Stationary cannon that fires Bullet Bills.",
         type="tower", atk=6, def=12, movement=0,
-        movementtype="normal", atktype="volley",
+        movementtype="normal", attackrange = 7, atktype="volley",
         subtype1="normal", subtype2="airship",
         summoncost=6, deckcost=6
     },
@@ -1316,9 +1819,6 @@ local function ai_buildThreatCount(vsOwner)
     end
     return T
 end
-
--- Manhattan helper
-local function manhattan(c1,r1,c2,r2) return math.abs(c1-c2)+math.abs(r1-r2) end
 
 -- If unit at (c,r) moved away, would any enemy gain LOS to our leader?
 local function ai_isPinnedBlockingLeader(u, c, r)
@@ -2676,7 +3176,7 @@ function cardGameFortune.aiBeginTurn()
                 table.insert(actions, {kind="fortify"})
             end
 
-            -- take up to 3 safest moves as candidates
+            -- take up to 5 safest moves as candidates
             local legal = cardGameFortune.legalMovesFrom(c,r)
             if legal then
                 local hereDanger = cardGameFortune.ai_expectedDamageAt(c, r, me, me.pos=="defense")
@@ -2688,7 +3188,7 @@ function cardGameFortune.aiBeginTurn()
                     end
                 end
                 table.sort(moves, function(a,b) return a.danger < b.danger end)
-                for i=1, math.min(3, #moves) do
+                for i=1, math.min(5, #moves) do
                     -- only consider moves that are not strictly worse than staying
                     if moves[i].danger + AI2.EPS <= hereDanger then
                         table.insert(actions, {kind="move", fromC=c, fromR=r, toC=moves[i].c, toR=moves[i].r})

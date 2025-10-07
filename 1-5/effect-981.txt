@@ -1,0 +1,13 @@
+[1]
+import=AI_ARC
+frames=1
+framespeed=8
+framestyle=1
+speedX=-4:4
+speedY=-3:-10
+gravity=0.5
+xAlign=MID
+yAlign=MID
+rotation=-15:15
+angle = -360:360
+variants=4

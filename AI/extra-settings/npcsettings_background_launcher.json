@@ -1,0 +1,17 @@
+{
+  "style": "groupbox",
+  "title": "Background Launcher Settings",
+  "layout": [
+	{
+		"control": "spinbox",
+		"name": "landingID",
+		"title": "Landing Point ID",
+		"type": "int",
+		"tooltip": "The ID of the landing point and respective launcher. A Background Launcher will launch the player to the landing point of the same ID.",
+		"value-default": 0,
+		"value-min": 0,
+		"value-max": 1000,
+		"single-step": 1
+	}
+	]
+}

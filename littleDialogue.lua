@@ -688,7 +688,7 @@ do
     end
 
     function textEventFuncs.speakerName(box,page,pos,args)
-        box._newSpeakerName = args[1] or ""
+        box._newSpeakerName = table.concat(args or {""}, " ")
     end
 
     table.insert(selfClosingTags,"speakerName")

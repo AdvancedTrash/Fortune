@@ -3,6 +3,19 @@ UI.pending = UI.pending or nil
 UI.modal     = UI.modal     or nil
 UI.graveSide = UI.graveSide or 1
 
+UI.action = {
+    idx = 1,   -- current selected action index
+    items = {
+        {id="hand",   label="Hand"},
+        {id="board",  label="Board"},
+        {id="guide",  label="Guide"},
+        {id="grave",  label="Grave"},
+        {id="end",    label="End Turn"},
+        {id="restart",label="Restart"},
+        {id="giveup", label="Give Up"},
+    }
+}
+
 local smwMap = require("smwMap")
 
 -- SMW Costumes
@@ -30,10 +43,15 @@ local minFont = textplus.loadFont("minFont.ini")
 local layerMover = require("layerMover")
 local layerControllers = require("layerControllers")
 local cardGameFortune = require("cardGameFortune")
-local BOARD_OPEN = false
+local backgroundAreas = require("backgroundAreas")
+
+--Card stuff--
+BOARD_OPEN = false
+local boardActive = boardActive or false
 local selectedHandIndex = nil
 local summonPos = "attack" 
-local focus = "hand"
+local focus = focus or "hand"
+local prevFocus = prevFocus or "hand" 
 local inputLocked = false
 local heldInputs  = {}              
 local lastInputs  = {} 
@@ -48,14 +66,9 @@ local END_TURN_PLAYER = 1
 local endTurnLatch      = false
 local endTurnCooldown   = 0
 local endTurnPrevTurn   = 1
+local inBounds = cardGameFortune.inBounds
 
-local function canHumanEndTurn(s)
-    if not s then return false end
-    if s.whoseTurn ~= 1 then return false end           -- only P1 ends P1's turn
-    if cardGameFortune.anyAnimating and cardGameFortune.anyAnimating() then return false end
-    if cardGameFortune.aiState and cardGameFortune.aiState.busy then return false end
-    return true
-end
+
 
 -- ===========================
 -- LEVEL RANK SETUP
@@ -97,8 +110,9 @@ function onPlayerHarm(p)
     player:kill()
 end
 
-local FREEZE_FRAMES = 42
+local FREEZE_FRAMES = 50
 local freezeTimer = 0
+local Freeze
 
 function onInitAPI()
     registerEvent(nil, "onTick")
@@ -114,15 +128,27 @@ local function isPowerup(id)
            or id == 185 or id == 183 or id == 34 or id == 169 or id == 277 or id == 273
 end
 
+-- your handler can safely use Freeze now
 function onPostNPCCollect(n, p)
     if not p or not n.isValid then return end
     if isPowerup(n.id) then
+        if freezeTimer <= 0 then
+            Freeze.push(false)
+        end
         freezeTimer = math.max(freezeTimer, FREEZE_FRAMES)
     end
 end
 
--- Freeze manager (stack-safe so multiple features can freeze at once)
-local Freeze = {count=0, prev=false, savedVel=nil}
+local function canHumanEndTurn(s)
+    if not s then return false end
+    if s.whoseTurn ~= 1 then return false end           -- only P1 ends P1's turn
+    if cardGameFortune.anyAnimating and cardGameFortune.anyAnimating() then return false end
+    if cardGameFortune.aiState and cardGameFortune.aiState.busy then return false end
+    return true
+end
+
+-- later, define the table and its methods
+Freeze = {count = 0, prev = false, savedVel = nil}
 
 function Freeze.push(saveVel)
     if Freeze.count == 0 then
@@ -138,13 +164,13 @@ function Freeze.push(saveVel)
 end
 
 function Freeze.pop()
-    if Freeze.count == 0 then return end
-    Freeze.count = Freeze.count - 1
-    if Freeze.count == 0 then
-        Defines.levelFreeze = Freeze.prev
-        if Freeze.savedVel then
-            player.speedX, player.speedY = Freeze.savedVel[1], Freeze.savedVel[2]
-            Freeze.savedVel = nil
+    if Freeze.count > 0 then
+        Freeze.count = Freeze.count - 1
+        if Freeze.count == 0 then
+            Defines.levelFreeze = Freeze.prev
+            if Freeze.savedVel then
+                player.speedX, player.speedY = unpack(Freeze.savedVel)
+            end
         end
     end
 end
@@ -157,19 +183,23 @@ local function startFreeze(frames)
     end
 end
 
-function onTick()
-    -- keep inputs locked only while board is open
-    if BOARD_OPEN then
-        -- do NOT touch speeds here; Freeze handles freeze
-        if inputLocked then
-            for k,_ in pairs(player.keys) do
-                lastInputs[k]  = lastInputs[k] or player.keys[k]
-                player.keys[k] = heldInputs[k] or false
-            end
-        end
-        return
-    end
+local VALID_KEY_FIELDS = {
+    left=true, right=true, up=true, down=true,
+    jump=true, altJump=true, run=true, altRun=true,
+    dropItem=true, pause=true
+}
 
+local function swallowPlatformKeys()
+    local k = player.keys
+    -- only clear fields that exist and are supported
+    for name,_ in pairs(VALID_KEY_FIELDS) do
+        if k[name] ~= nil then k[name] = false end
+    end
+end
+
+
+
+function onTick()
     -- drive the one-shot timer
     if freezeTimer > 0 then
         freezeTimer = freezeTimer - 1
@@ -181,14 +211,6 @@ function onTick()
     if endTurnCooldown > 0 then
         endTurnCooldown = endTurnCooldown - 1
         if endTurnCooldown == 0 then endTurnLatch = false end
-    end
-end
-
-function onTickEnd()
-    if inputLocked then
-        for k,_ in pairs(player.keys) do
-            if lastInputs[k] ~= nil then player.keys[k] = lastInputs[k] end
-        end
     end
 end
 
@@ -249,6 +271,7 @@ local function centerCursor()
     cursor.r = math.floor((rows-1)/2)
 end
 
+
 local function clampCursor()
     local cols, rows = gridSize()
     if cursor.c < 0 then cursor.c = 0 elseif cursor.c > cols-1 then cursor.c = cols-1 end
@@ -264,6 +287,43 @@ local function updateCursorFromArrows()
     if player.rawKeys.down  == KEYS_PRESSED or (player.rawKeys.down  == KEYS_DOWN and moveTimer == 0) then cursor.r = cursor.r + 1; moved = true end
     if moved then clampCursor(); moveTimer = MOVE_COOLDOWN end
 end
+
+local function enterHandIdle()
+    UI.pending = nil
+    selectedHandIndex = nil
+    selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+    focus = "hand"
+    centerCursor()
+end
+
+local function graveOpen(side)
+    UI.modal = {
+        kind   = "grave",
+        side   = side or (UI.graveSide or 1),  -- 1=P1, 2=P2 (active pane)
+        sel    = { [1]=1, [2]=1 },             -- selection index per side
+        scroll = { [1]=0, [2]=0 },             -- scroll row offset per side
+    }
+    UI.graveSide = UI.modal.side
+end
+
+local function graveClose()
+    UI.modal = nil
+    UI.graveSide = UI.graveSide or 1
+end
+
+-- Return {def, owner} of highlighted grave entry (for hover panel)
+local function graveHoverCard()
+    local m = UI.modal
+    if not (m and m.kind=="grave") then return nil end
+    local s = cardGameFortune.peek()
+    local side = m.side or 1
+    local g = s and s.grave and s.grave[side] or {}
+    local idx = m.sel[side] or 1
+    local e = g[idx]
+    if not e then return nil end
+    return cardGameFortune.db[e.cardId], side
+end
+
 
 local _tex = {}
 local tex
@@ -300,6 +360,26 @@ local function drawImageDim(path, x, y, w, h, alpha)
     gfx.drawImage(img, x, y, w, h)
     gfx.color(255,255,255,255) -- reset
 end
+
+local function drawActionBar()
+    local y = SCREEN_H - 32 -- bottom border height
+    local x = BORDER
+    local gap = 100
+    for i,item in ipairs(UI.action.items) do
+        local isHot  = (focus == "menu") and (i == UI.action.idx)
+        local color  = isHot and Color(1,1,0,1) or Color(1,1,1,0.6)
+        textplus.print{
+            text = item.label,
+            x = x + (i-1)*gap,
+            y = y,
+            font = minFont,
+            xscale = 2, yscale = 2,
+            color = color,
+            priority = 9.95
+        }
+    end
+end
+
 
 
 local P_W, P_H = 100, 40
@@ -721,70 +801,183 @@ local function restoreSectionMusic()
     musicSwap.active = false
 end
 
+-- ===== Board mode glue (single source of truth) =====
+BOARD_OPEN = BOARD_OPEN or false
+local boardActive = false
 
--- ===========================
--- INPUT
--- ===========================
+local function enterBoardMode()
+    if boardActive then return end
+    boardActive = true
+    if Freeze and Freeze.push then Freeze.push(true) end
 
-function onInputUpdate()
-    -- Disable map toggle on overworld
-    if Level.filename() == "map.lvlx" or Level.isOverworld then
-        player.dropItemKeyPressing = false
-    end
-
-    ----------------------------------------------------------------------
-    -- End-turn latch/cooldown housekeeping (safe even if board is closed)
-    ----------------------------------------------------------------------
-    do
+    if cardGameFortune and not cardGameFortune.isOpen() then
         local s = cardGameFortune.peek()
-        if endTurnLatch then
-            if s and s.whoseTurn ~= endTurnPrevTurn then
-                endTurnLatch, endTurnCooldown = false, 0
-            elseif endTurnCooldown > 0 then
-                endTurnCooldown = endTurnCooldown - 1
-                if endTurnCooldown == 0 then endTurnLatch = false end
-            end
-        end
+        if not (s and s.board) then cardGameFortune.newMatch(12345) end
+        cardGameFortune.open()
+        -- UI defaults
+        focus="hand"; summonPos="attack"; selectedHandIndex=nil
+        local s2 = cardGameFortune.peek()
+        local h = (s2 and s2.hands and s2.hands[1]) or {}
+        for i=1,5 do if h[i] then selectedHandIndex=i; break end end
+        centerCursor(); moveTimer = 0
     end
 
-    --------------------------------
-    -- Open/close the board (Drop)
-    --------------------------------
-    if player.rawKeys.dropItem == KEYS_PRESSED then
-        BOARD_OPEN  = not BOARD_OPEN
-        inputLocked = BOARD_OPEN
-        player.dropItemKeyPressing = false
+    swapToMenuMusic()
+end
+
+local function exitBoardMode()
+    if not boardActive then return end
+    boardActive = false
+    if Freeze and Freeze.pop then Freeze.pop() end
+    if cardGameFortune and cardGameFortune.close then cardGameFortune.close() end
+    restoreSectionMusic()
+end
+
+function OpenBoardForDuel(npcDeckID)
+    cardGameFortune.beginNPCBattle(npcDeckID)
+    BOARD_OPEN = true
+    enterBoardMode()
+end
+
+function CloseBoard()
+    BOARD_OPEN = false
+    exitBoardMode()  -- your Freeze.pop/close/music restore
+end
+
+function CloseBoardWithNPCLine(npcKey, text)
+    CloseBoard()
+
+    -- show a line from the opponent one frame later (prevents input bleed)
+    Routine.run(function()
+        Routine.waitFrames(1)
+        local speaker = (cardGameFortune.challengers[npcKey] or {}).name or "Opponent"
+
+        -- littleDialogue may already be required elsewhere; be tolerant:
+        local ld = littleDialogue or require("littleDialogue")
+
+        local box = ld.create{
+            target = player,  -- or your NPC instance if you track it
+            text   = ("<boxStyle ml><speakerName %s>%s"):format(speaker, text),
+        }
+        if box and box.show then box:show() end
+    end)
+end
+
+
+
+local function enterMenu()
+    prevFocus = (focus == "menu") and (prevFocus or "hand") or focus
+    focus = "menu"
+end
+
+local function exitMenu()
+    focus = (prevFocus and prevFocus ~= "menu") and prevFocus or "hand"
+end
+
+-- === Action bar router ===
+function cardGameFortune.uiInvokeAction(id)
+    -- always leave the menu when an action is chosen
+    if focus == "menu" then
+        if exitMenu then exitMenu() end
+    end
+
+    if UI.modal and UI.modal.kind == "grave" then graveClose() end
+
+    -- clear any half-done input
+    UI.pending = nil
+
+    if id == "hand" then
+        focus = "hand"
+        selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+        SFX.play(1)
+
+    elseif id == "board" then
+        focus = "board"
+        selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+        if centerCursor then centerCursor() end
+        SFX.play(1)
+
+    elseif id == "guide" then
+        -- open/close your guide modal (or toggle a flag you already draw)
+        UI.modal = (UI.modal == "guide") and nil or "guide"
+        SFX.play(3)
+
+    elseif id == "grave" then
+        graveOpen(UI.graveSide or 1)
+        SFX.play(3)
+
+    elseif id == "end" then
+        local s = cardGameFortune.peek()
+        if canHumanEndTurn and s and canHumanEndTurn(s) and not endTurnLatch then
+            endTurnPrevTurn = s.whoseTurn
+            endTurnLatch    = true
+            endTurnCooldown = 12
+            cardGameFortune.endTurn()
+
+            -- reset UI for next player
+            selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+            focus, summonPos = "hand", "attack"
+
+            local ns = cardGameFortune.peek()
+            selectedHandIndex = nil
+            local h2 = (ns and ns.hands and ns.hands[ns.whoseTurn]) or {}
+            for i=1,5 do if h2[i] then selectedHandIndex = i; break end end
+
+            if centerCursor then centerCursor() end
+            SFX.play(3)
+        else
+            SFX.play(2)
+        end
+
+    elseif id == "restart" then
+        cardGameFortune.newMatch()   
+        cardGameFortune.open()
+        focus, summonPos = "hand", "attack"
+        selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+        selectedHandIndex = nil
+        local s = cardGameFortune.peek()
+        local h = (s and s.hands and s.hands[1]) or {}
+        for i=1,5 do if h[i] then selectedHandIndex = i; break end end
+        if centerCursor then centerCursor() end
+        SFX.play(3)
+
+    elseif id == "giveup" then
+        if cardGameFortune.concede then cardGameFortune.concede(1) end
+        -- npc key you started the duel with; change if you track it elsewhere:
+        CloseBoardWithNPCLine(STATE and STATE.opponentKey or "koopa_card_man",
+                            "Good duel. Come back anytime!")
+        SFX.play(2)
+
+    else
+        -- unknown id: beep
+        SFX.play(2)
+    end
+end
+
+
+-- bundle the many locals so big functions only capture this one table
+CFG = {
+  -- constants
+  BORDER=BORDER, SCREEN_W=SCREEN_W, SCREEN_H=SCREEN_H, BOARD_SIZE=BOARD_SIZE,
+  CELL=CELL, GRID_COLS=GRID_COLS, GRID_ROWS=GRID_ROWS,
+  CARD_W=CARD_W, CARD_H=CARD_H, CARD_GAP=CARD_GAP,
+  handX=handX, handY=handY, discX=discX, discY=discY,
+  descX=descX, descY=descY, hoverX=hoverX, hoverY=hoverY,
+  HOVER_W=HOVER_W, HOVER_H=HOVER_H, boardX=boardX, boardY=boardY,
+  RIGHT_W=RIGHT_W, rightPanelX=rightPanelX, rightPanelY=rightPanelY,
+
+  -- frequently used helpers (functions)
+  tex=tex, box=box, label=label, wrapIntoLines=wrapIntoLines,
+  terrImg=terrImg, drawCardInfo=drawCardInfo, getOutline=getOutline,
+}
+
+local function updateBoardControls()
+        ----------------------------------------------------
+        -- All interactive logic only when the board is open
+        ----------------------------------------------------
+        swallowPlatformKeys()
 
         if BOARD_OPEN then
-            Freeze.push(true)
-            if not cardGameFortune.isOpen() then
-                cardGameFortune.newMatch(12345)
-                cardGameFortune.open()
-
-                -- UI defaults on open
-                focus     = "hand"
-                summonPos = "attack"
-                selectedHandIndex = nil
-
-                local s = cardGameFortune.peek()
-                local h = (s and s.hands and s.hands[1]) or {}
-                for i=1,5 do if h[i] then selectedHandIndex = i; break end end
-
-                centerCursor()
-                moveTimer = 0
-            end
-            swapToMenuMusic()
-        else
-            Freeze.pop()
-            cardGameFortune.close()
-            restoreSectionMusic()
-        end
-    end
-
-    ----------------------------------------------------
-    -- All interactive logic only when the board is open
-    ----------------------------------------------------
-    if BOARD_OPEN then
         local s      = cardGameFortune.peek()
         local aiBusy = cardGameFortune.aiState and cardGameFortune.aiState.busy
         local myTurn = (s and s.whoseTurn == 1 and not aiBusy)
@@ -820,13 +1013,21 @@ function onInputUpdate()
             UI.pending = nil
         end
 
+        if UI.modal and UI.modal.kind == "grave" then
+            if player.rawKeys.run == KEYS_PRESSED then
+                    graveClose()
+                    return
+            end
+            return
+        end
+
         -- Cancel (B/Esc)
         if UI.pending and player.rawKeys.altJump == KEYS_PRESSED then
             UI.pending = nil
         end
 
         -- Confirm (A/Jump or Enter)
-        if UI.pending and (player.rawKeys.jump == KEYS_PRESSED or player.rawKeys.start == KEYS_PRESSED) then
+        if UI.pending and (player.rawKeys.jump == KEYS_PRESSED) then
             local p = UI.pending
             if p.kind == "summon" and p.c and p.r then
                 local ok = cardGameFortune.playFromHand(1, p.fromHand, p.c, p.r, p.pos)
@@ -834,11 +1035,23 @@ function onInputUpdate()
                     -- clamp selection to new hand size
                     local s = cardGameFortune.peek()
                     selectedHandIndex = math.min(selectedHandIndex or 1, #(s and s.hands[1] or {}))
+                    selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+                    focus = "hand" 
                 end
             elseif p.kind == "move" then
                 cardGameFortune.moveUnit(p.fromC, p.fromR, p.toC, p.toR)
+                selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
             elseif p.kind == "attack" then
                 cardGameFortune.resolveBattle(p.fromC, p.fromR, p.toC, p.toR)
+                selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+            elseif p.kind == "approachAttack" then
+                local moved = cardGameFortune.moveUnit(p.fromC, p.fromR, p.stepC, p.stepR, {keepAttack=true})
+                if moved then
+                    cardGameFortune.resolveBattle(p.stepC, p.stepR, p.toC, p.toR)
+                    selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+                else
+                    SFX.play(2)
+                end
             end
             UI.pending = nil
         end
@@ -855,9 +1068,9 @@ function onInputUpdate()
         end
 
         -----------------------------------------------------------------
-        -- End Turn (ALT-RUN): only human, on their turn, AI idle, gated
+        -- End Turn (Start): only human, on their turn, AI idle, gated
         -----------------------------------------------------------------
-        if player.rawKeys.altRun == KEYS_PRESSED then
+        if player.rawKeys.pause == KEYS_PRESSED then
             if UI.pending then end
             local ss = cardGameFortune.peek()
             if canHumanEndTurn(ss) and (not endTurnLatch) and cardGameFortune.endTurn then
@@ -888,6 +1101,7 @@ function onInputUpdate()
         -- ========= HAND mode =========
         --------------------------------
         if focus == "hand" then
+            if player.rawKeys.dropItem == KEYS_PRESSED then enterMenu(); return end
             if UI.pending then end
             if myTurn then
                 local function handCycle(dir)
@@ -908,16 +1122,10 @@ function onInputUpdate()
                 if player.rawKeys.left  == KEYS_PRESSED or (player.rawKeys.left  == KEYS_DOWN and moveTimer == 0) then handCycle(-1); stepped = true end
                 if player.rawKeys.right == KEYS_PRESSED or (player.rawKeys.right == KEYS_DOWN and moveTimer == 0) then handCycle( 1); stepped = true end
                 if stepped then moveTimer = MOVE_COOLDOWN end
-                if player.rawKeys.down   == KEYS_PRESSED then
-                    UI = UI or {}
-                    UI.modal = "grave"
-                    UI.graveSide = UI.graveSide or 1
-                end
-
 
                 if player.rawKeys.run == KEYS_PRESSED then
-                    summonPos = (summonPos == "attack") and "defense" or "attack"
-                    SFX.play(3)
+                    graveOpen(UI.graveSide or 1)
+                    return
                 end
 
                 -- A) hand -> aim
@@ -950,6 +1158,11 @@ function onInputUpdate()
         -- ========= AIM mode ==========
         --------------------------------
         elseif focus == "aim" then
+            if player.rawKeys.dropItem == KEYS_PRESSED then
+                UI.pending = nil
+                enterMenu()
+                return
+            end
             if UI.pending then end
             if moveTimer > 0 then moveTimer = moveTimer - 1 end
             local moved = false
@@ -1010,6 +1223,7 @@ function onInputUpdate()
         -- ========= BOARD (inspect) =======
         ------------------------------------
         elseif focus == "board" then
+            if player.rawKeys.dropItem == KEYS_PRESSED then enterMenu(); return end
             if UI.pending then end
             if moveTimer > 0 then moveTimer = moveTimer - 1 end
             local moved = false
@@ -1052,18 +1266,68 @@ function onInputUpdate()
                     local curCell = s5.board[r] and s5.board[r][c]
 
                     if selectedUnit then
-                        -- Move first, else attack (non-leader), else cancel
-                        if legalMoveSet and legalMoveSet[r] and legalMoveSet[r][c] and not s5.board[r][c] then
-                            UI.pending = { kind="move", fromC=selectedUnit.c, fromR=selectedUnit.r, toC=c, toR=r }
-                            SFX.play(1)
+                        -- ✅ make sure the selected tile still has our unit
+                        local su = selectedUnit
+                        if not (su and s5.board[su.r] and s5.board[su.r][su.c]) then
+                            -- underlying piece vanished or indices invalid → reset selection
+                            selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+                            SFX.play(2)
+                            return
+                        end
 
-                        elseif (not selectedUnit.isLeader) and legalAttackSet and legalAttackSet[r] and legalAttackSet[r][c] then
-                            UI.pending = { kind="attack", fromC=selectedUnit.c, fromR=selectedUnit.r, toC=c, toR=r }
+                        local unitCell = s5.board[su.r][su.c]         -- <- now safe
+                        local def      = cardGameFortune.db[unitCell.cardId] or {}
+                        local reach    = def.meleeReach or 1
+                        local d        = math.abs(c - su.c) + math.abs(r - su.r)
+
+                        -- Move first, else attack (adjacent), else approach-attack (d==2 & reach), else cancel
+                        if legalMoveSet and legalMoveSet[r] and legalMoveSet[r][c] and not s5.board[r][c] then
+                            UI.pending = { kind="move", fromC=su.c, fromR=su.r, toC=c, toR=r }
                             SFX.play(1)
+                            return
+                        elseif (not su.isLeader) and legalAttackSet and legalAttackSet[r] and legalAttackSet[r][c] then
+                            if d == 1 then
+                                UI.pending = { kind="attack", fromC=su.c, fromR=su.r, toC=c, toR=r }
+                                SFX.play(1)
+                                return
+                            elseif reach >= 2 and d == 2 then
+                                -- step one orthogonal tile toward the target, if empty
+                                local stepChoices = {}
+                                if c ~= su.c then table.insert(stepChoices, {su.c + (c>su.c and 1 or -1), su.r}) end
+                                if r ~= su.r then table.insert(stepChoices, {su.c, su.r + (r>su.r and 1 or -1)}) end
+
+                                local stepC, stepR
+                                for _,st in ipairs(stepChoices) do
+                                    local sc, sr = st[1], st[2]
+                                    if cardGameFortune.inBounds(sc,sr) and (s5.board[sr][sc] == nil) then
+                                        stepC, stepR = sc, sr; break
+                                    end
+                                end
+
+                                if stepC and stepR then
+                                    UI.pending = {
+                                        kind  = "approachAttack",
+                                        fromC = su.c, fromR = su.r,
+                                        stepC = stepC, stepR = stepR,
+                                        toC   = c,     toR   = r,
+                                    }
+                                    SFX.play(1)
+                                    return
+                                else
+                                    selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+                                    SFX.play(2)
+                                end
+                            else
+                                selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
+                                SFX.play(2)
+                            end
+
                         else
+                            -- clicked something not legal; deselect
                             selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
                             SFX.play(2)
                         end
+
                     else
                         -- Select our own piece (leader OR unit)
                         if curCell and curCell.owner == s5.whoseTurn then
@@ -1081,14 +1345,76 @@ function onInputUpdate()
                 end
             end
 
+
             -- Cancel with SpinJump
             if player.rawKeys.altJump == KEYS_PRESSED then
                 selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
                 SFX.play(2)
             end
+
+            ---Menu Focus 
+            elseif focus == "menu" then
+                local used = false
+                if player.rawKeys.left  == KEYS_PRESSED then
+                    UI.action.idx = (UI.action.idx - 2) % #UI.action.items + 1; used = true
+                end
+                if player.rawKeys.right == KEYS_PRESSED then
+                    UI.action.idx = (UI.action.idx)     % #UI.action.items + 1; used = true
+                end
+                if player.rawKeys.jump == KEYS_PRESSED or player.rawKeys.run == KEYS_PRESSED then
+                    local it = UI.action.items[UI.action.idx]
+                    if it then cardGameFortune.uiInvokeAction(it.id) end
+                    used = true
+                end
+                if player.rawKeys.dropItem == KEYS_PRESSED then
+                    exitMenu(); used = true
+                end
+                if used then return 
+            end
         end -- focus branch
     end -- if BOARD_OPEN
-end -- function onInputUpdate
+end -- function end
+
+-- ===========================
+-- INPUT
+-- ===========================
+
+
+
+function onInputUpdate()
+
+        -- Disable map toggle on overworld
+    if Level.filename() == "map.lvlx" or Level.isOverworld then
+        player.dropItemKeyPressing = false
+    end
+
+    -- housekeeping to keep end-turn latch sane (safe even if closed)
+    do
+        local s = cardGameFortune.peek()
+        if endTurnLatch then
+            if s and s.whoseTurn ~= endTurnPrevTurn then
+                endTurnLatch, endTurnCooldown = false, 0
+            elseif endTurnCooldown > 0 then
+                endTurnCooldown = endTurnCooldown - 1
+                if endTurnCooldown == 0 then endTurnLatch = false end
+            end
+        end
+    end
+
+    -- glue
+    if BOARD_OPEN and not boardActive then
+        enterBoardMode()
+    elseif (not BOARD_OPEN) and boardActive then
+        exitBoardMode()
+    end
+
+    -- drive the board + block platforming input
+    if BOARD_OPEN then
+        swallowPlatformKeys()
+        updateBoardControls()
+    end
+end
+
 
 -- Draw one card’s info into the hover panel.
 local function drawCardInfo(def, hoverX, yy, HOVER_W, pos, summonPos, extras)
@@ -1180,6 +1506,16 @@ end
 function onHUDDraw()
     if not BOARD_OPEN or not SHOW_LAYOUT then return end
 
+    -- pull from CFG into locals (these locals are *inside* this function)
+    local BORDER, SCREEN_W, SCREEN_H = CFG.BORDER, CFG.SCREEN_W, CFG.SCREEN_H
+    local BOARD_SIZE, CELL = CFG.BOARD_SIZE, CFG.CELL
+    local GRID_COLS, GRID_ROWS = CFG.GRID_COLS, CFG.GRID_ROWS
+    local CARD_W, CARD_H, CARD_GAP = CFG.CARD_W, CFG.CARD_H, CFG.CARD_GAP
+    local handX, handY = CFG.handX, CFG.handY
+    local hoverX, hoverY, HOVER_W, HOVER_H = CFG.hoverX, CFG.hoverY, CFG.HOVER_W, CFG.HOVER_H
+    local boardX, boardY = CFG.boardX, CFG.boardY
+    local tex, box, label, terrImg = CFG.tex, CFG.box, CFG.label, CFG.terrImg
+
     -- Movement/Summoning Animation call:
     if cardGameFortune.stepAnimations then cardGameFortune.stepAnimations() end
     if cardGameFortune.stepFX then cardGameFortune.stepFX() end
@@ -1188,7 +1524,9 @@ function onHUDDraw()
     -- top HP bar
     drawHPBarTop()
 
-    local s = cardGameFortune.peek()
+    local s  = cardGameFortune.peek()
+    local g1 = (s and s.grave and s.grave[1]) or {}
+    local g2 = (s and s.grave and s.grave[2]) or {}
 
     -- board backdrop
     local img = bgTex()
@@ -1396,7 +1734,9 @@ end
             end
             if selectedHandIndex == i then
                 Graphics.drawBox{ x=hx-2,y=hy-2,width=CARD_W+4,height=CARD_H+4, color=Color.white..0.5, priority=7 }
+                if focus == "aim" then
                 label((summonPos=="defense") and "DEF" or "ATK", hx+6, hy+CARD_H-24)
+                end
             end
         else
             label(tostring(i), hx+4, hy+4)
@@ -1433,17 +1773,6 @@ end
     end
 
 
-    -- open modal on keyboard '6' (already handled) or mouse click
-    if UI and UI.modal ~= "grave" then
-        local mx,my = player.rawKeys.mouseX or 0, player.rawKeys.mouseY or 0
-        if mx>=gx and mx<=gx+CARD_W and my>=gy and my<=gy+CARD_H then
-            if player.rawKeys.leftClick == KEYS_PRESSED then
-                UI.modal = "grave"; UI.graveSide = UI.graveSide or 1
-            end
-        end
-    end
-
-
     -- ==== HOVER PANEL CONTENT ====
     local s      = cardGameFortune.peek()
     if not s then return end                 -- nothing to show if no match
@@ -1475,6 +1804,27 @@ end
 
     -- ===== HOVER PANEL CONTENT =====
     if s then
+           local graveTakesHover = false
+
+        if UI.modal and UI.modal.kind == "grave" then
+            local s = cardGameFortune.peek()
+            local side = UI.modal.side or 1
+            local list = (s and s.grave and s.grave[side]) or {}
+            local idx  = (UI.modal.sel and UI.modal.sel[side]) or 1
+            local e    = list[idx]
+            if e then
+                local def = cardGameFortune.db[e.cardId]
+                if def then
+                    label(def.name or "Unknown", rightPanelX+12, rightPanelY+8,  9.9, COL_NAME)
+                    label(("ATK: %d"):format(def.atk or 0), rightPanelX+12, rightPanelY+48, 9.9, COL_ATK)
+                    label(("DEF: %d"):format(def.def or 0), rightPanelX+12, rightPanelY+80, 9.9, COL_DEF)
+                    label(((side==1) and "From: Player 1" or "From: Player 2"), rightPanelX+12, rightPanelY+112, 9.9, COL_LABEL)
+                    graveTakesHover = true
+                end
+            end
+        end
+
+        if not graveTakesHover then
             -- 0) BATTLE PREVIEW (if we have a selected unit and the cursor is on a legal enemy target)
         do
             if (not shown) and selectedUnit and legalAttackSet then
@@ -1599,61 +1949,88 @@ end
                     return y + MF_LINE
                 end)
                 shown = true
+                end
             end
         end
     end
 
-
+                -- Call this from your main draw (where you render HUD)
+            drawActionBar()
+            
             -- footer counters
-            label("Deck:"..tostring(s.deckCounts[1]).."  Hand:"..tostring(#s.hands[1]).."  Energy:"..tostring(s.energy[1] or 0), handX, handY + CARD_H + 16)
+            label("Deck:"..tostring(s.deckCounts[1]).."  Energy:"..tostring(s.energy[1] or 0), handX, handY - 450)
 
-        -- =========================
-        -- Graveyard modal (simple)
-        -- =========================
-    if UI.modal == "grave" then
-            local s = cardGameFortune.peek()
-            local g1 = (s and s.grave and s.grave[1]) or {}
-            local g2 = (s and s.grave and s.grave[2]) or {}
 
-            -- darken screen
-            Graphics.drawBox{ x=0,y=0,width=SCREEN_W,height=SCREEN_H, color=Color(0,0,0,0.55), priority=9.8 }
+    -- ── Graveyard Modal Render ──
+    if UI.modal and UI.modal.kind == "grave" then
+        local s = cardGameFortune.peek()
+        local g1 = (s and s.grave and s.grave[1]) or {}
+        local g2 = (s and s.grave and s.grave[2]) or {}
 
-            local W, H = 520, 360
-            local X, Y = math.floor((SCREEN_W-W)/2), math.floor((SCREEN_H-H)/2)
-            Graphics.drawBox{ x=X, y=Y, width=W, height=H, color=Color(0,0,0,0.85), priority=9.9 }
-            Graphics.drawBox{ x=X, y=Y, width=W, height=H, color=Color.white..0.06, priority=9.91 }
+        -- board-sized glass first
+        Graphics.drawBox{ x=boardX, y=boardY, width=BOARD_SIZE, height=BOARD_SIZE,
+                        color=Color(0,0,0,0.55), priority=9.70 }
 
-            label("Graveyard", X+12, Y+10, 9.92, {1,1,1,1})
+        local half = math.floor(BOARD_SIZE/2)
+        label("GRAVE (P1)", boardX+8,       boardY+6,  9.90, {1,0.35,0.35,1})
+        label("GRAVE (P2)", boardX+half+16, boardY+6,  9.90, {0.35,0.65,1,1})
 
-            local colW = math.floor((W-24)/2)
-            local function drawCol(list, x0)
-                local y0 = Y + 40
-                local maxRows = 12
-                local start = math.max(1, #list - maxRows + 1)
-                for i=start,#list do
-                    local e = list[i]
-                    local def = e and e.cardId and cardGameFortune.db[e.cardId]
-                    local name = def and def.name or ("ID "..tostring(e and e.cardId or "?"))
-                    local why  = e and e.reason or "KO"
-                    label(name, x0+8, y0, 9.93, {1,1,1,1})
-                    label(why,  x0+colW-8, y0, 9.93, {1,1,1,0.75}, "right")
-                    y0 = y0 + 24
+        local function drawPane(side, list, x0)
+            local COLS = 3
+            local padX, padY = 10, 24
+            local cellW = CARD_W + CARD_GAP
+            local cellH = CARD_H + CARD_GAP
+            local visRows = math.max(1, math.floor((BOARD_SIZE - padY)/cellH))
+            local scroll = (UI.modal.scroll and UI.modal.scroll[side]) or 0
+            local sel    = (UI.modal.sel    and UI.modal.sel[side])    or 1
+            local isActive = (UI.modal.side == side)
+
+            local startRow = scroll
+            local endRow   = scroll + visRows - 1
+
+            for idx=1,#list do
+                local row0 = math.floor((idx-1)/COLS)
+                if row0 >= startRow and row0 <= endRow then
+                    local col0  = (idx-1) % COLS
+                    local drawR = row0 - startRow
+                    local x = x0 + padX + col0*cellW
+                    local y = boardY + padY + drawR*cellH
+
+                    local def = cardGameFortune.db[list[idx].cardId]
+                    local img = def and tex(def.image or def.icon)
+                    if img then Graphics.drawImageWP(img, x, y, 9.82)
+                    else       Graphics.drawBox{ x=x, y=y, width=CARD_W, height=CARD_H, color=Color(0,0,0,0.35), priority=9.82 } end
+
+                    if isActive and idx == sel then
+                        Graphics.drawBox{ x=x-2, y=y-2, width=CARD_W+4, height=CARD_H+4, color=Color.white..0.9, priority=9.84 }
+                    end
                 end
             end
 
-            -- P1 left / P2 right
-            drawCol(g1, X+6)
-            drawCol(g2, X+12+colW)
-
-            -- Close hint
-            label("Spin Jump to exit", X+W-320, Y+H-24, 9.93, {1,1,1,0.8})
-
-            -- simple close 
-            if player.rawKeys.altJump == KEYS_PRESSED then
-                UI.modal = nil
+            -- scrollbar
+            local totalRows = math.max(1, math.ceil(#list / COLS))
+            if totalRows > visRows then
+                local barH = math.max(12, math.floor((visRows / totalRows) * (BOARD_SIZE - padY)))
+                local maxScroll = totalRows - visRows
+                local sc = (UI.modal.scroll and UI.modal.scroll[side]) or 0
+                local t  = (maxScroll > 0) and (sc / maxScroll) or 0
+                local barY = boardY + padY + math.floor(t * ((BOARD_SIZE - padY) - barH))
+                local barX = x0 + (half - 12)
+                Graphics.drawBox{ x=barX, y=barY, width=6, height=barH, color=Color.white..0.5, priority=9.83 }
             end
+        end
+
+        drawPane(1, g1, boardX)            -- left pane
+        drawPane(2, g2, boardX + half + 2) -- right pane
+
+
+        -- tiny debug counters (remove later)
+        label(("#P1: %d"):format(#g1), boardX+8, boardY+BOARD_SIZE-18, 9.9, {1,1,1,0.8})
+        label(("#P2: %d"):format(#g2), boardX+half+16, boardY+BOARD_SIZE-18, 9.9, {1,1,1,0.8})
     end
 end
+
+
 
 
 local function clampToScreen(x, y, textW, textH)

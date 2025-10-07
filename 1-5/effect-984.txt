@@ -1,0 +1,14 @@
+[1]
+import=AI_ARC
+frames=1
+framespeed=8
+framestyle=1
+xAlign=MID
+yAlign=MID
+spawnBindX = 0.5
+spawnBindY = 0.5
+rotation=-24:24
+angle = -360:360
+speedX = -4:4
+speedY=-5:-10
+gravity=0.5
