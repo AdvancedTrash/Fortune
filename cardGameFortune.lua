@@ -1,6 +1,89 @@
 
 local cardGameFortune = { db = {} }
 
+-- Safe read of a board cell; treats missing rows as empty (nil)
+function cardGameFortune.safeBoardCell(s, c, r)
+    local b = s and s.board
+    if not b then return nil end
+    local row = b[r]
+    return row and row[c] or nil
+end
+
+
+-- Explain why a click (c,r) is illegal for the currently selected unit su
+function cardGameFortune.debugExplainSelection(su, c, r, legalMoveSet, legalAttackSet)
+    local s  = cardGameFortune.peek()
+    if not (s and su and s.board[su.r] and s.board[su.r][su.c]) then
+        Misc.dialog("Debug: selection vanished or invalid.")
+        return
+    end
+    local A   = s.board[su.r][su.c]
+    local def = cardGameFortune.db[A.cardId] or {}
+    local atktype = def.atktype or "normal"
+
+    local function inB(x,y) return x>=0 and x<s.cols and y>=0 and y<s.rows end
+    local occ = s.board[r] and s.board[r][c]
+
+    -- quick banner
+    local lines = {}
+    lines[#lines+1] = ("Tile (%d,%d)  occ=%s  moveOK=%s  atkOK=%s"):format(
+        c,r, tostring(occ~=nil),
+        tostring(legalMoveSet and legalMoveSet[r] and legalMoveSet[r][c] and (occ==nil)),
+        tostring(legalAttackSet and legalAttackSet[r] and legalAttackSet[r][c])
+    )
+
+    -- If enemy target: analyze approach adjacencies for melee; LOS for ranged.
+    local enemy = occ and occ.owner and (occ.owner ~= s.whoseTurn) or false
+    if enemy then
+        if atktype == "normal" then
+            local _, dist = cardGameFortune.legalMovesFrom(su.c, su.r, {forThreat=true, returnDist=true})
+            local startTerr = cardGameFortune.terrainAt(su.c, su.r)
+            local movBonus  = (cardGameFortune.terrainMovementBonus and
+                            cardGameFortune.terrainMovementBonus(def.subtype2, startTerr)) or 0
+            local budget    = math.max(0, (def.movement or 0) + movBonus - 1)
+
+            local adjDeltas = (cardGameFortune._stepDeltasFor and cardGameFortune._stepDeltasFor(def.movetype or "normal"))
+                                or {{1,0},{-1,0},{0,1},{0,-1}}
+
+            lines[#lines+1] = ("Melee approach budget=%d"):format(budget)
+            for _,d in ipairs(adjDeltas) do
+                local ac, ar = c + d[1], r + d[2]
+                if inB(ac,ar) then
+                    local aOcc  = s.board[ar] and s.board[ar][ac]
+                    local cost  = dist[ar] and dist[ar][ac]
+                    local tag   = aOcc and "occupied"
+                                   or (not cost and "unreach")
+                                   or (cost > budget and (">budget "..cost))
+                                   or ("OK cost="..cost)
+                    lines[#lines+1] = ("  adj(%d,%d): %s"):format(ac,ar, tag)
+                else
+                    lines[#lines+1] = ("  adj(%d,%d): OOB"):format(ac,ar)
+                end
+            end
+        else
+            -- ranged: show LOS directions considered
+            local range = def.attackrange or 1
+            local los   = def.rangedLOS or "orthogonal"
+            lines[#lines+1] = ("Ranged LOS=%s range=%d (target not in legalAttackSet)"):format(los, range)
+        end
+    else
+        -- Not an enemy: if it looked like a move, tell why it failed
+        if not (legalMoveSet and legalMoveSet[r] and legalMoveSet[r][c]) then
+            -- recompute dist for detail
+            local _, dist = cardGameFortune.legalMovesFrom(su.c, su.r, {forThreat=true, returnDist=true})
+            local dHere = dist[r] and dist[r][c]
+            lines[#lines+1] = "Move not legal here."
+            lines[#lines+1] = "  reason: "..(occ and "occupied"
+                                   or (not dHere and "unreachable")
+                                   or "unknown")
+            if dHere then lines[#lines+1] = ("  cost=%d"):format(dHere) end
+        end
+    end
+
+    Misc.dialog(table.concat(lines, "\n"))
+end
+
+
 -- === Duel: Challenger registry ===========================================
 cardGameFortune.challengers = cardGameFortune.challengers or {
   koopa_card_man = { name = "Koopa Card Man", deckId = 1 },
@@ -30,28 +113,42 @@ end
 
 -- CARD REGISTRATION
 function cardGameFortune.register(card)
-  assert(card.id, "card.id required")
-  assert(not cardGameFortune.db[card.id], ("duplicate card id: %s"):format(card.id))
-  cardGameFortune.db[card.id] = {
-    id          = card.id,
-    name        = card.name or "Unnamed Card",
-    image       = card.image or "cardgame/goombaicon.png",
-    icon        = card.icon or "cardgame/goombaicon.png",
-    description = card.description or "No description yet.",
-    atk         = card.atk or 0,
-    def         = card.def or 0,
-    movement    = card.movement or 0,
-    movementtype= card.movementtype or "normal",
-    atktype     = card.atktype or "melee",
-    meleeReach  = card.meleeReach  or 1, --Melee
-    attackrange = card.attackrange or 1, --Ranged
-    type        = card.type or "normal",
-    subtype1    = card.subtype1 or "normal",
-    subtype2    = card.subtype2 or "normal",
-    summoncost  = card.summoncost or 0,
-    deckcost    = card.deckcost or 0,
-  }
+    assert(card.id, "card.id required")
+    assert(not cardGameFortune.db[card.id], ("duplicate card id: %s"):format(card.id))
+
+    -- normalize names
+    local movetype = card.movetype or card.movementtype or "normal"
+    local atktype  = card.atktype  or "melee"
+    local rangedLOS = card.rangedLOS or "orthogonal"
+    local attackrange = card.attackrange or 1
+    local rangedPenetration = card.rangedPenetration or "single" -- "single"|"volley"|"pierce"
+
+    cardGameFortune.db[card.id] = {
+        id          = card.id,
+        name        = card.name or "Unnamed Card",
+        image       = card.image or "cardgame/goombaicon.png",
+        icon        = card.icon  or "cardgame/goombaicon.png",
+        description = card.description or "No description yet.",
+        atk         = card.atk or 0,
+        def         = card.def or 0,
+        movement    = card.movement or 0,
+
+        -- NEW typing:
+        movetype    = movetype,          -- "normal" | "diagonal" | "rook" | "bishop" | "queen" | "knight"
+        atktype     = atktype,           -- "melee"|"ranged"
+        attackrange = attackrange,       -- used for ranged only
+        rangedLOS   = rangedLOS,         -- "orthogonal"|"diagonal"|"any"
+        rangedPenetration = rangedPenetration,
+
+        -- existing fields
+        type        = card.type or "normal",
+        subtype1    = card.subtype1 or "normal",
+        subtype2    = card.subtype2 or "normal",
+        summoncost  = card.summoncost or 0,
+        deckcost    = card.deckcost or 0,
+    }
 end
+
 
 cardGameFortune.roleBonus = {
   melee     = { grappler = 3, ranged = 1 },
@@ -73,18 +170,20 @@ cardGameFortune.attackTypeBonus = {
 -- STATE & RULES (new)
 -- ───────────────────────────────────────────────────────────
 local STATE = {
-  open       = false,         -- overlay visibility
-  cols       = 7, rows = 7,   -- board size
-  board      = nil,           -- 2D array [r][c] = {cardId, owner, hp, atk, def}
-  whoseTurn  = 1,             -- 1 or 2
-  phase      = "main",        -- "main" | "combat" | "end"
-  hands      = { {}, {} },    -- hands[1], hands[2] = array of cardIds
-  deck       = { {}, {} },    -- deck[1], deck[2]
-  discard    = { {}, {} },    -- discard piles
-  leaderHP   = { 40, 40 },    -- simple win condition for now
-  energy     = { 3, 3 },      -- per-turn summon points
+  open       = false,
+  cols       = 7, rows = 7,
+  board      = nil,
+  whoseTurn  = 1,
+  phase      = "main",
+  hands      = { {}, {} },
+  deck       = { {}, {} },
+  discard    = { {}, {} },
+  leaderHP   = { 40, 40 },
+  energy     = { 3, 3 },
+  deathFX    = {},      -- ← add this
   seed       = 0,
 }
+
 
 cardGameFortune.HAND_MAX = 5
 
@@ -130,12 +229,36 @@ end
 
 cardGameFortune.canEnter = canEnter
 
--- +2 terrain bonus if subtype2 equals tile terrain (case-insensitive friendly)
-local function terrainBonus(def, terr)
-  if not def then return 0 end
-  local a = tostring(def.subtype2 or ""):lower()
-  local b = tostring(terr or ""):lower()
-  return (a == b) and 2 or 0
+-- BAD matchups (card subtype2 -> tile terrain that gives -3)
+local TERRAIN_PENALTY = {
+  Underground = { Sky=true },
+  Underwater  = { Volcano=true },
+  Desert      = { Snow=true },
+  Snow        = { Desert=true },
+  Sky         = { Underground=true },
+  Forest      = { Mountain=true },
+  ["Ghost House"] = { Castle=true },
+  Castle      = { ["Ghost House"]=true },
+  Volcano     = { Underwater=true },
+  Mountain    = { Forest=true },
+}
+
+-- Returns ATK/DEF modifier: +3 (match), -3 (penalty), or 0 (neutral)
+local function terrainDelta(defTerr, tileTerr)
+  if not defTerr or defTerr == "" then return 0 end
+  if defTerr == tileTerr then return 3 end
+  local pen = TERRAIN_PENALTY[defTerr]
+  if pen and pen[tileTerr] then return -3 end
+  return 0
+end
+
+-- Returns MOVEMENT modifier: +1 (match), -1 (penalty), or 0 (neutral)
+local function terrainMovementBonus(defTerr, tileTerr)
+  if not defTerr or defTerr == "" then return 0 end
+  if defTerr == tileTerr then return 1 end  -- Favorable terrain: +1 movement
+  local pen = TERRAIN_PENALTY[defTerr]
+  if pen and pen[tileTerr] then return -1 end  -- Penalty terrain: -1 movement
+  return 0
 end
 
 -- Return a human terrain name for tile (c,r)
@@ -155,30 +278,6 @@ function cardGameFortune.terrainHudBG(c, r)
     -- Your convention:  cardgame/terr_info<TerrainName>[.png]
     -- We’ll return the path with .png; your tex() usually resolves either way.
     return "cardgame/terr_info" .. token .. ".png"
-end
-
-
--- BAD matchups (card subtype2 -> tile terrain that gives -2)
-local TERRAIN_PENALTY = {
-  Underground = { Sky=true },
-  Underwater  = { Volcano=true },
-  Desert      = { Snow=true },
-  Snow        = { Desert=true },
-  Sky         = { Underground=true },
-  Forest      = { Mountain=true },
-  ["Ghost House"] = { Castle=true },
-  Castle      = { ["Ghost House"]=true },
-  Volcano     = { Underwater=true },
-  Mountain    = { Forest=true },
-}
-
--- Returns +2 (match), -2 (unfit), or 0 (neutral)
-local function terrainDelta(defTerr, tileTerr)
-  if not defTerr or defTerr == "" then return 0 end
-  if defTerr == tileTerr then return 2 end
-  local pen = TERRAIN_PENALTY[defTerr]
-  if pen and pen[tileTerr] then return -2 end
-  return 0
 end
 
 -- =========================================================
@@ -479,7 +578,6 @@ local function punctureImpassableRows(g, cols, rows)
   end
 end
 
-
 -- Keep a neutral ring around each leader so you can always act on turn 1
 local function T_neutralizeLeaderRings(g, ringTerr, radius)
   ringTerr = ringTerr or "Overworld"
@@ -543,6 +641,40 @@ local function bfsReachable(s, c0,r0, c1,r1)
   end
   return false
 end
+
+-- ── SFX helper ─────────────────────────────────────────────
+local function _sfx(path, vol)
+    -- Robust: ignore missing files, don’t crash on typos
+    local ok, err = pcall(function() SFX.play(path, vol or 1.0) end)
+    -- if not ok then Misc.dialog("SFX missing: "..tostring(path)) end -- optional debug
+end
+
+-- Callers (so the call sites stay short & consistent)
+function cardGameFortune.sfx_move()        _sfx("cardgame/sound/Move.wav") end
+function cardGameFortune.sfx_matchStart()  _sfx("cardgame/sound/Match Start.wav") end
+function cardGameFortune.sfx_cursorMove()  _sfx("cardgame/sound/Cursor - Move.wav") end
+function cardGameFortune.sfx_accept()      _sfx("cardgame/sound/Cursor - Accept.wav") end
+function cardGameFortune.sfx_cancel()      _sfx("cardgame/sound/Cursor - Cancel.wav") end
+function cardGameFortune.sfx_buzzer()      _sfx("cardgame/sound/Cursor - Buzzer.wav") end
+function cardGameFortune.sfx_combat()      _sfx("cardgame/sound/Combat.wav") end
+function cardGameFortune.sfx_kill()        _sfx("cardgame/sound/Kill.wav") end
+function cardGameFortune.sfx_summon()      _sfx("cardgame/sound/Summon.wav") end
+
+-- Optional: ranged throw mapping per unit; default falls back to Combat.wav
+function cardGameFortune.sfx_ranged(def)
+    -- allow per-card override: def.rangedSfx = "cardgame/sound/MagicBlast.wav"
+    if def and def.rangedSfx then _sfx(def.rangedSfx); return end
+
+    -- examples by name (use whatever your card names are)
+    if def and def.name == "Magikoopa"      then _sfx("cardgame/sound/MagicBlast.wav"); return end
+    if def and def.name == "Bullet Blaster" then _sfx("cardgame/sound/Cannon.wav");     return end
+
+    -- default
+    cardGameFortune.sfx_combat()
+end
+
+
+STATE.deathFX = STATE.deathFX or {}
 
 -- Tiles the leaders cannot path through.
 local IMPASSABLE_TERRAIN = {
@@ -719,15 +851,6 @@ function cardGameFortune.requestConcede()
   if UI then UI.modal = "confirm_concede" end
 end
 
-function cardGameFortune.beginNPCBattle(npcDeckID)
-  STATE.npcDeckID = npcDeckID
-  cardGameFortune.newMatch()
-    if UI then
-        UI.mode = "hand"                 
-        UI.action.focused = false
-    end
-end
-
 -- Public API
 function cardGameFortune.regenTerrain(opts)
     local s = STATE; if not s then return end
@@ -877,6 +1000,89 @@ local function neighbors4(c,r)
   return { {c+1,r},{c-1,r},{c,r+1},{c,r-1} }
 end
 
+-- === Movement shape primitives ==========================================
+cardGameFortune.DIR4  = cardGameFortune.DIR4  or { {1,0}, {-1,0}, {0,1}, {0,-1} }
+cardGameFortune.DIAG4 = cardGameFortune.DIAG4 or { {1,1}, {-1,1}, {1,-1}, {-1,-1} }
+cardGameFortune.DIR8  = cardGameFortune.DIR8  or {
+    {1,0},{-1,0},{0,1},{0,-1},{1,1},{-1,1},{1,-1},{-1,-1}
+}
+cardGameFortune.KNIGHT = cardGameFortune.KNIGHT or {
+    { 1, 2},{ 2, 1},{-1, 2},{-2, 1},{ 1,-2},{ 2,-1},{-1,-2},{-2,-1}
+}
+
+local function _stepDeltasFor(moveType)
+    local t = moveType or "normal"
+    if t == "normal"     then return cardGameFortune.DIR4
+    elseif t == "diagonal" then return cardGameFortune.DIAG4
+    elseif t == "rook"     then return cardGameFortune.DIR4
+    elseif t == "bishop"   then return cardGameFortune.DIAG4
+    elseif t == "queen"    then return cardGameFortune.DIR8
+    elseif t == "knight"   then return cardGameFortune.KNIGHT
+    else return cardGameFortune.DIR4 end
+end
+
+local function _isSliding(moveType)
+    return (moveType == "rook" or moveType == "bishop" or moveType == "queen")
+end
+
+local function _isKnight(moveType)
+    return moveType == "knight"
+end
+
+-- === Unified reach map (respects movetype, terrain, occupancy) ==========
+-- Returns dist[r][c] = steps (0 at start).
+local function _computeReach(c0, r0, def, maxSteps)
+    local rows, cols = STATE.rows, STATE.cols
+    local moveType   = def and def.movetype or "normal"
+    local deltas     = _stepDeltasFor(moveType)
+    local sliding    = _isSliding(moveType)
+    local isKnight   = _isKnight(moveType)
+    local passGhost  = (def and def.subtype1 == "ghost")
+
+    local function inB(c,r) return c>=0 and c<cols and r>=0 and r<rows end
+    local function passable(c,r)
+        local terr = terrainAt(c,r)
+        return terr and cardGameFortune.canEnter(def, terr)
+    end
+
+    local dist = { [r0] = { [c0] = 0 } }
+    local Q, head = { {c=c0,r=r0} }, 1
+
+    while head <= #Q do
+        local n = Q[head]; head = head + 1
+        local dHere = dist[n.r][n.c]
+        if dHere < maxSteps then
+            for _,dlt in ipairs(deltas) do
+                local nc, nr = n.c + dlt[1], n.r + dlt[2]
+
+                while inB(nc,nr) do
+                    if not passable(nc,nr) then break end
+
+                    local occ = STATE.board[nr] and STATE.board[nr][nc]
+                    if occ and not passGhost then
+                        -- we cannot enter occupied tiles (except ghosts pass-through)
+                        break
+                    end
+
+                    dist[nr] = dist[nr] or {}
+                    if dist[nr][nc] == nil then
+                        local nd = dHere + 1
+                        if nd <= maxSteps then
+                            dist[nr][nc] = nd
+                            Q[#Q+1] = { c=nc, r=nr }
+                        end
+                    end
+
+                    if isKnight then break end      -- knight is single “jump” per step
+                    if not sliding then break end   -- non-sliding types: only 1 step along this delta
+                    nc, nr = nc + dlt[1], nr + dlt[2]
+                end
+            end
+        end
+    end
+    return dist
+end
+
 function cardGameFortune.legalLeaderMovesFrom(c,r)
     local s = STATE; if not s then return {} end
     local u = s.board[r] and s.board[r][c]
@@ -896,57 +1102,46 @@ function cardGameFortune.legalLeaderMovesFrom(c,r)
     return res
 end
 
+function cardGameFortune.legalMovesFrom(c, r, opts)
+    local cell = STATE.board[r][c]
+    if not cell or cell.isLeader then return {} end
 
+    local forThreat    = opts and opts.forThreat
+    local returnDist   = opts and opts.returnDist
 
--- Return a set { [r]={[c]=true,...}, ... } of reachable tiles for this unit
-function cardGameFortune.legalMovesFrom(c,r)
-  local cell = STATE.board[r][c]
-  if (not cell) or cell.isLeader or cell.summoningSickness or cell.hasMoved or cell.hasAttacked then
-    return {}
-  end
-  local def = cardGameFortune.db[cell.cardId]
-  local startTerr = terrainAt(c,r)
-  local bonus = (terrainDelta(def and def.subtype2, startTerr) > 0) and 1 or 0
-  local maxSteps = math.max(0, (def and def.movement or 0) + bonus)
-
-  local passThroughUnits = (def and def.subtype1 == "ghost")
-  local dist, q = {}, {{c=c,r=r}} ; dist[r] = {[c]=0}
-
-  local function tryPush(nc,nr, d)
-    if not inBounds(nc,nr) then return end
-    local occ = STATE.board[nr][nc]
-    if occ and not passThroughUnits then return end
-    if not canEnterTile(def, nc, nr) then return end
-    dist[nr] = dist[nr] or {}
-    if dist[nr][nc] == nil and d <= maxSteps then
-      dist[nr][nc] = d ; q[#q+1] = {c=nc,r=nr}
+    if (not forThreat) and (cell.summoningSickness or cell.hasMoved or cell.hasAttacked) then
+        return returnDist and {}, {} or {}
     end
-  end
 
-  local head=1
-  while head <= #q do
-    local node = q[head]; head = head + 1
-    local dHere = dist[node.r][node.c]
-    if dHere < maxSteps then
-      for _,n in ipairs(neighbors4(node.c,node.r)) do
-        tryPush(n[1], n[2], dHere+1)
-      end
-    end
-  end
+    local def       = cardGameFortune.db[cell.cardId]
+    local startTerr = terrainAt(c, r)
+    local baseMov   = (def and def.movement) or 0
+    local movBonus  = def and terrainMovementBonus(def.subtype2, startTerr) or 0
+    local maxSteps  = math.max(0, baseMov + movBonus)
 
-  local set = {}
-  for rr,row in pairs(dist) do
-    for cc,_ in pairs(row) do
-      if not (rr==r and cc==c) and (not STATE.board[rr][cc]) then
-        set[rr] = set[rr] or {} ; set[rr][cc] = true
-      end
+    local dist = _computeReach(c, r, def, maxSteps)
+
+    local set = {}
+    for rr,row in pairs(dist) do
+        for cc,steps in pairs(row) do
+            if not (rr==r and cc==c) then
+                if not (STATE.board[rr] and STATE.board[rr][cc]) then
+                    set[rr] = set[rr] or {}; set[rr][cc] = true
+                end
+            end
+        end
     end
-  end
-  return set
+
+    if returnDist then
+        return set, dist
+    else
+        return set
+    end
 end
 
+
 -- ── Config ─────────────────────────────────────────────────────────────
-cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE = 12 
+cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE = 18
 cardGameFortune.HAND_MAX = 5    -- cap visible hand to 5 cards
 
 local function easeSmooth(t) return t*t*(3 - 2*t) end
@@ -1001,79 +1196,145 @@ end
 -- Manhattan helper
 local function manhattan(c1,r1,c2,r2) return math.abs(c1-c2)+math.abs(r1-r2) end
 
-local function manhattan(c1,r1,c2,r2)
-    return math.abs(c1-c2) + math.abs(r1-r2)
-end
+function cardGameFortune.pickApproachDestination(fromC, fromR, toC, toR)
+    local A = STATE.board[fromR] and STATE.board[fromR][fromC]
+    if not A then return nil, nil end
+    local def = cardGameFortune.db[A.cardId]
+    if (def and (def.atktype or "normal")) ~= "normal" then
+        return nil, nil -- ranged never approaches
+    end
 
-function cardGameFortune.legalAttacksFrom(c,r)
-    local res = {}
-    local A = STATE.board[r][c]; if not A or A.isLeader or A.hasAttacked then return res end
+    -- movement adjacency allowed for this unit (fallback to 4-way)
+    local moveType  = (def and def.movetype) or "normal"
+    local adjDeltas = (cardGameFortune._stepDeltasFor and cardGameFortune._stepDeltasFor(moveType))
+                      or {{1,0},{-1,0},{0,1},{0,-1}}
 
-    local def     = cardGameFortune.db[A.cardId]
-    local atktype = def and def.atktype or "normal"
-    local reach   = def and def.meleeReach or 1   -- NEW: “melee reach” (default 1)
+    -- budget = move + terrain bonus - 1
+    local startTerr = cardGameFortune.terrainAt(fromC, fromR)
+    local baseMov   = (def and def.movement) or 0
+    local movBonus  = (cardGameFortune.terrainMovementBonus and
+                       cardGameFortune.terrainMovementBonus(def and def.subtype2, startTerr)) or 0
+    local budget    = math.max(0, baseMov + movBonus - 1)
 
-    if atktype == "normal" then
-        -- Adjacent 8-way (your original behavior)
-        for _,n in ipairs({{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}}) do
-            local nc, nr = c+n[1], r+n[2]
-            if inBounds(nc,nr) then
-                local D = STATE.board[nr][nc]
-                if D and D.owner ~= A.owner then
-                    res[nr] = res[nr] or {}; res[nr][nc] = true
+    -- true cost map (ignores moved/attacked flags)
+    local _, dist = cardGameFortune.legalMovesFrom(fromC, fromR, { forThreat = true, returnDist = true })
+
+    local bestC, bestR, bestCost
+    for _, d in ipairs(adjDeltas) do
+        local ac, ar = toC + d[1], toR + d[2]
+        if cardGameFortune.inBounds(ac, ar) then
+            local occ = cardGameFortune.safeBoardCell(STATE, ac, ar)
+            if occ == nil then                           -- ✅ treat missing row as empty
+                local cost = dist[ar] and dist[ar][ac]
+                if cost and cost <= budget and (not bestCost or cost < bestCost) then
+                    bestC, bestR, bestCost = ac, ar, cost
                 end
             end
         end
+    end
 
-        -- Melee with reach: allow targets at Manhattan distance 2
-        -- only if we can step one ORTHOGONAL tile closer (that tile must be empty).
-        if reach >= 2 then
-            for rr = 0, STATE.rows-1 do
-                for cc = 0, STATE.cols-1 do
-                    local D = STATE.board[rr][cc]
+    return bestC, bestR
+end
+
+
+function cardGameFortune.legalAttacksFrom(c, r)
+    local res = {}
+    local A = STATE.board[r] and STATE.board[r][c]
+    if not A or A.isLeader or A.hasAttacked then return res end
+
+    local def = cardGameFortune.db[A.cardId]
+    local atktype = (def and def.atktype) or "normal"
+
+    -- ================= MELEE =================
+        if atktype == "normal" then
+            -- TRUE reachable costs ignoring hasMoved/hasAttacked
+            local _, dist = cardGameFortune.legalMovesFrom(c, r, { forThreat=true, returnDist=true })
+
+            -- movement budget = base move + start-tile terrain bonus - 1
+            local startTerr = cardGameFortune.terrainAt(c, r)
+            local movBonus  = (cardGameFortune.terrainMovementBonus and
+                            cardGameFortune.terrainMovementBonus(def.subtype2, startTerr))
+                        or (terrainMovementBonus and terrainMovementBonus(def.subtype2, startTerr))
+                        or 0
+            local maxSteps  = math.max(0, (def.movement or 0) + movBonus)
+            local budget    = math.max(0, maxSteps - 1)
+
+            -- Use 4-way landings for melee approach (you can swap to _stepDeltasFor if desired)
+            -- use movetype-specific landing directions
+            local deltas = (cardGameFortune._stepDeltasFor and
+                            cardGameFortune._stepDeltasFor(def.movetype or "normal"))
+                        or {{1,0},{-1,0},{0,1},{0,-1}}
+
+
+            for rr = 0, STATE.rows - 1 do
+                for cc = 0, STATE.cols - 1 do
+                    local D = STATE.board[rr] and STATE.board[rr][cc]
                     if D and D.owner ~= A.owner then
-                        local d = manhattan(c,r,cc,rr)
-                        if d == 2 then
-                            -- candidates for a one-step orthogonal “approach”
-                            local cand = {}
-                            local dc, dr = cc - c, rr - r
-                            if dc ~= 0 then table.insert(cand, {c + (dc>0 and 1 or -1), r}) end
-                            if dr ~= 0 then table.insert(cand, {c, r + (dr>0 and 1 or -1)}) end
+                        local mark = false
 
-                            for _,st in ipairs(cand) do
-                                local sc, sr = st[1], st[2]
-                                if inBounds(sc,sr) and (STATE.board[sr][sc] == nil) then
-                                    res[rr] = res[rr] or {}; res[rr][cc] = true
-                                    break
+                        -- Adjacent orthogonal: always melee-legal
+                        local dx, dy = cc - c, rr - r
+                        if math.abs(dx) + math.abs(dy) == 1 then
+                            mark = true
+                        else
+                            -- Approach: any EMPTY neighbor with true cost ≤ budget
+                            for _,dlt in ipairs(deltas) do
+                                local ac, ar = cc + dlt[1], rr + dlt[2]
+                                if cardGameFortune.inBounds(ac, ar) then
+                                    local occ = cardGameFortune.safeBoardCell(STATE, ac, ar) -- ← SAFE
+                                    if occ == nil then
+                                        local cost = dist[ar] and dist[ar][ac]
+                                        if cost and cost <= budget then
+                                            mark = true
+                                            break
+                                        end
+                                    end
                                 end
                             end
                         end
+
+                        if mark then
+                            res[rr] = res[rr] or {}
+                            res[rr][cc] = true
+                        end
                     end
                 end
             end
+
+            return res
         end
 
-            -- Ranged / volley: ray in 4 dirs up to attackrange, stop at first unit
-        else
-            local range = (def and def.attackrange) or math.huge
-            for _,d in ipairs({{1,0},{-1,0},{0,1},{0,-1}}) do
-                local cc, rr = c, r
-                for step = 1, range do
-                    cc = cc + d[1]; rr = rr + d[2]
-                    if not cardGameFortune.inBounds(cc, rr) then break end
-                    local V = STATE.board[rr][cc]
-                    if V then
-                        if V.owner ~= A.owner then
-                            res[rr] = res[rr] or {}; res[rr][cc] = true
-                        end
-                        break -- stop at first unit (ally or enemy)
-                    end
-                    -- keep going through empty cells
+
+    -- ================= RANGED =================
+    -- Ranged never approaches; it raycasts within attackrange along a chosen LOS shape.
+    local range = (def and def.attackrange) or math.huge
+    local owner = A.owner
+    local shape = (def and def.rangedLOS) or "orthogonal"
+    local dirs = (shape == "orthogonal") and cardGameFortune.DIR4
+              or (shape == "diagonal")   and cardGameFortune.DIAG4
+              or cardGameFortune.DIR8
+
+    for _, d in ipairs(dirs) do
+        local x, y = c, r
+        for step = 1, range do
+            x = x + d[1]; y = y + d[2]
+            if not inBounds(x, y) then break end
+            local terr = terrainAt(x, y)
+            if terrainBlocksLOS(terr) then break end
+
+            local V = STATE.board[y] and STATE.board[y][x]
+            if V then
+                if V.owner ~= owner then
+                    res[y] = res[y] or {}; res[y][x] = true
                 end
+                break
             end
         end
+    end
+
     return res
 end
+
 
 
 -- Start a short summon effect on a unit table `u`
@@ -1087,26 +1348,170 @@ function cardGameFortune.addSummonFX(u)
     end
 end
 
--- Advance per-frame FX timers
+-- ========== HIT FX (flash + light shake) ==========
+
+-- start a quick hit FX on a unit table `u`
+function cardGameFortune.addHitFX(u, flashes, shake)
+    if not u then return end
+    u._hitfx = { t = 0, flashes = flashes or 6, shake = shake or 2 }
+end
+
+
+-- Draw a bright flash *over the sprite* + tiny shake on hit
+function cardGameFortune.drawHitFX(u, drawX, drawY)
+    local fx = u and u._hitfx
+    if not fx then return end
+
+    local t       = fx.t or 0
+    local flashes = fx.flashes or 6
+    local shake   = fx.shake   or 2
+
+    -- blink on for 1 frame, off for 1 frame, repeat (2*flashes frames total)
+    local blinkOn = (t % 2 == 0) and (t < flashes * 2)
+    local alpha   = blinkOn and 0.55 or 0
+
+    -- subtle 1px shake left/right
+    local ox = 0
+    if shake > 0 and t > 0 then
+        ox = ((t % 2) == 0) and shake or -shake
+    end
+
+    if alpha > 0 then
+        -- try to re-draw the unit icon in white to "light up" the sprite
+        local def = u.cardId and cardGameFortune.db[u.cardId]
+        local texPath = def and def.icon
+        local img = texPath and Graphics.loadImage(texPath)
+
+        if img then
+            -- white-tinted copy of the sprite (same size, on top of the original)
+            Graphics.drawBox{
+                texture  = img,
+                x        = drawX + ox,
+                y        = drawY,
+                width    = img.width,
+                height   = img.height,
+                color    = Color(1,1,1, alpha),
+                priority = 5.12,          -- slightly above your unit (you draw units at 5.0)
+            }
+        else
+            -- fallback: slightly oversized white tile to cover the whole cell
+            local CELL = (CFG and CFG.CELL) or 32
+            Graphics.drawBox{
+                x        = drawX - 1 + ox,
+                y        = drawY - 1,
+                width    = CELL + 2,
+                height   = CELL + 2,
+                color    = Color(1,1,1, alpha),
+                priority = 5.12,
+            }
+        end
+    end
+end
+
+
 function cardGameFortune.stepFX()
     local s = STATE; if not s then return end
+
+    -- advance on-board unit FX (summon / hit) per unit
     for r=0,s.rows-1 do
         for c=0,s.cols-1 do
             local u = s.board[r] and s.board[r][c]
-            if u and u._fx and u._fx.kind=="summon" then
-                u._fx.t = u._fx.t + 1
-                for _,p in ipairs(u._fx.sparks) do p.t = p.t + 1 end
-                if u._fx.t >= u._fx.dur then u._fx = nil end
+            if u then
+                -- summon FX
+                if u._fx and u._fx.kind == "summon" then
+                    u._fx.t = u._fx.t + 1
+                    for _,p in ipairs(u._fx.sparks) do p.t = p.t + 1 end
+                    if u._fx.t >= u._fx.dur then u._fx = nil end
+                end
+                -- hit FX
+                if u._hitfx then
+                    local f = u._hitfx
+                    f.t = (f.t or 0) + 1
+                    -- each flash is 6 frames (3 on, 3 off)
+                    if f.t >= ((f.flashes or 4) * 6) then u._hitfx = nil end
+                end
+            end
+        end
+    end
+
+    -- advance "death" FX ONCE per frame (global pool)
+    if s.deathFX then
+        local i = 1
+        while i <= #s.deathFX do
+            local f = s.deathFX[i]
+            f.t = (f.t or 0) + 1
+            if f.t >= (f.dur or 24) then
+                table.remove(s.deathFX, i)
+            else
+                i = i + 1
             end
         end
     end
 end
 
+
+
+function cardGameFortune.addDeathFXFromUnit(u, c, r, opts)
+    if not u then return end
+    local def   = cardGameFortune.db[u.cardId]
+    local sprite= def and (def.image or def.icon)  -- path used by your tex() loader
+    STATE.deathFX = STATE.deathFX or {}
+    table.insert(STATE.deathFX, {
+        kind   = "death",
+        c      = c, r = r,
+        sprite = sprite,
+        t      = 0,
+        dur    = (opts and opts.dur) or 24,   -- <- ~0.4s at 60fps
+        scale  = (opts and opts.scale) or 1.0 -- optional
+    })
+end
+
+local function _easeOut(t) return 1 - (1 - t)*(1 - t) end
+
+function cardGameFortune.drawDeathFX(boardX, boardY, priority)
+    local s = STATE; if not (s and s.deathFX) then return end
+    local tex = CFG and CFG.tex or Graphics.loadImage -- your tex getter
+
+    for _,f in ipairs(s.deathFX) do
+        local T = math.max(0, math.min(1, (f.t or 0) / (f.dur or 24)))
+        local alpha = 1 - T                          -- fade to 0
+        local scale = 1.0 + 0.25 * _easeOut(T)       -- slight puff out
+        local x = boardX + f.c * CFG.CELL
+        local y = boardY + f.r * CFG.CELL
+
+        local img = nil
+        if f.img then img = tex(f.img) end
+        if (not img) and f.icon then img = tex(f.icon) end
+
+        if img then
+            local w,h = img.width, img.height
+            local dw, dh = math.floor(w*scale), math.floor(h*scale)
+            local dx = x + math.floor((CFG.CELL - dw)/2)
+            local dy = y + math.floor((CFG.CELL - dh)/2)
+            Graphics.drawBox{
+                texture = img,
+                x = dx, y = dy,
+                width = dw, height = dh,
+                color = Color(1,1,1, alpha),
+                priority = priority or 5.06,
+            }
+        else
+            -- fallback: white fade square
+            Graphics.drawBox{
+                x = x, y = y, width = CFG.CELL, height = CFG.CELL,
+                color = Color(1,1,1, alpha*0.6),
+                priority = priority or 5.06,
+            }
+        end
+    end
+end
+
+
 local function _sign(x) return (x>0 and 1) or (x<0 and -1) or 0 end
 
 -- set a single slide animation on this unit
 local function _setSlide(u, c1,r1, c2,r2, framesPerTile)
-    local base = (framesPerTile or cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE or 12)
+    local base = (framesPerTile or cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE or 18)
     u._anim = {
         kind = "slide",
         fromC = c1, fromR = r1,
@@ -1116,6 +1521,82 @@ local function _setSlide(u, c1,r1, c2,r2, framesPerTile)
         ease  = easeSmooth,
     }
 end
+
+-- sign helper (if you don’t already have one here)
+local function _sgn(x) return (x>0 and 1) or (x<0 and -1) or 0 end
+
+-- Produce a per-tile path for a straight line (horizontal, vertical, or diagonal).
+-- It steps one tile per frame chunk so your existing _setSlide/stepAnimations work unchanged.
+local function _buildLinePath(c1,r1, c2,r2)
+    local path = {}
+    local dc, dr = c2 - c1, r2 - r1
+    local sc, sr = _sgn(dc), _sgn(dr)
+    local steps  = math.max(math.abs(dc), math.abs(dr))
+    local c, r   = c1, r1
+    for i=1,steps do
+        c = c + sc
+        r = r + sr
+        path[#path+1] = {c=c, r=r}
+    end
+    return path
+end
+
+-- Decide whether this movetype should render as a single straight line (incl. diagonal)
+local function _prefersLineAnim(movetype, dc, dr)
+    movetype = movetype or "normal"
+    local adx, ady = math.abs(dc), math.abs(dr)
+
+    -- bishop/queen diagonal: pure diagonal lines
+    if (movetype == "bishop" or movetype == "queen") and adx == ady and adx > 0 then
+        return true, "diag"
+    end
+    -- rook/queen straight: pure horizontal/vertical lines
+    if (movetype == "rook" or movetype == "queen") and (adx == 0 or ady == 0) and (adx+ady) > 0 then
+        return true, "straight"
+    end
+    -- checkers-like "diagonal" type: treat any move that uses both axes as a diagonal line
+    if movetype == "diagonal" and adx == ady and adx > 0 then
+        return true, "diag"
+    end
+    return false
+end
+
+-- Public: animate with the best-looking path for the unit’s movement type.
+-- Falls back to your original orthogonal L-path when needed.
+function cardGameFortune._animateSmartSlide(u, c1,r1, c2,r2, movetype, framesPerTile)
+    local dc, dr = c2 - c1, r2 - r1
+    local useLine = _prefersLineAnim(movetype, dc, dr)
+
+    local path
+    if useLine then
+        path = _buildLinePath(c1,r1, c2,r2)      -- single straight (H/V/diag) path
+    else
+        -- fallback to the old “orthogonal chain”: first the dominant axis, then the other
+        local horizFirst = math.abs(dc) >= math.abs(dr)
+        path = {}
+        local c, r = c1, r1
+        if horizFirst then
+            while c ~= c2 do c = c + _sgn(dc); path[#path+1] = {c=c, r=r} end
+            while r ~= r2 do r = r + _sgn(dr); path[#path+1] = {c=c, r=r} end
+        else
+            while r ~= r2 do r = r + _sgn(dr); path[#path+1] = {c=c, r=r} end
+            while c ~= c2 do c = c + _sgn(dc); path[#path+1] = {c=c, r=r} end
+        end
+    end
+
+    -- Play the chain (one _setSlide per tile, same timing you already use)
+    Routine.run(function()
+        local pc, pr = c1, r1
+        local fpt = framesPerTile or cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE or 18
+        for i=1,#path do
+            local tc, tr = path[i].c, path[i].r
+            _setSlide(u, pc, pr, tc, tr, fpt)
+            for f=1,fpt do Routine.waitFrames(1) end
+            pc, pr = tc, tr
+        end
+    end)
+end
+
 
 -- Chain L-shaped slides: first along the dominant axis (or always X then Y)
 function cardGameFortune._animateOrthogonalSlides(u, c1,r1, c2,r2, framesPerTile)
@@ -1161,8 +1642,16 @@ function cardGameFortune.moveUnit(c1,r1, c2,r2, opts)   -- <— add opts
     s.board[r2][c2] = u
     s.board[r1][c1] = nil
 
+    do
+        local def = cardGameFortune.db[u.cardId]
+        if def and def.atktype == "ranged" and (not (opts and opts.keepAttack)) then
+            u.hasAttacked = true
+        end
+    end
+
     if not u.isLeader then u.pos = "attack" end
     u.hasMoved = true
+    cardGameFortune.sfx_move()
 
     local keep = opts and opts.keepAttack
     if not keep then u.hasAttacked = true end
@@ -1171,9 +1660,50 @@ function cardGameFortune.moveUnit(c1,r1, c2,r2, opts)   -- <— add opts
         s.leaderPos[u.owner].c, s.leaderPos[u.owner].r = c2, r2
     end
 
-    cardGameFortune._animateOrthogonalSlides(u, c1, r1, c2, r2, cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE)
+    local def = u.cardId and cardGameFortune.db[u.cardId]
+    local movetype = def and def.movetype
+    cardGameFortune._animateSmartSlide(
+        u, c1, r1, c2, r2, movetype, cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE
+    )
+
 
     return true
+end
+
+
+-- Defeat (fade-out) FX
+-- Start a short "corpse fade" on a removed unit
+function cardGameFortune.addDeathFX(u, c, r, opts)
+    local s = STATE; if not (s and u) then return end
+    s.deathFX = s.deathFX or {}
+
+    local def = cardGameFortune.db[u.cardId]
+    table.insert(s.deathFX, {
+        c = c, r = r,
+        img = def and def.image,    -- big art if available
+        icon = def and def.icon,    -- fallback to icon
+        t = 0,
+        dur = (opts and opts.dur) or 24,
+        flashes = 0,                 -- not blinking; just fade/scale
+    })
+end
+
+
+-- extend your existing FX stepper (keep your old code, just add this block)
+do
+    local _oldStepFX = cardGameFortune.stepFX
+    function cardGameFortune.stepFX()
+        if _oldStepFX then _oldStepFX() end
+
+        local list = STATE and STATE.deathFX
+        if not list then return end
+        local i = 1
+        while i <= #list do
+            local f = list[i]
+            f.t = f.t + 1
+            if f.t >= f.dur then table.remove(list, i) else i = i + 1 end
+        end
+    end
 end
 
 
@@ -1213,6 +1743,13 @@ function cardGameFortune.resolveBattle(ac,ar, dc,dr)
     local atktype = (aDef and (aDef.atktype or "normal")) or "normal"
     local isMelee = (atktype == "normal")
 
+    if atktype == "normal" then
+        cardGameFortune.sfx_combat()
+    else
+        cardGameFortune.sfx_ranged(aDef)   -- Magikoopa/Bullet Blaster support, else Combat.wav
+    end
+
+
     -- attacker stats tile:
     --   melee  -> defender's tile
     --   ranged -> attacker's tile
@@ -1221,6 +1758,17 @@ function cardGameFortune.resolveBattle(ac,ar, dc,dr)
 
     local destroyA, destroyD = false, false
     local damagePlayer, damageAmt = nil, 0
+
+    -- ...after deciding outcome, before removals...
+    local attackerWillDie = destroyA
+    local defenderWillDie = destroyD
+
+    -- Flash whoever takes damage and survives the board state update
+    if not defenderWillDie then cardGameFortune.addHitFX(D) end
+    if not attackerWillDie and (D.pos == "attack" and aATK < ((cardGameFortune.getEffectiveStats(cardGameFortune.db[D.cardId], dc, dr))) ) then
+        -- attacker lost in ATK vs ATK → flash attacker too
+        cardGameFortune.addHitFX(A)
+    end
 
     if D.isLeader then
         -- direct hit to leader
@@ -1249,14 +1797,86 @@ function cardGameFortune.resolveBattle(ac,ar, dc,dr)
         end
     end
 
+    -- VISUAL HIT FX (non-lethal and lethal both get the flash)
+    do
+        -- If defender is getting hit (either destroyed or took damage), blink it
+        if destroyD or (not D.isLeader and damagePlayer == A.owner and damageAmt > 0) then
+            cardGameFortune.addHitFX(D, {dur=14, flashes=4, shake=1})
+        end
+        -- If attacker is getting hit (either destroyed or took damage), blink it
+        if destroyA or (damagePlayer == A.owner and damageAmt > 0 and D.pos == "attack" and not (destroyD and damageAmt == (aATK or 0))) then
+            cardGameFortune.addHitFX(A, {dur=14, flashes=4, shake=1})
+        end
+        -- Leader direct damage: make attacker flash briefly (impact feedback)
+        if D.isLeader and damageAmt > 0 then
+            cardGameFortune.addHitFX(A, {dur=10, flashes=3, shake=1})
+        end
+    end
+
+    cardGameFortune.addHitFX(A, 4, 1)
+    cardGameFortune.addHitFX(D, 4, 1)
+
+    -- spawn corpse fades *before* we remove them from the board
+    if destroyD then cardGameFortune.addDeathFXFromUnit(D, dc, dr, {dur=24}) end
+    if destroyA then cardGameFortune.addDeathFXFromUnit(A, ac, ar, {dur=24}) end
+
+    local playedKill = false
+    if destroyD and not playedKill then cardGameFortune.sfx_kill(); playedKill = true end
+    if destroyA and not playedKill then cardGameFortune.sfx_kill(); playedKill = true end
+
     -- log to grave before removing from board
     if destroyD then
-        if D and D.cardId then cardGameFortune.pushToGrave(D.owner, D.cardId, "KO", A and A.cardId) end
-        s.board[dr][dc] = nil
+    cardGameFortune.addDeathFX(D, dc, dr)
+    cardGameFortune.sfx_kill()
+    if D and D.cardId then cardGameFortune.pushToGrave(D.owner, D.cardId, "KO", A and A.cardId) end
+    s.board[dr][dc] = nil
     end
     if destroyA then
+        cardGameFortune.addDeathFX(A, ac, ar)
+        cardGameFortune.sfx_kill()
         if A and A.cardId then cardGameFortune.pushToGrave(A.owner, A.cardId, "KO", D and D.cardId) end
         s.board[ar][ac] = nil
+    end
+
+
+
+    -- ADVANCE ON CAPTURE (melee only; do not advance onto leader)
+    if isMelee and destroyD and not (D and D.isLeader) then
+        local s = STATE
+        local mover = s.board[ar] and s.board[ar][ac]   -- attacker still alive?
+        if mover then
+            -- must be allowed to end on defender's terrain
+            local terr = cardGameFortune.terrainAt(dc, dr)
+            local mdef = cardGameFortune.db[mover.cardId]
+            if cardGameFortune.canEnter(mdef, terr) then
+                -- Update board first (same order as moveUnit), then animate from old tile → new tile
+                s.board[dr][dc] = mover
+                s.board[ar][ac] = nil
+
+                -- keep unit coords in sync if you track them
+                mover.c, mover.r = dc, dr
+
+                -- spend the action
+                mover.hasAttacked = true
+
+                -- Slide using movetype-aware path (diag for bishop/queen, straight for rook/queen)
+                local mdef     = cardGameFortune.db[mover.cardId]
+                local movetype = mdef and mdef.movetype
+
+                if cardGameFortune._animateSmartSlide then
+                    cardGameFortune._animateSmartSlide(
+                        mover,              -- unit
+                        ac, ar,             -- from (approach tile)
+                        dc, dr,             -- to (captured tile)
+                        movetype,
+                        cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE
+                    )
+                else
+                    -- safe fallback if helper not loaded
+                    _setSlide(mover, ac, ar, dc, dr, cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE)
+                end
+            end
+        end
     end
 
     if damagePlayer and damageAmt > 0 then
@@ -1430,7 +2050,8 @@ function cardGameFortune.playFromHand(player, handIndex, c, r, position)
 
     -- start summon flair (and optional SFX)
     cardGameFortune.addSummonFX(u)
-    -- SFX.play(3)
+    cardGameFortune.sfx_summon()
+
 
     return true, "Placed"
 end
@@ -1665,7 +2286,7 @@ local CARDS = {
         description="A basic enemy. Weak alone, strong in numbers.",
         type="melee", atk=3, def=2, movement=1,
         movementtype="normal", atktype="normal",
-        subtype1="normal", subtype2="overworld",
+        subtype1="normal", subtype2="Overworld",
         summoncost=1, deckcost=1
     },
 
@@ -1676,7 +2297,7 @@ local CARDS = {
         description="Hides in its shell when attacked.",
         type="defensive", atk=3, def=4, movement=1,
         movementtype="normal", atktype="normal",
-        subtype1="normal", subtype2="overworld",
+        subtype1="normal", subtype2="Overworld",
         summoncost=2, deckcost=2
     },
 
@@ -1686,8 +2307,8 @@ local CARDS = {
         image="cardgame/chuckcard.png", icon="cardgame/chuckicon.png",
         description="Rams into foes with football tackles.",
         type="grappler", atk=6, def=5, movement=2,
-        movementtype="normal", meleeReach = 2, atktype="normal",
-        subtype1="normal", subtype2="overworld",
+        movementtype="normal", atktype="normal",
+        subtype1="normal", subtype2="Overworld",
         summoncost=3, deckcost=3
     },
 
@@ -1698,7 +2319,7 @@ local CARDS = {
         description="Throws hammers from afar.",
         type="ranged", atk=7, def=4, movement=1,
         movementtype="normal", attackrange = 2, atktype="ranged", 
-        subtype1="normal", subtype2="overworld",
+        subtype1="normal", subtype2="Overworld",
         summoncost=4, deckcost=4
     },
 
@@ -1709,7 +2330,7 @@ local CARDS = {
         description="Casts unpredictable magic blasts.",
         type="magic", atk=9, def=5, movement=1,
         movementtype="queen", attackrange = 4, atktype="ranged",
-        subtype1="normal", subtype2="castle",
+        subtype1="normal", subtype2="Castle",
         summoncost=5, deckcost=5
     },
 
@@ -1720,7 +2341,7 @@ local CARDS = {
         description="Stationary cannon that fires Bullet Bills.",
         type="tower", atk=6, def=12, movement=0,
         movementtype="normal", attackrange = 7, atktype="volley",
-        subtype1="normal", subtype2="airship",
+        subtype1="normal", subtype2="Castle",
         summoncost=6, deckcost=6
     },
 }

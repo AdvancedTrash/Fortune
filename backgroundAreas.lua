@@ -322,7 +322,7 @@ function backgroundAreas.onDraw()
 					height = settings.height,
 				}
 
-				local colorValue = math.clamp(settings.scale,0,1)	-- the farther back, the more tinted it is
+				local colorValue = math.clamp(settings.scale,1,1)	-- the farther back, the more tinted it is
 			
 				Graphics.drawBox{		-- draws the capture buffer at the bgo's position with parallax imitation
 					texture = data.backgroundBuffer,

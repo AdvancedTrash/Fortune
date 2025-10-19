@@ -36,7 +36,7 @@
 		"type": "int",
 		"tooltip": "by how many degrees the area is rotated when drawn.",
 		"value-default": 0,
-		"value-min": 0,
+		"value-min": -360,
 		"value-max": 360,
 		"single-step": 5
 	},
