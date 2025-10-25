@@ -11,77 +11,122 @@ end
 
 
 -- Explain why a click (c,r) is illegal for the currently selected unit su
+-- Leader-safe explain; tolerates nil sets and no dist map
 function cardGameFortune.debugExplainSelection(su, c, r, legalMoveSet, legalAttackSet)
-    local s  = cardGameFortune.peek()
-    if not (s and su and s.board[su.r] and s.board[su.r][su.c]) then
-        Misc.dialog("Debug: selection vanished or invalid.")
-        return
+    local s = cardGameFortune.peek(); if not s then return end
+    if not su then return end
+
+    local u = s.board[su.r] and s.board[su.r][su.c]
+    if not u then return end
+
+    local isLeader = u.isLeader == true
+
+    -- Build movement sets only for non-leaders (leaders don’t use approach/costs)
+    local moves, dist = {}, {}
+    if not isLeader then
+        moves, dist = cardGameFortune.legalMovesFrom(
+            su.c, su.r, { forThreat = true, returnDist = true }
+        )
+        moves = moves or {}; dist = dist or {}
     end
-    local A   = s.board[su.r][su.c]
-    local def = cardGameFortune.db[A.cardId] or {}
-    local atktype = def.atktype or "normal"
 
-    local function inB(x,y) return x>=0 and x<s.cols and y>=0 and y<s.rows end
     local occ = s.board[r] and s.board[r][c]
+    local moveOK = (legalMoveSet and legalMoveSet[r] and legalMoveSet[r][c]) and (occ == nil) or false
+    local atkOK  = (legalAttackSet and legalAttackSet[r] and legalAttackSet[r][c]) or false
 
-    -- quick banner
-    local lines = {}
-    lines[#lines+1] = ("Tile (%d,%d)  occ=%s  moveOK=%s  atkOK=%s"):format(
-        c,r, tostring(occ~=nil),
-        tostring(legalMoveSet and legalMoveSet[r] and legalMoveSet[r][c] and (occ==nil)),
-        tostring(legalAttackSet and legalAttackSet[r] and legalAttackSet[r][c])
-    )
+    function cardGameFortune._attackOriginDeltasFor(mt)
+        local m = (mt or "normal")
+        if m == "bishop" or m == "diagonal" then
+            return { { 1, 1},{-1, 1},{ 1,-1},{-1,-1} }                         -- 4-diag
+        elseif m == "rook" or m == "orthogonal" then
+            return { { 1, 0},{-1, 0},{ 0, 1},{ 0,-1} }                         -- 4-orth
+        elseif m == "queen" then
+            return { {1,0},{-1,0},{0,1},{0,-1},{1,1},{-1,1},{1,-1},{-1,-1} }   -- 8-dir
+        elseif m == "knight" then
+            return { { 2, 1},{ 2,-1},{-2, 1},{-2,-1},{ 1, 2},{ 1,-2},{-1, 2},{-1,-2} }
+        else
+            -- default melee: 4-orth
+            return { { 1, 0},{-1, 0},{ 0, 1},{ 0,-1} }
+        end
+    end
 
-    -- If enemy target: analyze approach adjacencies for melee; LOS for ranged.
-    local enemy = occ and occ.owner and (occ.owner ~= s.whoseTurn) or false
-    if enemy then
-        if atktype == "normal" then
-            local _, dist = cardGameFortune.legalMovesFrom(su.c, su.r, {forThreat=true, returnDist=true})
-            local startTerr = cardGameFortune.terrainAt(su.c, su.r)
-            local movBonus  = (cardGameFortune.terrainMovementBonus and
-                            cardGameFortune.terrainMovementBonus(def.subtype2, startTerr)) or 0
-            local budget    = math.max(0, (def.movement or 0) + movBonus - 1)
+        -- when an enemy tile (rc) is clicked while a melee unit is selected:
+    local function canApproachAndStrike(attacker, target, legalMoveSet, dist)
+        -- Keep move data consistent with what you used to draw/pick earlier.
+        -- If you truly don't have it, recompute with the SAME opts you use elsewhere.
+        if not legalMoveSet then
+            -- Prefer: forThreat=false so gates (moved/attacked/summon) match real action.
+            -- If you also need distance to pick best, request returnDist too.
+            local set, d = cardGameFortune.legalMovesFrom(attacker.c, attacker.r, {returnDist=true})
+            legalMoveSet, dist = set, d
+        end
 
-            local adjDeltas = (cardGameFortune._stepDeltasFor and cardGameFortune._stepDeltasFor(def.movetype or "normal"))
-                                or {{1,0},{-1,0},{0,1},{0,-1}}
+        local def = cardGameFortune.db[attacker.cardId] or {}
+        local mt  = (def.movementtype or def.movetype) or "normal"
+        local deltas = cardGameFortune._attackOriginDeltasFor(mt)
 
-            lines[#lines+1] = ("Melee approach budget=%d"):format(budget)
-            for _,d in ipairs(adjDeltas) do
-                local ac, ar = c + d[1], r + d[2]
-                if inB(ac,ar) then
-                    local aOcc  = s.board[ar] and s.board[ar][ac]
-                    local cost  = dist[ar] and dist[ar][ac]
-                    local tag   = aOcc and "occupied"
-                                   or (not cost and "unreach")
-                                   or (cost > budget and (">budget "..cost))
-                                   or ("OK cost="..cost)
-                    lines[#lines+1] = ("  adj(%d,%d): %s"):format(ac,ar, tag)
+        local bestC, bestR, bestCost
+
+        for _,d in ipairs(deltas) do
+            local oc, orr = target.c + d[1], target.r + d[2]
+            if cardGameFortune.isOnBoard(oc,orr)
+            and cardGameFortune.isEmpty(oc,orr)
+            and legalMoveSet[orr] and legalMoveSet[orr][oc] then
+                if dist and dist[orr] and dist[orr][oc] then
+                    local cost = dist[orr][oc]
+                    if not bestCost or cost < bestCost then
+                        bestC, bestR, bestCost = oc, orr, cost
+                    end
                 else
-                    lines[#lines+1] = ("  adj(%d,%d): OOB"):format(ac,ar)
+                    -- no distance map; first valid origin is fine
+                    return true, oc, orr
                 end
             end
-        else
-            -- ranged: show LOS directions considered
-            local range = def.attackrange or 1
-            local los   = def.rangedLOS or "orthogonal"
-            lines[#lines+1] = ("Ranged LOS=%s range=%d (target not in legalAttackSet)"):format(los, range)
         end
-    else
-        -- Not an enemy: if it looked like a move, tell why it failed
-        if not (legalMoveSet and legalMoveSet[r] and legalMoveSet[r][c]) then
-            -- recompute dist for detail
-            local _, dist = cardGameFortune.legalMovesFrom(su.c, su.r, {forThreat=true, returnDist=true})
-            local dHere = dist[r] and dist[r][c]
-            lines[#lines+1] = "Move not legal here."
-            lines[#lines+1] = "  reason: "..(occ and "occupied"
-                                   or (not dHere and "unreachable")
-                                   or "unknown")
-            if dHere then lines[#lines+1] = ("  cost=%d"):format(dHere) end
-        end
+
+        if bestC then return true, bestC, bestR end
+        return false
     end
 
-    Misc.dialog(table.concat(lines, "\n"))
+
+        local lines = {}
+        lines[#lines+1] = ("Tile (%d,%d)  occ=%s  moveOK=%s  atkOK=%s")
+            :format(c, r, tostring(occ~=nil), tostring(moveOK), tostring(atkOK))
+
+        if isLeader then
+            lines[#lines+1] = "Leader: no approach/strike budget; move only to highlighted tiles."
+            Misc.dialog(table.concat(lines, "\n"))
+            return
+        end
+
+        -- For melee approach explanation (non-leader only)
+        local def   = cardGameFortune.db[u.cardId]
+        local bud   = cardGameFortune.meleeApproachBudget and select(1, cardGameFortune.meleeApproachBudget(def, su.c, su.r)) or nil
+        if bud then
+            lines[#lines+1] = ("Melee approach budget=%d"):format(bud)
+            for _,d in ipairs{{1,0},{-1,0},{0,1},{0,-1}} do
+                local ac, ar = c + d[1], r + d[2]
+                if cardGameFortune.inBounds(ac, ar) then
+                    local aocc = s.board[ar] and s.board[ar][ac]
+                    if aocc then
+                        lines[#lines+1] = ("adj(%d,%d): occupied"):format(ac, ar)
+                    else
+                        local cost = dist[ar] and dist[ar][ac]
+                        if not cost then
+                            lines[#lines+1] = ("adj(%d,%d): unreached"):format(ac, ar)
+                        elseif bud and cost > bud then
+                            lines[#lines+1] = ("adj(%d,%d): > budget %d"):format(ac, ar, bud)
+                        else
+                            lines[#lines+1] = ("adj(%d,%d): OK cost=%d"):format(ac, ar, cost)
+                        end
+                    end
+                end
+            end
+        end
+
+        Misc.dialog(table.concat(lines, "\n"))
 end
+
 
 
 -- === Duel: Challenger registry ===========================================
@@ -117,7 +162,7 @@ function cardGameFortune.register(card)
     assert(not cardGameFortune.db[card.id], ("duplicate card id: %s"):format(card.id))
 
     -- normalize names
-    local movetype = card.movetype or card.movementtype or "normal"
+    local movetype = card.movementtype or "normal"
     local atktype  = card.atktype  or "melee"
     local rangedLOS = card.rangedLOS or "orthogonal"
     local attackrange = card.attackrange or 1
@@ -151,20 +196,25 @@ end
 
 
 cardGameFortune.roleBonus = {
-  melee     = { grappler = 3, ranged = 1 },
-  defensive = { melee = 3, magic = 1 },
-  grappler  = { defensive = 3, tower = 1 },
-  ranged    = { tower = 3, grappler = 1 },
-  magic     = { ranged = 3, melee = 1 },
-  tower     = { magic = 3, defensive = 1},
+  Melee     = { Grappler = 3, Ranged = 1 },
+  Defensive = { Melee = 3, Magic = 1 },
+  Grappler  = { Defensive = 3, Tower = 1 },
+  Ranged    = { Tower = 3, Grappler = 1 },
+  Magic     = { Ranged = 3, Melee = 1 },
+  Tower     = { Magic = 3, Defensive = 1},
 }
 
-cardGameFortune.attackTypeBonus = {
-  normal = {},
-  ranged = { tower = 3, defensive = 1 },
-  pierce = { defensive = 3, tower = 1 },
-  volley = { tower = 3, melee = -1 },
-}
+function cardGameFortune.unitType(u)
+    local def = u and cardGameFortune.db[u.cardId]
+    return (def and def.type) or "neutral"
+end
+
+function cardGameFortune.roleAtkBonus(attType, defType)
+    local rows = cardGameFortune.roleBonus or {}
+    local r = rows[attType]
+    return (r and r[defType]) or 0
+end
+
 
 -- ───────────────────────────────────────────────────────────
 -- STATE & RULES (new)
@@ -260,6 +310,8 @@ local function terrainMovementBonus(defTerr, tileTerr)
   if pen and pen[tileTerr] then return -1 end  -- Penalty terrain: -1 movement
   return 0
 end
+
+cardGameFortune.terrainMovementBonus = terrainMovementBonus
 
 -- Return a human terrain name for tile (c,r)
 function cardGameFortune.terrainNameAt(c, r)
@@ -643,11 +695,14 @@ local function bfsReachable(s, c0,r0, c1,r1)
 end
 
 -- ── SFX helper ─────────────────────────────────────────────
+local SFX_MASTER = 0.40 
+
 local function _sfx(path, vol)
-    -- Robust: ignore missing files, don’t crash on typos
-    local ok, err = pcall(function() SFX.play(path, vol or 1.0) end)
-    -- if not ok then Misc.dialog("SFX missing: "..tostring(path)) end -- optional debug
+    if not path then return end
+    local v = (vol or 1.0) * SFX_MASTER   
+    pcall(SFX.play, path, v)            
 end
+
 
 -- Callers (so the call sites stay short & consistent)
 function cardGameFortune.sfx_move()        _sfx("cardgame/sound/Move.wav") end
@@ -1000,87 +1055,154 @@ local function neighbors4(c,r)
   return { {c+1,r},{c-1,r},{c,r+1},{c,r-1} }
 end
 
--- === Movement shape primitives ==========================================
-cardGameFortune.DIR4  = cardGameFortune.DIR4  or { {1,0}, {-1,0}, {0,1}, {0,-1} }
-cardGameFortune.DIAG4 = cardGameFortune.DIAG4 or { {1,1}, {-1,1}, {1,-1}, {-1,-1} }
-cardGameFortune.DIR8  = cardGameFortune.DIR8  or {
-    {1,0},{-1,0},{0,1},{0,-1},{1,1},{-1,1},{1,-1},{-1,-1}
+-- === Movement shape primitives ============
+cardGameFortune.DIR4   = cardGameFortune.DIR4   or { { 1, 0},{-1, 0},{ 0, 1},{ 0,-1} }
+cardGameFortune.DIAG4  = cardGameFortune.DIAG4  or { { 1, 1},{-1, 1},{ 1,-1},{-1,-1} }
+cardGameFortune.DIR8   = cardGameFortune.DIR8   or {
+    { 1, 0},{-1, 0},{ 0, 1},{ 0,-1},{ 1, 1},{-1, 1},{ 1,-1},{-1,-1}
 }
 cardGameFortune.KNIGHT = cardGameFortune.KNIGHT or {
     { 1, 2},{ 2, 1},{-1, 2},{-2, 1},{ 1,-2},{ 2,-1},{-1,-2},{-2,-1}
 }
 
-local function _stepDeltasFor(moveType)
-    local t = moveType or "normal"
-    if t == "normal"     then return cardGameFortune.DIR4
-    elseif t == "diagonal" then return cardGameFortune.DIAG4
-    elseif t == "rook"     then return cardGameFortune.DIR4
-    elseif t == "bishop"   then return cardGameFortune.DIAG4
-    elseif t == "queen"    then return cardGameFortune.DIR8
-    elseif t == "knight"   then return cardGameFortune.KNIGHT
-    else return cardGameFortune.DIR4 end
+local function _stepDeltasFor(def)
+    local t = (def and (def.movetype or def.movementtype)) or "normal"
+    if t == "diagonal" or t == "bishop" then 
+        return cardGameFortune.DIR8, false  -- Use 8-way, not just diagonal
+    elseif t == "queen" then return cardGameFortune.DIR8, true
+    elseif t == "rook" then return cardGameFortune.DIR4, true
+    elseif t == "knight" then return cardGameFortune.KNIGHT, "knight"
+    else return cardGameFortune.DIR4, false end
 end
 
-local function _isSliding(moveType)
-    return (moveType == "rook" or moveType == "bishop" or moveType == "queen")
+local function _isSliding(movetype)
+    return (movetype == "rook" or movetype == "bishop" or movetype == "queen")
 end
 
-local function _isKnight(moveType)
-    return moveType == "knight"
+local function _isKnight(movetype)
+    return movetype == "knight"
 end
 
 -- === Unified reach map (respects movetype, terrain, occupancy) ==========
--- Returns dist[r][c] = steps (0 at start).
-local function _computeReach(c0, r0, def, maxSteps)
-    local rows, cols = STATE.rows, STATE.cols
-    local moveType   = def and def.movetype or "normal"
-    local deltas     = _stepDeltasFor(moveType)
-    local sliding    = _isSliding(moveType)
-    local isKnight   = _isKnight(moveType)
+-- Replace your local function with this exported one
+function cardGameFortune._computeReach(c0, r0, def, maxSteps)
+    local s = STATE; if not (s and s.board) then return {} end
+    local rows, cols = s.rows, s.cols
+
+    local movetype   = (def and (def.movementtype or def.movetype)) or "normal"
+    local deltas, kind = _stepDeltasFor(def)
     local passGhost  = (def and def.subtype1 == "ghost")
+    local isSliding  = (movetype == "rook" or movetype == "bishop" or movetype == "queen")
 
     local function inB(c,r) return c>=0 and c<cols and r>=0 and r<rows end
     local function passable(c,r)
-        local terr = terrainAt(c,r)
+        local terr = cardGameFortune.terrainAt(c,r)
         return terr and cardGameFortune.canEnter(def, terr)
     end
 
     local dist = { [r0] = { [c0] = 0 } }
-    local Q, head = { {c=c0,r=r0} }, 1
 
-    while head <= #Q do
-        local n = Q[head]; head = head + 1
-        local dHere = dist[n.r][n.c]
-        if dHere < maxSteps then
-            for _,dlt in ipairs(deltas) do
-                local nc, nr = n.c + dlt[1], n.r + dlt[2]
-
-                while inB(nc,nr) do
-                    if not passable(nc,nr) then break end
-
-                    local occ = STATE.board[nr] and STATE.board[nr][nc]
-                    if occ and not passGhost then
-                        -- we cannot enter occupied tiles (except ghosts pass-through)
-                        break
-                    end
-
+    if kind == "knight" then
+        -- Knights: single hop to each L-shaped position
+        for _,dlt in ipairs(deltas) do
+            local nc, nr = c0 + dlt[1], r0 + dlt[2]
+            if inB(nc,nr) and passable(nc,nr) and not (s.board[nr] and s.board[nr][nc]) then
+                if maxSteps >= 1 then
                     dist[nr] = dist[nr] or {}
-                    if dist[nr][nc] == nil then
-                        local nd = dHere + 1
-                        if nd <= maxSteps then
-                            dist[nr][nc] = nd
-                            Q[#Q+1] = { c=nc, r=nr }
+                    dist[nr][nc] = 1
+                end
+            end
+        end
+    elseif isSliding then
+        -- Sliding pieces: cast rays in each direction
+        for _,dlt in ipairs(deltas) do
+            local nc, nr = c0 + dlt[1], r0 + dlt[2]
+            local steps = 1
+            
+            while steps <= maxSteps and inB(nc,nr) do
+                -- Check terrain passability
+                if not passable(nc,nr) then break end
+                
+                -- Check occupancy
+                local occupied = (s.board[nr] and s.board[nr][nc])
+                
+                if occupied and not passGhost then
+                    break  -- Can't slide through pieces (unless ghost)
+                else
+                    -- Mark this tile as reachable
+                    dist[nr] = dist[nr] or {}
+                    dist[nr][nc] = steps
+                    
+                    if occupied and passGhost then
+                        -- Ghost can pass through but still counts the step
+                    end
+                end
+                
+                -- Continue sliding
+                nc, nr = nc + dlt[1], nr + dlt[2]
+                steps = steps + 1
+            end
+        end
+    else
+        -- Normal/diagonal: step-by-step BFS
+        local Q, head = { {c=c0,r=r0} }, 1
+        
+        while head <= #Q do
+            local n = Q[head]; head = head + 1
+            local dHere = dist[n.r][n.c]
+            
+            if dHere < maxSteps then
+                for _,dlt in ipairs(deltas) do
+                    local nc, nr = n.c + dlt[1], n.r + dlt[2]
+                    
+                    if inB(nc,nr) and passable(nc,nr) then
+                        local occ = s.board[nr] and s.board[nr][nc]
+                        
+                        if (not occ) or passGhost then
+                            if not (dist[nr] and dist[nr][nc]) then
+                                local nd = dHere + 1
+                                if nd <= maxSteps then
+                                    dist[nr] = dist[nr] or {}
+                                    dist[nr][nc] = nd
+                                    Q[#Q+1] = { c=nc, r=nr }
+                                end
+                            end
                         end
                     end
-
-                    if isKnight then break end      -- knight is single “jump” per step
-                    if not sliding then break end   -- non-sliding types: only 1 step along this delta
-                    nc, nr = nc + dlt[1], nr + dlt[2]
                 end
             end
         end
     end
+
     return dist
+end
+
+
+-- Where can the attacker STAND to legally melee this target, per movetype?
+function cardGameFortune._attackOriginDeltasFor(movetype)
+    local mt = movetype or "normal"
+    if mt == "diagonal" or mt == "bishop" then
+        return { { 1, 1},{-1, 1},{ 1,-1},{-1,-1} }                  -- 4-diag only
+    elseif mt == "queen" then
+        return { { 1, 0},{-1, 0},{ 0, 1},{ 0,-1},{ 1, 1},{-1, 1},{ 1,-1},{-1,-1} } -- 8-dir
+    elseif mt == "knight" then
+        return { { 2, 1},{ 2,-1},{-2, 1},{-2,-1},{ 1, 2},{ 1,-2},{-1, 2},{-1,-2} }
+    else
+        return { { 1, 0},{-1, 0},{ 0, 1},{ 0,-1} }                  -- normal/rook
+    end
+end
+
+-- cardGameFortune.lua
+function cardGameFortune.isMeleeInRange(unitRef, uc, ur, tc, tr)
+    if not unitRef then return false end
+    local def = cardGameFortune.db[unitRef.cardId]
+    local mt  = (def and (def.movementtype or def.movetype)) or "normal"
+    local adj = cardGameFortune._attackOriginDeltasFor(mt)
+    local dc, dr = tc - uc, tr - ur
+    for _,d in ipairs(adj) do
+        if d[1] == dc and d[2] == dr then return true end
+    end
+    return false
 end
 
 function cardGameFortune.legalLeaderMovesFrom(c,r)
@@ -1103,30 +1225,34 @@ function cardGameFortune.legalLeaderMovesFrom(c,r)
 end
 
 function cardGameFortune.legalMovesFrom(c, r, opts)
-    local cell = STATE.board[r][c]
-    if not cell or cell.isLeader then return {} end
+    local cell = STATE.board[r] and STATE.board[r][c]
+    if not cell or cell.isLeader then return (opts and opts.returnDist) and {}, {} or {} end
 
-    local forThreat    = opts and opts.forThreat
-    local returnDist   = opts and opts.returnDist
+    local forThreat  = opts and opts.forThreat
+    local returnDist = opts and opts.returnDist
 
     if (not forThreat) and (cell.summoningSickness or cell.hasMoved or cell.hasAttacked) then
         return returnDist and {}, {} or {}
     end
 
-    local def       = cardGameFortune.db[cell.cardId]
-    local startTerr = terrainAt(c, r)
-    local baseMov   = (def and def.movement) or 0
-    local movBonus  = def and terrainMovementBonus(def.subtype2, startTerr) or 0
-    local maxSteps  = math.max(0, baseMov + movBonus)
+    local def         = cardGameFortune.db[cell.cardId] or {}
+    local startTerr   = cardGameFortune.terrainAt(c, r)
+    local baseMov     = def.movement or 0
+    local movBonus    = (cardGameFortune.terrainMovementBonus
+                      and cardGameFortune.terrainMovementBonus(def.subtype2, startTerr)) or 0
+    local maxSteps    = math.max(0, baseMov + movBonus)
 
-    local dist = _computeReach(c, r, def, maxSteps)
+    -- Use _computeReach instead of duplicating logic
+    local dist = cardGameFortune._computeReach(c, r, def, maxSteps)
 
+    -- Build set from dist (exclude starting position)
     local set = {}
-    for rr,row in pairs(dist) do
-        for cc,steps in pairs(row) do
-            if not (rr==r and cc==c) then
+    for rr, row in pairs(dist) do
+        for cc, _ in pairs(row) do
+            if not (rr == r and cc == c) then
                 if not (STATE.board[rr] and STATE.board[rr][cc]) then
-                    set[rr] = set[rr] or {}; set[rr][cc] = true
+                    set[rr] = set[rr] or {}
+                    set[rr][cc] = true
                 end
             end
         end
@@ -1197,35 +1323,50 @@ end
 local function manhattan(c1,r1,c2,r2) return math.abs(c1-c2)+math.abs(r1-r2) end
 
 function cardGameFortune.pickApproachDestination(fromC, fromR, toC, toR)
-    local A = STATE.board[fromR] and STATE.board[fromR][fromC]
+    local s = STATE
+    local A = s.board[fromR] and s.board[fromR][fromC]
     if not A then return nil, nil end
+
     local def = cardGameFortune.db[A.cardId]
     if (def and (def.atktype or "normal")) ~= "normal" then
-        return nil, nil -- ranged never approaches
+        return nil, nil
     end
 
-    -- movement adjacency allowed for this unit (fallback to 4-way)
-    local moveType  = (def and def.movetype) or "normal"
-    local adjDeltas = (cardGameFortune._stepDeltasFor and cardGameFortune._stepDeltasFor(moveType))
-                      or {{1,0},{-1,0},{0,1},{0,-1}}
-
-    -- budget = move + terrain bonus - 1
+    local movetype  = (def and (def.movementtype or def.movetype)) or "normal"
+    local attackDeltas = cardGameFortune._attackOriginDeltasFor(movetype)
+    
     local startTerr = cardGameFortune.terrainAt(fromC, fromR)
     local baseMov   = (def and def.movement) or 0
     local movBonus  = (cardGameFortune.terrainMovementBonus and
                        cardGameFortune.terrainMovementBonus(def and def.subtype2, startTerr)) or 0
     local budget    = math.max(0, baseMov + movBonus - 1)
 
-    -- true cost map (ignores moved/attacked flags)
     local _, dist = cardGameFortune.legalMovesFrom(fromC, fromR, { forThreat = true, returnDist = true })
 
+    -- DEBUG: Show what we're checking
+    local debugLines = {
+        ("Approach from (%d,%d) to (%d,%d)"):format(fromC, fromR, toC, toR),
+        ("movetype=%s budget=%d"):format(movetype, budget),
+        "Attack origins:"
+    }
+
     local bestC, bestR, bestCost
-    for _, d in ipairs(adjDeltas) do
+    for _, d in ipairs(attackDeltas) do
         local ac, ar = toC + d[1], toR + d[2]
         if cardGameFortune.inBounds(ac, ar) then
-            local occ = cardGameFortune.safeBoardCell(STATE, ac, ar)
-            if occ == nil then                           -- ✅ treat missing row as empty
-                local cost = dist[ar] and dist[ar][ac]
+            local occ = cardGameFortune.safeBoardCell(s, ac, ar)
+            local row  = dist[ar]
+            local cost = row and row[ac] or nil
+            
+            -- DEBUG: Log each check
+            debugLines[#debugLines+1] = ("  (%d,%d): occ=%s cost=%s valid=%s"):format(
+                ac, ar, 
+                tostring(occ ~= nil),
+                tostring(cost),
+                tostring(occ == nil and cost and cost <= budget)
+            )
+            
+            if occ == nil then
                 if cost and cost <= budget and (not bestCost or cost < bestCost) then
                     bestC, bestR, bestCost = ac, ar, cost
                 end
@@ -1233,80 +1374,81 @@ function cardGameFortune.pickApproachDestination(fromC, fromR, toC, toR)
         end
     end
 
+    debugLines[#debugLines+1] = ("Best: (%s,%s) cost=%s"):format(
+        tostring(bestC), tostring(bestR), tostring(bestCost)
+    )
+    
+    Misc.dialog(table.concat(debugLines, "\n"))
+
     return bestC, bestR
 end
 
 
+
 function cardGameFortune.legalAttacksFrom(c, r)
     local res = {}
-    local A = STATE.board[r] and STATE.board[r][c]
+    local s = STATE
+    local A = s.board[r] and s.board[r][c]
     if not A or A.isLeader or A.hasAttacked then return res end
 
     local def = cardGameFortune.db[A.cardId]
     local atktype = (def and def.atktype) or "normal"
 
     -- ================= MELEE =================
-        if atktype == "normal" then
-            -- TRUE reachable costs ignoring hasMoved/hasAttacked
-            local _, dist = cardGameFortune.legalMovesFrom(c, r, { forThreat=true, returnDist=true })
+    if atktype == "normal" then
+        local _, dist = cardGameFortune.legalMovesFrom(c, r, { forThreat=true, returnDist=true })
 
-            -- movement budget = base move + start-tile terrain bonus - 1
-            local startTerr = cardGameFortune.terrainAt(c, r)
-            local movBonus  = (cardGameFortune.terrainMovementBonus and
-                            cardGameFortune.terrainMovementBonus(def.subtype2, startTerr))
-                        or (terrainMovementBonus and terrainMovementBonus(def.subtype2, startTerr))
-                        or 0
-            local maxSteps  = math.max(0, (def.movement or 0) + movBonus)
-            local budget    = math.max(0, maxSteps - 1)
+        -- movement budget = base move + start-tile terrain bonus - 1
+        local startTerr = cardGameFortune.terrainAt(c, r)
+        local movBonus  = (cardGameFortune.terrainMovementBonus and
+                           cardGameFortune.terrainMovementBonus(def and def.subtype2, startTerr)) or 0
+        local maxSteps  = math.max(0, (def and def.movement or 0) + movBonus)
+        local budget    = math.max(0, maxSteps - 1)
 
-            -- Use 4-way landings for melee approach (you can swap to _stepDeltasFor if desired)
-            -- use movetype-specific landing directions
-            local deltas = (cardGameFortune._stepDeltasFor and
-                            cardGameFortune._stepDeltasFor(def.movetype or "normal"))
-                        or {{1,0},{-1,0},{0,1},{0,-1}}
+        -- movetype-aware attack origins (same as UI check)
+        local attackDeltas = cardGameFortune._attackOriginDeltasFor((def and (def.movementtype or def.movetype)) or "normal")
 
+        for rr = 0, s.rows - 1 do
+            for cc = 0, s.cols - 1 do
+                local D = s.board[rr] and s.board[rr][cc]
+                if D and D.owner ~= A.owner then
+                    local mark = false
 
-            for rr = 0, STATE.rows - 1 do
-                for cc = 0, STATE.cols - 1 do
-                    local D = STATE.board[rr] and STATE.board[rr][cc]
-                    if D and D.owner ~= A.owner then
-                        local mark = false
-
-                        -- Adjacent orthogonal: always melee-legal
-                        local dx, dy = cc - c, rr - r
-                        if math.abs(dx) + math.abs(dy) == 1 then
-                            mark = true
-                        else
-                            -- Approach: any EMPTY neighbor with true cost ≤ budget
-                            for _,dlt in ipairs(deltas) do
-                                local ac, ar = cc + dlt[1], rr + dlt[2]
-                                if cardGameFortune.inBounds(ac, ar) then
-                                    local occ = cardGameFortune.safeBoardCell(STATE, ac, ar) -- ← SAFE
-                                    if occ == nil then
-                                        local cost = dist[ar] and dist[ar][ac]
-                                        if cost and cost <= budget then
-                                            mark = true
-                                            break
-                                        end
+                    -- 1) Direct strike from current tile (movetype-aware)
+                    if cardGameFortune.isMeleeInRange(A, c, r, cc, rr) then
+                        mark = true
+                    else
+                        -- 2) Approach: any EMPTY attack-origin tile reachable within budget
+                        for _,dlt in ipairs(attackDeltas) do
+                            local ac, ar = cc + dlt[1], rr + dlt[2]
+                            if cardGameFortune.inBounds(ac, ar) then
+                                local occ = cardGameFortune.safeBoardCell(s, ac, ar)
+                                if occ == nil then
+                                    local row  = dist[ar]
+                                    local cost = row and row[ac] or nil
+                                    -- CRITICAL: Only mark if reachable within budget
+                                    if cost and cost <= budget then
+                                        mark = true
+                                        break
                                     end
                                 end
                             end
                         end
+                    end
 
-                        if mark then
-                            res[rr] = res[rr] or {}
-                            res[rr][cc] = true
-                        end
+                    if mark then
+                        res[rr] = res[rr] or {}
+                        res[rr][cc] = true
                     end
                 end
             end
-
-            return res
         end
 
+        return res
+    end
 
     -- ================= RANGED =================
-    -- Ranged never approaches; it raycasts within attackrange along a chosen LOS shape.
+    -- Ranged never approaches; it raycasts within attackrange along LOS.
     local range = (def and def.attackrange) or math.huge
     local owner = A.owner
     local shape = (def and def.rangedLOS) or "orthogonal"
@@ -1318,11 +1460,11 @@ function cardGameFortune.legalAttacksFrom(c, r)
         local x, y = c, r
         for step = 1, range do
             x = x + d[1]; y = y + d[2]
-            if not inBounds(x, y) then break end
-            local terr = terrainAt(x, y)
-            if terrainBlocksLOS(terr) then break end
+            if not cardGameFortune.inBounds(x, y) then break end
+            local terr = cardGameFortune.terrainAt(x, y)
+            if cardGameFortune.terrainBlocksLOS and cardGameFortune.terrainBlocksLOS(terr) then break end
 
-            local V = STATE.board[y] and STATE.board[y][x]
+            local V = s.board[y] and s.board[y][x]
             if V then
                 if V.owner ~= owner then
                     res[y] = res[y] or {}; res[y][x] = true
@@ -1334,6 +1476,7 @@ function cardGameFortune.legalAttacksFrom(c, r)
 
     return res
 end
+
 
 
 
@@ -1661,11 +1804,10 @@ function cardGameFortune.moveUnit(c1,r1, c2,r2, opts)   -- <— add opts
     end
 
     local def = u.cardId and cardGameFortune.db[u.cardId]
-    local movetype = def and def.movetype
-    cardGameFortune._animateSmartSlide(
-        u, c1, r1, c2, r2, movetype, cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE
-    )
-
+    local movetype = def and (def.movementtype)
+    if cardGameFortune._animateSmartSlide then
+        cardGameFortune._animateSmartSlide(u, c1, r1, c2, r2, movetype, cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE)
+    end
 
     return true
 end
@@ -1755,6 +1897,11 @@ function cardGameFortune.resolveBattle(ac,ar, dc,dr)
     --   ranged -> attacker's tile
     local atkC, atkR = (isMelee and dc or ac), (isMelee and dr or ar)
     local aATK = select(1, cardGameFortune.getEffectiveStats(aDef, atkC, atkR))
+    do
+        local aType = cardGameFortune.unitType(A)
+        local dType = cardGameFortune.unitType(D)
+        aATK = aATK + cardGameFortune.roleAtkBonus(aType, dType)
+    end
 
     local destroyA, destroyD = false, false
     local damagePlayer, damageAmt = nil, 0
@@ -1861,7 +2008,7 @@ function cardGameFortune.resolveBattle(ac,ar, dc,dr)
 
                 -- Slide using movetype-aware path (diag for bishop/queen, straight for rook/queen)
                 local mdef     = cardGameFortune.db[mover.cardId]
-                local movetype = mdef and mdef.movetype
+                local movetype = mdef and mdef.movementtype
 
                 if cardGameFortune._animateSmartSlide then
                     cardGameFortune._animateSmartSlide(
@@ -2185,6 +2332,11 @@ function cardGameFortune.previewCombat(ac,ar, dc,dr)
 
     local aATK, aDEF, aTerr, aDelta = cardGameFortune.getEffectiveStats(aDef, atkC, atkR)
 
+    local aType = cardGameFortune.unitType(A)
+    local dType = cardGameFortune.unitType(D)
+    local aRoleBonus = cardGameFortune.roleAtkBonus(aType, dType)
+    aATK = aATK + aRoleBonus
+
     -- Leader target: direct damage = attacker ATK
     if D.isLeader then
         return true, {
@@ -2195,6 +2347,7 @@ function cardGameFortune.previewCombat(ac,ar, dc,dr)
             diff = aATK,
             destroyAttacker=false, destroyDefender=false,
             leaderDamage = { player=D.owner, amount=aATK },
+            attType=aType, defType=dType, aRole=aRoleBonus,
         }
     end
 
@@ -2230,6 +2383,7 @@ function cardGameFortune.previewCombat(ac,ar, dc,dr)
         destroyAttacker = destroyA,
         destroyDefender = destroyD,
         leaderDamage = (leaderDmgAmt>0) and {player=leaderDmgPlayer, amount=leaderDmgAmt} or nil,
+        attType=aType, defType=dType, aRole=aRoleBonus,
     }
 end
 
@@ -2284,7 +2438,7 @@ local CARDS = {
         id="goomba", name="Goomba",
         image="cardgame/goombacard.png", icon="cardgame/goombaicon.png",
         description="A basic enemy. Weak alone, strong in numbers.",
-        type="melee", atk=3, def=2, movement=1,
+        type="Melee", atk=3, def=2, movement=1,
         movementtype="normal", atktype="normal",
         subtype1="normal", subtype2="Overworld",
         summoncost=1, deckcost=1
@@ -2295,8 +2449,8 @@ local CARDS = {
         id="green_koopa", name="Green Koopa",
         image="cardgame/koopacard.png", icon="cardgame/koopaicon.png",
         description="Hides in its shell when attacked.",
-        type="defensive", atk=3, def=4, movement=1,
-        movementtype="normal", atktype="normal",
+        type="Defensive", atk=3, def=4, movement=1,
+        movementtype="diagonal", atktype="normal",
         subtype1="normal", subtype2="Overworld",
         summoncost=2, deckcost=2
     },
@@ -2306,8 +2460,8 @@ local CARDS = {
         id="chargin_chuck", name="Chargin’ Chuck",
         image="cardgame/chuckcard.png", icon="cardgame/chuckicon.png",
         description="Rams into foes with football tackles.",
-        type="grappler", atk=6, def=5, movement=2,
-        movementtype="normal", atktype="normal",
+        type="Grappler", atk=6, def=5, movement=1,
+        movementtype="knight", atktype="normal",
         subtype1="normal", subtype2="Overworld",
         summoncost=3, deckcost=3
     },
@@ -2317,8 +2471,8 @@ local CARDS = {
         id="hammer_bro", name="Hammer Bro",
         image="cardgame/hammerbrocard.png", icon="cardgame/hammerbroicon.png",
         description="Throws hammers from afar.",
-        type="ranged", atk=7, def=4, movement=1,
-        movementtype="normal", attackrange = 2, atktype="ranged", 
+        type="Ranged", atk=7, def=4, movement=1,
+        movementtype="bishop", attackrange = 2, atktype="Ranged", rangedLOS="diagonal",
         subtype1="normal", subtype2="Overworld",
         summoncost=4, deckcost=4
     },
@@ -2328,8 +2482,8 @@ local CARDS = {
         id="magikoopa", name="Magikoopa",
         image="cardgame/magikoopacard.png", icon="cardgame/magikoopaicon.png",
         description="Casts unpredictable magic blasts.",
-        type="magic", atk=9, def=5, movement=1,
-        movementtype="queen", attackrange = 4, atktype="ranged",
+        type="Magic", atk=9, def=5, movement=4,
+        movementtype="queen", attackrange = 4, atktype="Ranged", rangedLOS="any",
         subtype1="normal", subtype2="Castle",
         summoncost=5, deckcost=5
     },
@@ -2339,8 +2493,8 @@ local CARDS = {
         id="bill_blaster", name="Bill Blaster",
         image="cardgame/billblastercard.png", icon="cardgame/billblastericon.png",
         description="Stationary cannon that fires Bullet Bills.",
-        type="tower", atk=6, def=12, movement=0,
-        movementtype="normal", attackrange = 7, atktype="volley",
+        type="Tower", atk=6, def=12, movement=0,
+        movementtype="normal", attackrange = 7, atktype="Ranged", rangedLOS="orthogonal",
         subtype1="normal", subtype2="Castle",
         summoncost=6, deckcost=6
     },

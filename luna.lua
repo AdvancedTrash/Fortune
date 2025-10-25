@@ -352,16 +352,19 @@ local function terrImg(terr)
     return t
 end
 
+local _imgCache = {}
 local function drawImageDim(path, x, y, w, h, alpha)
     if not path then return end
-    local img = IMG[path]
+    local img = _imgCache[path]
+    if img == nil then
+        img = Graphics.loadImageResolved(path)
+        _imgCache[path] = img
+    end
     if not img then return end
-    gfx.color(0,0,0,255*alpha)
-    gfx.fillRect(x, y, w, h) -- darken behind
-    gfx.color(255,255,255,255)
-    gfx.drawImage(img, x, y, w, h)
-    gfx.color(255,255,255,255) -- reset
+    Graphics.drawBox{ x=x, y=y, width=w, height=h, color=Color(0,0,0,alpha or 0.5), priority=5 }
+    Graphics.drawBox{ texture=img, x=x, y=y, width=w, height=h, priority=5.01 }
 end
+
 
 local function drawActionBar()
     local y = SCREEN_H - 32 -- bottom border height
@@ -1307,7 +1310,7 @@ local function updateBoardControls()
             -- Select / act (Jump)
             if player.rawKeys.jump == KEYS_PRESSED then
                 if not canActNow() then
-                    cardGameFortune.sfx_buzzer()
+                    
                 else
                     local s5 = cardGameFortune.peek()
                     if not (s5 and s5.board) then return end  -- extra safety
@@ -1325,7 +1328,7 @@ local function updateBoardControls()
 
                         local def     = cardGameFortune.db[unitCell.cardId] or {}
                         local atktype = def.atktype or "normal"
-                        local d       = math.abs(c - su.c) + math.abs(r - su.r)
+                        local meleeAdj = (atktype == "normal") and cardGameFortune.isMeleeInRange(su, su.c, su.r, c, r)
 
                         -- 1) plain move?
                         if legalMoveSet and legalMoveSet[r] and legalMoveSet[r][c] and (not safeBoardCell(s5, c, r)) then
@@ -1334,20 +1337,36 @@ local function updateBoardControls()
 
                         -- 2) legal attack (already pre-marked)
                         elseif (not su.isLeader) and legalAttackSet and legalAttackSet[r] and legalAttackSet[r][c] then
-                            if atktype ~= "normal" or d == 1 then
+                            -- Target is pre-marked as legal, so just execute it
+                            -- The engine already validated diagonal/knight/approach feasibility
+                            if atktype ~= "normal" then
+                                -- Ranged: direct strike
                                 UI.pending = { kind="attack", fromC=su.c, fromR=su.r, toC=c, toR=r }
                                 cardGameFortune.sfx_accept(); return
                             else
-                                -- approach from pre-marked target
-                                local stepC, stepR = cardGameFortune.pickApproachDestination(su.c, su.r, c, r)
-                                if stepC and stepR then
-                                    UI.pending = {
-                                        kind  = "approachAttack",
-                                        fromC = su.c, fromR = su.r,
-                                        stepC = stepC, stepR = stepR,
-                                        toC   = c,     toR   = r,
-                                    }
+                                -- Melee: check if we're already adjacent (direct strike)
+                                local unitCell = s5.board[su.r] and s5.board[su.r][su.c]
+                                local meleeAdj = unitCell and cardGameFortune.isMeleeInRange(unitCell, su.c, su.r, c, r)
+                                if meleeAdj then
+                                    UI.pending = { kind="attack", fromC=su.c, fromR=su.r, toC=c, toR=r }
                                     cardGameFortune.sfx_accept(); return
+                                else
+                                    -- Need to approach first
+                                    local stepC, stepR = cardGameFortune.pickApproachDestination(su.c, su.r, c, r)
+                                    if stepC and stepR then
+                                        UI.pending = {
+                                            kind  = "approachAttack",
+                                            fromC = su.c, fromR = su.r,
+                                            stepC = stepC, stepR = stepR,
+                                            toC   = c,     toR   = r,
+                                        }
+                                        cardGameFortune.sfx_accept(); return
+                                    else
+                                        -- Approach failed - show why
+                                        cardGameFortune.sfx_buzzer()
+                                        Misc.dialog("Cannot approach target - no valid attack position reachable")
+                                        return
+                                    end
                                 end
                             end
                         end
@@ -1363,18 +1382,29 @@ local function updateBoardControls()
                                 local maxSteps  = math.max(0, (def.movement or 0) + movBonus)
                                 local budget    = math.max(0, maxSteps - 1)
 
-                                local deltas = (cardGameFortune._stepDeltasFor and
-                                                cardGameFortune._stepDeltasFor(def.movetype or "normal"))
-                                                or {{1,0},{-1,0},{0,1},{0,-1}}
+                                -- movementtype-aware melee origins + safe sparse read
+                                local def = cardGameFortune.db[unitCell.cardId] or {}
+                                local mt  = (def.movementtype or def.movetype) or "normal"
+
+                                -- use the same origin set your attack uses (not generic DIR4)
+                                local deltas = (cardGameFortune._attackOriginDeltasFor and
+                                                cardGameFortune._attackOriginDeltasFor(mt))
+                                            or cardGameFortune.DIR4
+
+                                local function costAt(cc, rr)
+                                    local row = dist[rr]; return row and row[cc] or math.huge
+                                end
 
                                 local bestC, bestR, bestCost
-                                for _,dlt in ipairs(deltas) do
-                                    local ac, ar = c + dlt[1], r + dlt[2]
+                                for _,d in ipairs(deltas) do
+                                    local ac, ar = c + d[1], r + d[2]
                                     if cardGameFortune.inBounds(ac, ar)
-                                    and (safeBoardCell(s5, ac, ar) == nil) then
-                                        local cost = dist[ar] and dist[ar][ac]
-                                        if cost and cost <= budget and (not bestCost or cost < bestCost) then
-                                            bestC, bestR, bestCost = ac, ar, cost
+                                    and not safeBoardCell(s5, ac, ar) then
+                                        local cost = costAt(ac, ar)
+                                        if legalMoveSet and legalMoveSet[ar] and legalMoveSet[ar][ac] then
+                                            if not bestCost or cost < bestCost then
+                                                bestC, bestR, bestCost = ac, ar, cost
+                                            end
                                         end
                                     end
                                 end
@@ -1405,7 +1435,8 @@ local function updateBoardControls()
                         -- 3) nothing else matched → optional explain for empty illegal tiles
                         if not curCell then
                             local _, dist = cardGameFortune.legalMovesFrom(su.c, su.r, { forThreat=true, returnDist=true })
-                            local cost = dist[r] and dist[r][c]
+                            local row  = dist[r]
+                            local cost = row and row[c] or nil
                             Misc.dialog(("Empty tile (%d,%d) not in legalMoveSet.\ntrueCost=%s"):format(c, r, tostring(cost)))
                         end
                         selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
@@ -1984,21 +2015,23 @@ function onHUDDraw()
                             label(tname, hoverX+8, yy, 5, COL_NAME); yy = yy + MF_LINE
 
                             -- Attacker lines (Base / Tile / Final)
-                            local aFinal = pv.aATK or 0
-                            local aTile  = pv.aBonus or 0
-                            local aBase  = aFinal - aTile
-                            label(("ATK %d"):format(aFinal),   hoverX+8, yy, 5, COL_ATK); yy = yy + MF_LINE
+                            local aFinal  = pv.aATK or 0
+                            local aDelta  = (pv.aBonus or 0) + (pv.aRole or 0)  -- terrain + role
+                            local atkLine = ("ATK %d"):format(aFinal)
+                            if aDelta ~= 0 then atkLine = atkLine .. (" (%+d)"):format(aDelta) end
+                            label(atkLine, hoverX+8, yy, 5, COL_ATK); yy = yy + MF_LINE
 
                             if pv.mode == "vsLEADER" then
                                 local dmg = (pv.leaderDamage and pv.leaderDamage.amount) or aFinal
                                 label(("- %d"):format(dmg), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
                             else
                                 -- Defender stat kind depends on whether we’re hitting ATK or DEF
-                                local tag  = (pv.against == "ATK") and "ATK" or "DEF"
-                                local dFin = (pv.against == "ATK") and (pv.dATK or 0) or (pv.dDEF or 0)
-                                local dTile= pv.dBonus or 0
-                                local dBase= dFin - dTile
-                                label(("%s %d"):format(tag, dFin),       hoverX+8, yy, 5, (tag=="ATK" and COL_ATK or COL_DEF)); yy = yy + MF_LINE
+                                local tag     = (pv.against == "ATK") and "ATK" or "DEF"
+                                local dFinal  = (pv.against == "ATK") and (pv.dATK or 0) or (pv.dDEF or 0)
+                                local dDelta  = (pv.dBonus or 0) + (pv.dRole or 0)  -- terrain + role
+                                local defLine = ("%s %d"):format(tag, dFinal)
+                                if dDelta ~= 0 then defLine = defLine .. (" (%+d)"):format(dDelta) end
+                                label(defLine, hoverX+8, yy, 5, (tag=="ATK" and COL_ATK or COL_DEF)); yy = yy + MF_LINE
 
                                 -- Outcome summary (same as Step A)
                                 local diff = pv.diff or 0
