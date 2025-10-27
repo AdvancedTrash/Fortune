@@ -1,21 +1,3 @@
-UI = UI or {}
-UI.pending = UI.pending or nil
-UI.modal     = UI.modal     or nil
-UI.graveSide = UI.graveSide or 1
-
-UI.action = {
-    idx = 1,   -- current selected action index
-    items = {
-        {id="hand",   label="Hand"},
-        {id="board",  label="Board"},
-        {id="guide",  label="Guide"},
-        {id="grave",  label="Grave"},
-        {id="end",    label="End Turn"},
-        {id="restart",label="Restart"},
-        {id="giveup", label="Give Up"},
-    }
-}
-
 local smwMap = require("smwMap")
 
 -- SMW Costumes
@@ -46,6 +28,25 @@ local cardGameFortune = require("cardGameFortune")
 local backgroundAreas = require("backgroundAreas")
 
 --Card stuff--
+
+UI = UI or {}
+UI.pending = UI.pending or nil
+UI.modal     = UI.modal     or nil
+UI.graveSide = UI.graveSide or 1
+
+UI.action = {
+    idx = 1,   -- current selected action index
+    items = {
+        {id="hand",   label="Hand"},
+        {id="board",  label="Board"},
+        {id="guide",  label="Guide"},
+        {id="grave",  label="Grave"},
+        {id="end",    label="End Turn"},
+        {id="restart",label="Restart"},
+        {id="giveup", label="Give Up"},
+    }
+}
+
 BOARD_OPEN = false
 local boardActive = boardActive or false
 local selectedHandIndex = nil
@@ -365,6 +366,18 @@ local function drawImageDim(path, x, y, w, h, alpha)
     Graphics.drawBox{ texture=img, x=x, y=y, width=w, height=h, priority=5.01 }
 end
 
+--- Opponent art (by deckId)
+local function oppTexFullById(id)
+    id = tonumber(id) or 1
+    return tex("cardgame/opponents/leader_p2_"..id..".png")
+        or tex("cardgame/opponents/leader_p2.png")
+end
+
+local function oppTexHealthById(id)
+    id = tonumber(id) or 1
+    return tex("cardgame/opponents/leader_p2healthicon_"..id..".png")
+        or tex("cardgame/opponents/leader_p2healthicon.png")
+end
 
 local function drawActionBar()
     local y = SCREEN_H - 32 -- bottom border height
@@ -1740,7 +1753,15 @@ function onHUDDraw()
                 local drawX, drawY = unitDrawXY(c, r, cell)
 
                 if cell.isLeader then
-                    local ltex = tex((cell.owner==1) and "cardgame/leader_p1.png" or "cardgame/leader_p2.png")
+                    local ltex
+                        if cell.owner == 1 then
+                            ltex = tex("cardgame/leader_p1.png")
+                        else
+                            -- Opponent uses Deck ID for image
+                            local oppId = s.npcDeckID or 1
+                            ltex = oppTexFullById(oppId)
+                        end
+
                     if ltex then Graphics.drawImageWP(ltex, drawX, drawY, 5.0) end
                     drawSummonFX(cell, c, r, drawX, drawY)
                     cardGameFortune.drawHitFX(cell, drawX, drawY)
@@ -1796,7 +1817,7 @@ function onHUDDraw()
 
     -- leader icons (small)
     local leader1Tex = tex("cardgame/leader_p1healthicon.png")
-    local leader2Tex = tex("cardgame/leader_p2healthicon.png")
+    local leader2Tex = oppTexHealthById(STATE and STATE.npcDeckID or 1)
     if leader1Tex then Graphics.drawImageWP(leader1Tex, SCREEN_W*0.5 - 132, SCREEN_H - 600, 9) end
     if leader2Tex then Graphics.drawImageWP(leader2Tex, SCREEN_W*0.5 +  96, SCREEN_H - 600, 9) end
 

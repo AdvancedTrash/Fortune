@@ -1,0 +1,7 @@
+(Word Wrap - On)
+
+1. Put the entire "ctmystery" folder in AddMusicK's "samples" folder.
+2. Place the "ctmystery.txt" file anywhere within AddMusicK's "music" folder, and paste the directory to the TXT file in Addmusic_list.txt, along with the hex ID that you want the song to have in the ROM.
+3. Run AddMusicK, and type your ROM's file name (the ROM file must be present in the AMK directory).
+
+Enjoy! Send a PM to K.T.B. (User ID 24472 on SMW Central, K.T.B.#4659 on Discord) if you have a question, if you'd like to see something tweaked/altered, or if you simply have another request in general.

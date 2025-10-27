@@ -1,0 +1,151 @@
+#amk 2
+
+; SPC Generator Info
+#SPC
+{
+    #author  "Noriko Matsueda"
+    #title   "Fanfare 2"
+    #game    "Chrono Trigger"
+    #comment "Ported by Ahrion"
+}
+
+#path "CTFanfare2"
+
+#samples
+{
+	#Fanfare2
+	"Bass.brr"
+	"Crash.brr"
+	"Snare.brr"
+	"Strings.brr"
+	"Trumpet.brr"
+}
+
+#instruments
+{
+	"Bass.brr"	$FF $EC $7F $03 $17 ; @30
+	"Crash.brr"	$FF $EE $7F $04 $27 ; @31
+	"Snare.brr"	$FF $E0 $7F $05 $0E ; @32
+	"Strings.brr"	$F9 $E0 $7F $04 $27 ; @33
+	"Trumpet.brr"	$FF $E0 $7F $04 $00 ; @34
+}
+
+
+w138
+t58
+
+"Snare1 = v228 $FA $03 $07"
+"Snare2 = v164 $FA $03 $C4"
+"Snare3 = v198 $FA $03 $1F"
+"Snare4 = v193 $FA $03 $10"
+"Snare5 = v172 $FA $03 $28"
+
+; Echo
+$EF $BF $28 $28
+$F1 $0B $50 $01
+
+#option Noloop
+
+
+; +---------------------+
+; |     Channel #0	|
+; |     Trumpet		|
+; +---------------------+
+
+#0
+o4
+
+@34 y10 v255
+(11)[
+a16 r=4 a16 r=4 g16 r=4 a8 r=8 > c16 r=4 d16 r=4 d16 r=4 c16 r=4 d8 r=8 f16 r=4 g16 r=4 g16 r=4 f16 r=4 g8 r=8 a16 r=4 > c16 r=4 c16 r=4 < a16 r=4 > c16 r=4 < a16 r=4 > c16 r=4 d16 r2... ]
+
+
+
+; +---------------------+
+; |     Channel #1	|
+; |     Trumpet		|
+; +---------------------+
+
+#1
+o4
+
+@34 y14 v227
+$FA $02 $7B (11)
+
+
+
+; +---------------------+
+; |     Channel #2	|
+; |     Strings		|
+; +---------------------+
+
+#2
+o3
+
+@33 y10 v195
+$ED $7A $E0 $FA $02 $74 (11)
+
+
+
+; +---------------------+
+; |     Channel #3	|
+; |     Strings		|
+; +---------------------+
+
+#3
+o5
+
+@33 y13 v152
+d2 c2 < a+4 > c4 d=16 e=16 f=16 g=16 a=16 > c=16 d=16 r2^4^8^32^96 
+
+
+
+; +---------------------+
+; |     Channel #4	|
+; |     Strings		|
+; +---------------------+
+
+#4
+o4
+
+@33 y13 v139
+a2 g2 f4 g4 a=16 a+=16 > c=16 d=16 e=16 g=16 a=16 r2^4^8^32^96 
+
+
+
+; +---------------------+
+; |     Channel #5	|
+; |     Bass		|
+; +---------------------+
+
+#5
+o3
+
+@30 y10 v206
+d=16 d=16 > d=16 < d=16 > d=16 < d=16 c=16 c=16 > c=16 < c=16 > c=16 < c=16 < a+=16 a+=16 > a+=16 < a+=16 > a+=16 < a+=16 > c=16 c=16 > c=16 < c=16 c=16 c=16 d=16 r2^4^8^32^96 
+
+
+
+; +---------------------+
+; |     Channel #6	|
+; |     Snare		|
+; +---------------------+
+
+#6
+o5
+
+@32 y9
+Snare2 c=32 c=16 Snare5 c=8 c=8 Snare2 c=16 c=16 c=32 Snare5 c=16 c=16 Snare2 c=16 Snare5 c=16 Snare2 c=32 Snare5 c=16 c=8 c=8 c=8 c=8 c=8 c=8 Snare2 c=16 c=16 Snare4 c=16 Snare3 c=16 Snare2 c=16 Snare1 c=16 c=16 r2^4^8^32^96 
+
+
+
+; +---------------------+
+; |     Channel #7	|
+; |     Crash		|
+; +---------------------+
+
+#7
+o4
+
+@31 y10 v206
+g2 g2 g2 g2 $ED $7F $F0 g1

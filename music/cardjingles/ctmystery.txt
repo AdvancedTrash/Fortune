@@ -1,0 +1,51 @@
+#amk 2
+
+#spc
+{
+	#author "Nobuo Uematsu"
+	#game "Chrono Trigger"
+	#comment "Ported by K.T.B."
+	#title "Mystery of the Past"
+}
+
+#path "ctmystery"
+
+#samples
+{
+	#default
+	"piano.brr"
+}
+
+#instruments
+{
+	"piano.brr" $FF $EE $A0 $06 $01 ; @30
+}
+
+?
+
+$EF $1F $32 $32 
+$F1 $07 $46 $01
+
+#0 w255 t49 @30 v134 y10 o4
+
+a+8a8 t47 f8e8 t45 d8c+8 < t41 a+8a8 t37 r8 > g+8 t20 ^4
+
+
+#1 @30 v134 y10 o4
+
+g4 d4 < a+4 g4 r16. > e4^8^32
+
+
+#2 @30 v134 y10 o4
+
+r1^16 c4^8.
+
+
+#3 @30 v134 y10 o3
+
+r1^32 a4^8^16.
+
+
+#4 @30 v134 y10 o3
+
+r1 f+2

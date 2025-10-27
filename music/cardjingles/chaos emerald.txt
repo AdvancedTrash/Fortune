@@ -1,0 +1,46 @@
+#amk 2
+#option tempoimmunity
+#samples
+{
+#default
+}
+#spc 
+{
+	#title "Chaos Emerald"
+	#game "Sonic the Hedgehog 2"
+	#author "Masato Nakamura"
+	#comment "sonic themes in mario is awk"
+	#length "0:04"
+}
+?0 
+$F4 $02
+
+#0 w160 t23 l32
+@2 $ED $1F $F0 v210 o4 $EE $0C 
+eg>ce16c16g2^32
+
+#1
+@5 $ED $1F $F0 v170 o4 
+eg>ce16c16g2^32
+
+#2 w160 t23 l32
+@2 $ED $1F $F0 v210 o4
+ceg>c16<a16>d2^32
+
+#3
+@5 $ED $1F $F0 v170 o4
+ceg>c16<a16>d2^32
+
+#4 @3 $ED $1F $F1 l32 v175
+o4 eg>ce16c16g32>  t25
+$E8 $6C $24  [gfed]4
+
+#5 
+@1 $ED $1F $E8 v255 o4
+c16ce32r32e32r32g4r2^32
+
+#6 @1 v255  o3 $ED $1B $E8 y8
+e16eg32r32g32r32>c4r2^32 
+
+#7 @1 v255  o3 $ED $1B $E8 y12
+g16g>c32r32c32r32e4r2^32

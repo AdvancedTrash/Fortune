@@ -129,9 +129,9 @@ end
 
 
 
--- === Duel: Challenger registry ===========================================
+-- === Duel: Challenger registry ===
 cardGameFortune.challengers = cardGameFortune.challengers or {
-  koopa_card_man = { name = "Koopa Card Man", deckId = 1 },
+  koopa_card_man = { name = "Koopa Card Man", deckId = 1},
   -- add more challengers here…
 }
 
@@ -1068,7 +1068,7 @@ cardGameFortune.KNIGHT = cardGameFortune.KNIGHT or {
 local function _stepDeltasFor(def)
     local t = (def and (def.movetype or def.movementtype)) or "normal"
     if t == "diagonal" or t == "bishop" then 
-        return cardGameFortune.DIR8, false  -- Use 8-way, not just diagonal
+        return cardGameFortune.DIAG4, false  -- Use 8-way, not just diagonal
     elseif t == "queen" then return cardGameFortune.DIR8, true
     elseif t == "rook" then return cardGameFortune.DIR4, true
     elseif t == "knight" then return cardGameFortune.KNIGHT, "knight"

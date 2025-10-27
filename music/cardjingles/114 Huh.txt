@@ -1,0 +1,66 @@
+#amk 2
+
+#spc
+{
+    #title   "Huh?!"
+    #game    "Chrono Trigger"
+    #author  "Yasunori Mitsuda"
+    #comment "Ported by Kevin"
+}
+
+#path "ct-huh"
+
+#samples
+{
+    #huh
+    "20.brr"
+    "21.brr"
+    "22.brr"
+}
+
+#instruments
+{
+    "20.brr" $ff $e0 $a0 $06 $02 ; @30
+    "21.brr" $ff $e0 $a0 $09 $10 ; @31
+    "22.brr" $fa $e0 $a0 $08 $50 ; @32
+}
+
+#option NoLoop
+
+w140 t33
+
+$ef $ff $28 $28
+$f1 $0f $46 $01
+
+"I20 = @30"
+"I21 = @31"
+"I22 = @32"
+
+#0
+I20 v195 [y10 o4 l32 $f4$01
+q7f c+ d+ e g a+ > c+ e r
+q28 e r q27 e r q26 e r q25 e r q24 e r q23 e r y9 e r q22 e r q21 e r q20 [[e r]]7]
+
+#1
+I21 v195
+*
+
+#2
+I21 v195 $fa$02$f4
+*
+
+#3
+I22 v160 $fa$02$e8
+*
+
+#4
+I22 v160
+*
+
+#5
+I22 v160 $fa$02$f4
+*
+
+#6
+I20 v160 $fa$02$f4
+*
