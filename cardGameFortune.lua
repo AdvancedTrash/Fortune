@@ -25,7 +25,7 @@ function cardGameFortune.debugExplainSelection(su, c, r, legalMoveSet, legalAtta
     local moves, dist = {}, {}
     if not isLeader then
         moves, dist = cardGameFortune.legalMovesFrom(
-            su.c, su.r, { forThreat = true, returnDist = true }
+            su.c, su.r, { forThreat = false, returnDist = true }
         )
         moves = moves or {}; dist = dist or {}
     end
@@ -331,6 +331,25 @@ function cardGameFortune.terrainHudBG(c, r)
     -- We’ll return the path with .png; your tex() usually resolves either way.
     return "cardgame/terr_info" .. token .. ".png"
 end
+
+function cardGameFortune.unitStatTrend(u, c, r)
+    if not (u and u.cardId) then return 0 end
+    local def = cardGameFortune.db[u.cardId]; if not def then return 0 end
+
+    -- what the unit actually has on this tile
+    local aATK, aDEF = cardGameFortune.getEffectiveStats(def, c, r)
+
+    -- unit’s printed/base stats
+    local baseATK, baseDEF = def.atk or 0, def.def or 0
+
+    local dAtk = (aATK - baseATK)
+    local dDef = (aDEF - baseDEF)
+
+    if dAtk > 0 or dDef > 0 then return 1 end
+    if dAtk < 0 or dDef < 0 then return -1 end
+    return 0
+end
+
 
 -- =========================================================
 -- Terrain generation (seeded, blobby, optional mirroring)
@@ -1101,69 +1120,83 @@ function cardGameFortune._computeReach(c0, r0, def, maxSteps)
     end
 
     local dist = { [r0] = { [c0] = 0 } }
+    local prev = {}  -- prev[r][c] = {c=?, r=?}   (only filled for BFS walkers)
 
     if kind == "knight" then
-        -- Knights: single hop to each L-shaped position
-        for _,dlt in ipairs(deltas) do
-            local nc, nr = c0 + dlt[1], r0 + dlt[2]
-            if inB(nc,nr) and passable(nc,nr) and not (s.board[nr] and s.board[nr][nc]) then
-                if maxSteps >= 1 then
-                    dist[nr] = dist[nr] or {}
-                    dist[nr][nc] = 1
+    -- BFS over knight graph: multiple L hops up to maxSteps
+    local Q, head = { {c=c0, r=r0} }, 1
+    while head <= #Q do
+        local n = Q[head]; head = head + 1
+        local dHere = dist[n.r][n.c]
+        if dHere < maxSteps then
+            for _, dlt in ipairs(deltas) do
+                local nc, nr = n.c + dlt[1], n.r + dlt[2]
+                if inB(nc,nr) and passable(nc,nr) then
+                    local occ = s.board[nr] and s.board[nr][nc]
+                    if (not occ) or passGhost then
+                        if not (dist[nr] and dist[nr][nc]) then
+                            local nd = dHere + 1
+                            if nd <= maxSteps then
+                                dist[nr] = dist[nr] or {}
+                                dist[nr][nc] = nd
+                                prev[nr] = prev[nr] or {}
+                                prev[nr][nc] = { c = n.c, r = n.r }
+                                Q[#Q+1] = { c=nc, r=nr }
+                            end
+                        end
+                    end
                 end
             end
         end
+    end
+
     elseif isSliding then
         -- Sliding pieces: cast rays in each direction
         for _,dlt in ipairs(deltas) do
             local nc, nr = c0 + dlt[1], r0 + dlt[2]
             local steps = 1
-            
             while steps <= maxSteps and inB(nc,nr) do
-                -- Check terrain passability
                 if not passable(nc,nr) then break end
-                
-                -- Check occupancy
                 local occupied = (s.board[nr] and s.board[nr][nc])
-                
+
                 if occupied and not passGhost then
                     break  -- Can't slide through pieces (unless ghost)
                 else
-                    -- Mark this tile as reachable
                     dist[nr] = dist[nr] or {}
                     dist[nr][nc] = steps
-                    
-                    if occupied and passGhost then
-                        -- Ghost can pass through but still counts the step
-                    end
+                    -- (No parents needed for sliders; animation is a single straight slide.)
                 end
-                
-                -- Continue sliding
+
                 nc, nr = nc + dlt[1], nr + dlt[2]
                 steps = steps + 1
             end
         end
+
     else
-        -- Normal/diagonal: step-by-step BFS
+        -- Normal/diagonal: step-by-step BFS with parent recording
         local Q, head = { {c=c0,r=r0} }, 1
-        
+
         while head <= #Q do
             local n = Q[head]; head = head + 1
             local dHere = dist[n.r][n.c]
-            
+
             if dHere < maxSteps then
                 for _,dlt in ipairs(deltas) do
                     local nc, nr = n.c + dlt[1], n.r + dlt[2]
-                    
+
                     if inB(nc,nr) and passable(nc,nr) then
                         local occ = s.board[nr] and s.board[nr][nc]
-                        
                         if (not occ) or passGhost then
                             if not (dist[nr] and dist[nr][nc]) then
                                 local nd = dHere + 1
                                 if nd <= maxSteps then
                                     dist[nr] = dist[nr] or {}
                                     dist[nr][nc] = nd
+
+                                    -- record parent once upon discovery
+                                    prev[nr] = prev[nr] or {}
+                                    prev[nr][nc] = { c = n.c, r = n.r }
+
                                     Q[#Q+1] = { c=nc, r=nr }
                                 end
                             end
@@ -1174,6 +1207,9 @@ function cardGameFortune._computeReach(c0, r0, def, maxSteps)
         end
     end
 
+    -- Attach helpers without breaking callers that expect a table
+    dist._prev   = next(prev) and prev or nil
+    dist._origin = { c = c0, r = r0 }
     return dist
 end
 
@@ -1226,11 +1262,15 @@ end
 
 function cardGameFortune.legalMovesFrom(c, r, opts)
     local cell = STATE.board[r] and STATE.board[r][c]
-    if not cell or cell.isLeader then return (opts and opts.returnDist) and {}, {} or {} end
+    if not cell or cell.isLeader then
+        return (opts and opts.returnDist) and {}, {} or {}
+    end
 
-    local forThreat  = opts and opts.forThreat
-    local returnDist = opts and opts.returnDist
+    local forThreat   = opts and opts.forThreat
+    local returnDist  = opts and opts.returnDist
+    local returnPrev  = opts and opts.returnPrev   -- NEW: ask to capture BFS parents for animation
 
+    -- usual gates when not computing threat
     if (not forThreat) and (cell.summoningSickness or cell.hasMoved or cell.hasAttacked) then
         return returnDist and {}, {} or {}
     end
@@ -1242,17 +1282,31 @@ function cardGameFortune.legalMovesFrom(c, r, opts)
                       and cardGameFortune.terrainMovementBonus(def.subtype2, startTerr)) or 0
     local maxSteps    = math.max(0, baseMov + movBonus)
 
-    -- Use _computeReach instead of duplicating logic
+    -- Use _computeReach (now returns dist + may include dist._prev/dist._origin)
     local dist = cardGameFortune._computeReach(c, r, def, maxSteps)
 
-    -- Build set from dist (exclude starting position)
+    -- If requested, capture parents for THIS unit so the animator can rebuild the exact route.
+    -- Only do this for "real" move queries (not threat scans), to avoid stale routes.
+    if returnPrev and (not forThreat) and dist and dist._prev and dist._origin
+       and dist._origin.c == c and dist._origin.r == r then
+        STATE._lastPrev = { c0 = c, r0 = r, prev = dist._prev }
+    elseif returnPrev then
+        STATE._lastPrev = nil
+    end
+
+    -- Build set from dist (exclude starting position and occupied tiles).
+    -- IMPORTANT: skip helper keys (_prev, _origin) so they don't get treated as rows.
     local set = {}
     for rr, row in pairs(dist) do
-        for cc, _ in pairs(row) do
-            if not (rr == r and cc == c) then
-                if not (STATE.board[rr] and STATE.board[rr][cc]) then
-                    set[rr] = set[rr] or {}
-                    set[rr][cc] = true
+        if type(rr) == "number" and type(row) == "table" then
+            for cc, _ in pairs(row) do
+                if type(cc) == "number" then
+                    if not (rr == r and cc == c) then
+                        if not (STATE.board[rr] and STATE.board[rr][cc]) then
+                            set[rr] = set[rr] or {}
+                            set[rr][cc] = true
+                        end
+                    end
                 end
             end
         end
@@ -1266,9 +1320,10 @@ function cardGameFortune.legalMovesFrom(c, r, opts)
 end
 
 
--- ── Config ─────────────────────────────────────────────────────────────
+
+-- ── Config
 cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE = 18
-cardGameFortune.HAND_MAX = 5    -- cap visible hand to 5 cards
+cardGameFortune.HAND_MAX = 5    -- hand is 5 cards
 
 local function easeSmooth(t) return t*t*(3 - 2*t) end
 
@@ -1278,7 +1333,9 @@ function cardGameFortune.anyAnimating()
     for r=0,s.rows-1 do
         for c=0,s.cols-1 do
             local u = s.board[r][c]
-            if u and u._anim and u._anim.kind == "slide" then return true end
+            if u and u._anim and (u._anim.kind == "slide" or u._anim.kind == "hop") then
+                return true
+            end
         end
     end
     return false
@@ -1290,16 +1347,28 @@ function cardGameFortune.stepAnimations()
     for r=0,s.rows-1 do
         for c=0,s.cols-1 do
             local u = s.board[r][c]
-            if u and u._anim and u._anim.kind == "slide" then
-                u._anim.t = u._anim.t + 1
-                if u._anim.t >= u._anim.dur then
-                    u._anim = nil
-                end
+            if u and u._anim and (u._anim.kind == "slide" or u._anim.kind == "hop") then
+                u._anim.t   = (u._anim.t   or 0) + 1
+                local dur   =  u._anim.dur or 1
+                if u._anim.t >= dur then u._anim = nil end
             end
         end
     end
 end
 
+
+local function _rebuildPath(prev, c0, r0, c1, r1)
+    if not (prev and prev[r1] and prev[r1][c1]) then return nil end
+    local path = {}
+    local cc, rr = c1, r1
+    while not (cc == c0 and rr == r0) do
+        table.insert(path, 1, {c=cc, r=rr})
+        local p = prev[rr] and prev[rr][cc]
+        if not p then return nil end
+        cc, rr = p.c, p.r
+    end
+    return path
+end
 
 -- Adjacent enemy targets (units or leader)
 local function rayFirstHit(c,r, dc,dr, owner)
@@ -1319,7 +1388,7 @@ local function rayFirstHit(c,r, dc,dr, owner)
   return nil,nil
 end
 
--- Manhattan helper
+-- Manhattan helper (this was used mostly for orthogonal paths, I can't remember if I need this anymore)
 local function manhattan(c1,r1,c2,r2) return math.abs(c1-c2)+math.abs(r1-r2) end
 
 function cardGameFortune.pickApproachDestination(fromC, fromR, toC, toR)
@@ -1335,50 +1404,37 @@ function cardGameFortune.pickApproachDestination(fromC, fromR, toC, toR)
     local movetype  = (def and (def.movementtype or def.movetype)) or "normal"
     local attackDeltas = cardGameFortune._attackOriginDeltasFor(movetype)
     
+    -- Calculate THEORETICAL budget (what the unit COULD do if it hadn't moved yet)
     local startTerr = cardGameFortune.terrainAt(fromC, fromR)
     local baseMov   = (def and def.movement) or 0
     local movBonus  = (cardGameFortune.terrainMovementBonus and
                        cardGameFortune.terrainMovementBonus(def and def.subtype2, startTerr)) or 0
-    local budget    = math.max(0, baseMov + movBonus - 1)
+    local maxSteps  = math.max(0, baseMov + movBonus)
+    local budget    = math.max(0, maxSteps - 1)
 
-    local _, dist = cardGameFortune.legalMovesFrom(fromC, fromR, { forThreat = true, returnDist = true })
-
-    -- DEBUG: Show what we're checking
-    local debugLines = {
-        ("Approach from (%d,%d) to (%d,%d)"):format(fromC, fromR, toC, toR),
-        ("movetype=%s budget=%d"):format(movetype, budget),
-        "Attack origins:"
-    }
+    -- Use forThreat=true to get the FULL reachability map (ignoring action gates)
+    local _, dist = cardGameFortune.legalMovesFrom(fromC, fromR, { 
+        forThreat = true,  -- ← KEY CHANGE
+        returnDist = true 
+    })
 
     local bestC, bestR, bestCost
     for _, d in ipairs(attackDeltas) do
         local ac, ar = toC + d[1], toR + d[2]
         if cardGameFortune.inBounds(ac, ar) then
             local occ = cardGameFortune.safeBoardCell(s, ac, ar)
-            local row  = dist[ar]
-            local cost = row and row[ac] or nil
-            
-            -- DEBUG: Log each check
-            debugLines[#debugLines+1] = ("  (%d,%d): occ=%s cost=%s valid=%s"):format(
-                ac, ar, 
-                tostring(occ ~= nil),
-                tostring(cost),
-                tostring(occ == nil and cost and cost <= budget)
-            )
-            
             if occ == nil then
-                if cost and cost <= budget and (not bestCost or cost < bestCost) then
-                    bestC, bestR, bestCost = ac, ar, cost
+                local row  = dist[ar]
+                local cost = row and row[ac] or nil
+                
+                if cost and cost <= budget then
+                    if not bestCost or cost < bestCost then
+                        bestC, bestR, bestCost = ac, ar, cost
+                    end
                 end
             end
         end
     end
-
-    debugLines[#debugLines+1] = ("Best: (%s,%s) cost=%s"):format(
-        tostring(bestC), tostring(bestR), tostring(bestCost)
-    )
-    
-    Misc.dialog(table.concat(debugLines, "\n"))
 
     return bestC, bestR
 end
@@ -1803,11 +1859,91 @@ function cardGameFortune.moveUnit(c1,r1, c2,r2, opts)   -- <— add opts
         s.leaderPos[u.owner].c, s.leaderPos[u.owner].r = c2, r2
     end
 
-    local def = u.cardId and cardGameFortune.db[u.cardId]
-    local movetype = def and (def.movementtype)
-    if cardGameFortune._animateSmartSlide then
-        cardGameFortune._animateSmartSlide(u, c1, r1, c2, r2, movetype, cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE)
-    end
+        -- after you’ve updated board state, flags, and SFX in moveUnit
+        local def      = u.cardId and cardGameFortune.db[u.cardId] or {}
+        local movetype = (def.movementtype or def.movetype) or "normal"
+        local fpt      = cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE or 18
+
+        -- Straight-line builder for sliders (H/V/diag)
+        local function _lineRoute(ca,ra, cb,rb)
+            local path = {}
+            local dc, dr = cb - ca, rb - ra
+            local sc = (dc==0) and 0 or (dc>0 and 1 or -1)
+            local sr = (dr==0) and 0 or (dr>0 and 1 or -1)
+            local steps = math.max(math.abs(dc), math.abs(dr))
+            local c, r = ca, ra
+            for i=1,steps do c=c+sc; r=r+sr; path[#path+1] = {c=c,r=r} end
+            return path, steps
+        end
+
+        local adx, ady = math.abs(c2-c1), math.abs(r2-r1)
+
+        if movetype == "knight" then
+        local path
+        if STATE._lastPrev and STATE._lastPrev.prev
+        and STATE._lastPrev.c0 == c1 and STATE._lastPrev.r0 == r1 then
+            path = _rebuildPath(STATE._lastPrev.prev, c1, r1, c2, r2)  -- returns list of {c,r}, excludes start
+        end
+
+        local fpt = fpt or (cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE or 18)
+
+        if path and #path > 0 then
+            Routine.run(function()
+                local pc, pr = c1, r1
+                for i=1,#path do
+                    local tc, tr = path[i].c, path[i].r
+                    u._anim = { kind="hop", fromC=pc, fromR=pr, toC=tc, toR=tr,
+                                t=0, dur=fpt, ease=easeSmooth, hopH=18 }
+                    for _=1,fpt do Routine.waitFrames(1) end
+                    pc, pr = tc, tr
+                end
+            end)
+        else
+            -- fallback: single arc from start to dest
+            u._anim = { kind="hop", fromC=c1, fromR=r1, toC=c2, toR=r2,
+                        t=0, dur=math.floor(fpt*1.2), ease=easeSmooth, hopH=18 }
+        end
+
+        elseif (movetype == "rook"   and (adx==0 or ady==0))
+            or (movetype == "bishop" and (adx==ady))
+            or (movetype == "queen") then
+            -- ONE smooth slide across the whole distance
+            local _, steps = _lineRoute(c1, r1, c2, r2)
+            _setSlide(u, c1, r1, c2, r2, fpt * math.max(1, steps))
+
+        else
+            -- Normal / Diagonal: exact BFS parents route, one tile at a time
+            local path
+            if STATE._lastPrev and STATE._lastPrev.prev
+            and STATE._lastPrev.c0 == c1 and STATE._lastPrev.r0 == r1 then
+                path = _rebuildPath(STATE._lastPrev.prev, c1, r1, c2, r2)
+            end
+
+            -- Fallbacks (should be rare)
+            if not path or #path == 0 then
+                if adx == ady or adx == 0 or ady == 0 then
+                    path = select(1, _lineRoute(c1, r1, c2, r2))
+                else
+                    -- safe orth-first chain
+                    path = {}
+                    local cc, rr = c1, r1
+                    local sgn = function(x) return (x>0 and 1) or (x<0 and -1) or 0 end
+                    while cc ~= c2 do cc = cc + sgn(c2-c1); path[#path+1] = {c=cc,r=rr} end
+                    while rr ~= r2 do rr = rr + sgn(r2-r1); path[#path+1] = {c=cc,r=rr} end
+                end
+            end
+
+            Routine.run(function()
+                local pc, pr = c1, r1
+                for i=1,#path do
+                    local tc, tr = path[i].c, path[i].r
+                    _setSlide(u, pc, pr, tc, tr, fpt)
+                    for f=1,fpt do Routine.waitFrames(1) end
+                    pc, pr = tc, tr
+                end
+            end)
+        end
+
 
     return true
 end
@@ -1996,32 +2132,36 @@ function cardGameFortune.resolveBattle(ac,ar, dc,dr)
             local terr = cardGameFortune.terrainAt(dc, dr)
             local mdef = cardGameFortune.db[mover.cardId]
             if cardGameFortune.canEnter(mdef, terr) then
-                -- Update board first (same order as moveUnit), then animate from old tile → new tile
-                s.board[dr][dc] = mover
-                s.board[ar][ac] = nil
 
-                -- keep unit coords in sync if you track them
-                mover.c, mover.r = dc, dr
+                -- 1) Start the correct one-step animation FROM (ac,ar) TO (dc,dr)
+                local movetype = (mdef and (mdef.movementtype or mdef.movetype)) or "normal"
+                local fpt      = cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE or 18
 
-                -- spend the action
-                mover.hasAttacked = true
-
-                -- Slide using movetype-aware path (diag for bishop/queen, straight for rook/queen)
-                local mdef     = cardGameFortune.db[mover.cardId]
-                local movetype = mdef and mdef.movementtype
-
-                if cardGameFortune._animateSmartSlide then
-                    cardGameFortune._animateSmartSlide(
-                        mover,              -- unit
-                        ac, ar,             -- from (approach tile)
-                        dc, dr,             -- to (captured tile)
-                        movetype,
-                        cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE
-                    )
+                if movetype == "knight" then
+                    -- L-hop straight into the captured square
+                    mover._anim = {
+                        kind="hop", fromC=ac, fromR=ar, toC=dc, toR=dr,
+                        t=0, dur=math.floor(fpt*1.2), ease=easeSmooth, hopH=18
+                    }
+                elseif movetype == "rook" or movetype == "bishop" or movetype == "queen" then
+                    -- smooth slide (1 tile distance)
+                    _setSlide(mover, ac, ar, dc, dr, fpt)
                 else
-                    -- safe fallback if helper not loaded
-                    _setSlide(mover, ac, ar, dc, dr, cardGameFortune.MOVE_ANIM_FRAMES_PER_TILE)
+                    -- normal/diagonal: one tile step (rendered as a single slide)
+                    _setSlide(mover, ac, ar, dc, dr, fpt)
                 end
+
+                -- 2) Wait for that animation to finish, THEN commit the board swap
+                Routine.run(function()
+                    while cardGameFortune.anyAnimating() do Routine.waitFrames(1) end
+
+                    -- commit the state change AFTER visuals have matched
+                    s.board[dr][dc] = mover
+                    s.board[ar][ac] = nil
+
+                    mover.c, mover.r = dc, dr
+                    mover.hasAttacked = true
+                end)
             end
         end
     end
@@ -2460,7 +2600,7 @@ local CARDS = {
         id="chargin_chuck", name="Chargin’ Chuck",
         image="cardgame/chuckcard.png", icon="cardgame/chuckicon.png",
         description="Rams into foes with football tackles.",
-        type="Grappler", atk=6, def=5, movement=1,
+        type="Grappler", atk=6, def=5, movement=2,
         movementtype="knight", atktype="normal",
         subtype1="normal", subtype2="Overworld",
         summoncost=3, deckcost=3
@@ -2944,7 +3084,7 @@ local function ai_scorePreview(prev, owner)
     end
 
     -- vs unit
-    if prev.destroyDefender then s = s + 160 end
+    if prev.destroyDefender then s = s + 190 end
     if prev.destroyAttacker then s = s - 120 end
     if prev.leaderDamage then
         local amt, who = prev.leaderDamage.amount, prev.leaderDamage.player
@@ -3054,6 +3194,59 @@ local function ai_threatenedEnemiesFrom(c,r, u)
         end
     end
     return n
+end
+
+-- AI helper: perform melee approach (if needed) then strike
+local function ai_approachAndStrike(ac, ar, tc, tr)
+    local s = STATE; local A = s.board[ar] and s.board[ar][ac]; if not A then return false end
+    local defA = cardGameFortune.db[A.cardId] or {}
+    local atktype = defA.atktype or "normal"
+
+    if atktype ~= "normal" then
+        cardGameFortune.resolveBattle(ac, ar, tc, tr)
+        return true
+    end
+
+    if math.max(math.abs(ac - tc), math.abs(ar - tr)) == 1 then
+        cardGameFortune.resolveBattle(ac, ar, tc, tr)
+        return true
+    end
+
+    local stepC, stepR = cardGameFortune.pickApproachDestination(ac, ar, tc, tr)
+    if stepC and stepR then
+        -- Weigh the risk of approach
+        local RISK_TOL = 6
+        local sD = cardGameFortune.ai_expectedDamageAt(ac, ar, A, false)
+        local aD = cardGameFortune.ai_expectedDamageAt(stepC, stepR, A, false)
+        if (aD > sD + RISK_TOL) then
+            return false
+        end
+    
+
+        cardGameFortune.legalMovesFrom(ac, ar, { returnDist=true, returnPrev=true })
+        local moved = cardGameFortune.moveUnit(ac, ar, stepC, stepR, {keepAttack=true})
+        if not moved then
+            cardGameFortune.resolveBattle(ac, ar, tc, tr)
+            return true
+        end
+        aiQueue(function()
+            if cardGameFortune.anyAnimating() then
+                aiQueue(function()
+                    if cardGameFortune.anyAnimating() then
+                        aiQueue(function() end, 0)
+                    else
+                        cardGameFortune.resolveBattle(stepC, stepR, tc, tr)
+                    end
+                end, 0)
+            else
+                cardGameFortune.resolveBattle(stepC, stepR, tc, tr)
+            end
+        end, 0)
+        return true
+    end
+
+    cardGameFortune.resolveBattle(ac, ar, tc, tr)
+    return true
 end
 
 
@@ -3267,7 +3460,9 @@ local function ai_tryInterpose(owner)
     end
 
     if best then
-        return cardGameFortune.moveUnit(best.fromC,best.fromR, best.toC,best.toR)
+        local ok = ai_moveWithRoute(best.fromC,best.fromR, best.toC,best.toR)
+        if ok then ai_waitForAnims() end
+        return ok
     end
     return false
 end
@@ -3380,7 +3575,7 @@ local function ai_decideDefenseOrMove(c, r, owner)
             -- (use current tile danger as proxy; battles happen in-place in your rules)
             local hereD = cardGameFortune.ai_expectedDamageAt(c, r, u, false)
             if hereD < 9999 then
-                cardGameFortune.resolveBattle(c,r, tgt.c,tgt.r)
+                ai_approachAndStrike(c, r, tgt.c, tgt.r)
                 return
             end
         end
@@ -3613,6 +3808,21 @@ local function ai_losBlockerCount(owner)
         end
     end end
     return n
+end
+
+-- Preload route parents then move (so animation follows the legal path)
+local function ai_moveWithRoute(fromC, fromR, toC, toR, opts)
+    cardGameFortune.legalMovesFrom(fromC, fromR, { returnDist=true, returnPrev=true })
+    return cardGameFortune.moveUnit(fromC, fromR, toC, toR, opts)
+end
+
+-- Yield AI steps until board animations finish (prevents overlap)
+local function ai_waitForAnims()
+    aiQueue(function()
+        if cardGameFortune.anyAnimating() then
+            ai_waitForAnims()
+        end
+    end, 0)
 end
 
 
@@ -3910,7 +4120,8 @@ function cardGameFortune.aiBeginTurn()
         local mv = ai_bestLeaderMove(2)
         if mv then
             local lp = s.leaderPos[2]
-            cardGameFortune.moveUnit(lp.c, lp.r, mv.c, mv.r)
+            ai_moveWithRoute(lp.c, lp.r, mv.c, mv.r)
+            ai_waitForAnims()
         end
     end)
 
@@ -3933,7 +4144,7 @@ function cardGameFortune.aiBeginTurn()
             if not c then return end
             if u.hasAttacked then return end
             local tgt = ai_bestAttackFor(c,r, 2)
-            if tgt then cardGameFortune.resolveBattle(c,r, tgt.c,tgt.r) end
+            if tgt then ai_approachAndStrike(c, r, tgt.c, tgt.r) end
         end)
     end
 
@@ -3981,7 +4192,8 @@ function cardGameFortune.aiBeginTurn()
             -- execute the chosen real action
             if bestAct then
                 if bestAct.kind=="move" then
-                    cardGameFortune.moveUnit(c,r, bestAct.toC,bestAct.toR)
+                    ai_moveWithRoute(c,r, bestAct.toC,bestAct.toR)
+                    ai_waitForAnims()
                 elseif bestAct.kind=="fortify" then
                     cardGameFortune.fortifyToDefense(c,r)
                 else
@@ -4000,7 +4212,10 @@ function cardGameFortune.aiBeginTurn()
             if not c then return end
             if u.hasMoved then return end
             local mv = ai_bestMoveToward(c,r, 2)
-            if mv then cardGameFortune.moveUnit(c,r, mv.c,mv.r) end
+            if mv then
+                ai_moveWithRoute(c,r, mv.c,mv.r)
+                ai_waitForAnims()
+            end
         end)
     end
 
@@ -4011,7 +4226,7 @@ function cardGameFortune.aiBeginTurn()
             if not c then return end
             if u.hasAttacked then return end
             local tgt = ai_bestAttackFor(c,r, 2)
-            if tgt then cardGameFortune.resolveBattle(c,r, tgt.c,tgt.r) end
+            if tgt then ai_approachAndStrike(c, r, tgt.c, tgt.r) end
         end)
     end
 

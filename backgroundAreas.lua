@@ -334,7 +334,7 @@ function backgroundAreas.onDraw()
 					priority = settings.drawPriority,
 					color = Color.white .. 1,
 					shader       = (settings.scale < 1 and tintShader) or nil,
-					uniforms     = (settings.scale < 1 and {tintColor = settings.color .. 1, tintAlpha = (1 - settings.scale) * settings.color.a}) or nil,
+					uniforms     = (settings.scale < 1 and {tintColor = settings.color .. 1, tintAlpha = ((1 - settings.scale) * 2.25) * settings.color.a}) or nil,
 				}
 			
 			end

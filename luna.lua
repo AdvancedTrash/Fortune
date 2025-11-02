@@ -425,6 +425,9 @@ local TX_BORDER_R  = tex("cardgame/cell_outline_3slice_red.png")    -- red
 local TX_BORDER_B  = tex("cardgame/cell_outline_3slice_blue.png")   -- blue
 local BADGE_ATK = tex("cardgame/attack.png")
 local BADGE_DEF = tex("cardgame/defence.png")
+local BADGE_LEADER = tex("cardgame/leadericon.png")
+local BADGE_UP   = tex("cardgame/statUP.png")
+local BADGE_DOWN = tex("cardgame/statDOWN.png")
 
 local outlineWhite = Sprite.box{
   width=CELL, height=CELL, texture=TX_FILL, borderwidth=2, bordertexture=TX_BORDER_W
@@ -500,17 +503,33 @@ end
 local function unitDrawXY(c, r, u)
     local x = boardX + c*CELL
     local y = boardY + r*CELL
-    if u and u._anim and u._anim.kind == "slide" then
+
+    if u and u._anim then
         local A = u._anim
-        local t = math.min(1, A.t / A.dur)
-        if A.ease then t = A.ease(t) end
-        local fromX = boardX + A.fromC*CELL
-        local fromY = boardY + A.fromR*CELL
-        local toX   = boardX + A.toC  *CELL
-        local toY   = boardY + A.toR  *CELL
-        x = fromX + (toX - fromX) * t
-        y = fromY + (toY - fromY) * t
+        if A.kind == "slide" then
+            local t = math.min(1, (A.t or 0) / math.max(1, A.dur or 1))
+            if A.ease then t = A.ease(t) end
+            local fromX = boardX + A.fromC*CELL
+            local fromY = boardY + A.fromR*CELL
+            local toX   = boardX + A.toC  *CELL
+            local toY   = boardY + A.toR  *CELL
+            x = fromX + (toX - fromX) * t
+            y = fromY + (toY - fromY) * t
+
+        elseif A.kind == "hop" then
+            local t = math.min(1, (A.t or 0) / math.max(1, A.dur or 1))
+            if A.ease then t = A.ease(t) end
+            local fromX = boardX + A.fromC*CELL
+            local fromY = boardY + A.fromR*CELL
+            local toX   = boardX + A.toC  *CELL
+            local toY   = boardY + A.toR  *CELL
+            local lift  = math.sin(math.pi * t) * (A.hopH or 18)
+
+            x = fromX + (toX - fromX) * t
+            y = (fromY + (toY - fromY) * t) - lift
+        end
     end
+
     return x, y
 end
 
@@ -1089,6 +1108,9 @@ local function updateBoardControls()
                 end
 
             elseif p.kind == "move" then
+
+                cardGameFortune.legalMovesFrom(p.fromC, p.fromR, { returnDist = true, returnPrev = true })
+
                 local ok,reason = cardGameFortune.moveUnit(p.fromC, p.fromR, p.toC, p.toR)
                 if ok then
                     selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
@@ -1104,17 +1126,24 @@ local function updateBoardControls()
                 cardGameFortune.resolveBattle(p.fromC, p.fromR, p.toC, p.toR)
                 selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
             elseif p.kind == "approachAttack" then
-                local moved = cardGameFortune.moveUnit(p.fromC, p.fromR, p.stepC, p.stepR, {keepAttack=true})
-                if moved then
+            -- ensure parents for exact route animation
+            cardGameFortune.legalMovesFrom(p.fromC, p.fromR, { returnDist=true, returnPrev=true })
+
+            local moved = cardGameFortune.moveUnit(p.fromC, p.fromR, p.stepC, p.stepR, {keepAttack=true})
+            if moved then
+                -- ⬇️ wait for the approach animation to complete before resolving battle
+                Routine.run(function()
+                    while cardGameFortune.anyAnimating() do Routine.waitFrames(1) end
                     cardGameFortune.resolveBattle(p.stepC, p.stepR, p.toC, p.toR)
                     selectedUnit, legalMoveSet, legalAttackSet = nil, nil, nil
-                else
-                    cardGameFortune.sfx_buzzer()
-                end
+                end)
+            else
+                cardGameFortune.sfx_buzzer()
             end
             UI.pending = nil
+            return
         end
-
+    end
 
         ------------------------------------------------
         -- Toggle hand <-> board (not while aiming)
@@ -1463,8 +1492,15 @@ local function updateBoardControls()
                                 legalMoveSet   = cardGameFortune.legalLeaderMovesFrom(c, r)
                                 legalAttackSet = nil
                             else
-                                legalMoveSet   = cardGameFortune.legalMovesFrom(c, r)
+                                -- ⬇️ capture dist + parents for exact-route animation
+                                local moves, dist = cardGameFortune.legalMovesFrom(c, r, {
+                                    returnDist = true,
+                                    returnPrev = true,   -- populates STATE._lastPrev for (c,r)
+                                })
+                                legalMoveSet   = moves
                                 legalAttackSet = cardGameFortune.legalAttacksFrom(c, r)
+                                -- (optional) if you want the UI to read costs:
+                                -- UI._selDist = dist
                             end
                             cardGameFortune.sfx_accept()
                         end
@@ -1748,65 +1784,120 @@ function onHUDDraw()
     for r=0,s.rows-1 do
         for c=0,s.cols-1 do
             local cell = s.board[r][c]
-            if cell then
-                -- one compute per cell
-                local drawX, drawY = unitDrawXY(c, r, cell)
+                if cell then
+                    local drawX, drawY = unitDrawXY(c, r, cell)
 
-                if cell.isLeader then
-                    local ltex
+                    if cell.isLeader then
+                        -- leader sprite (unchanged)
+                        local ltex
                         if cell.owner == 1 then
                             ltex = tex("cardgame/leader_p1.png")
                         else
-                            -- Opponent uses Deck ID for image
                             local oppId = s.npcDeckID or 1
                             ltex = oppTexFullById(oppId)
                         end
+                        if ltex then Graphics.drawImageWP(ltex, drawX, drawY, 5.0) end
 
-                    if ltex then Graphics.drawImageWP(ltex, drawX, drawY, 5.0) end
-                    drawSummonFX(cell, c, r, drawX, drawY)
-                    cardGameFortune.drawHitFX(cell, drawX, drawY)
-                    drawDeathFX()
-                else
-                    local def = cell.cardId and cardGameFortune.db[cell.cardId]
-                    if def and def.icon then
-                        local itex = tex(def.icon)
-                        if itex then Graphics.drawImageWP(itex, drawX, drawY, 5.0) end
+                        -- effects (unchanged)
                         drawSummonFX(cell, c, r, drawX, drawY)
                         cardGameFortune.drawHitFX(cell, drawX, drawY)
                         drawDeathFX()
 
-                        -- stance badge (image)
+                        -- crown badge bottom-right (instead of stance badge)
                         do
-                            local isDef = (cell.pos == "defense")
-                            local img   = isDef and BADGE_DEF or BADGE_ATK
+                            local img = BADGE_LEADER
                             if img then
-                                -- fade-in for first N frames after summon
+                                -- same fade-in as stance badges
                                 local fadeFrames = 10
                                 local alpha = 1.0
                                 local fx = cell._fx
                                 if fx and fx.kind == "summon" and fx.t < fadeFrames then
                                     local t = fx.t / fadeFrames
-                                    -- smoothstep ease for a softer ramp
                                     t = t * t * (3 - 2 * t)
                                     alpha = t
                                 end
 
-                                -- anchor: bottom-right of the cell (your +54 placement)
+                                -- same anchor math as stance badge (your +54 placement)
                                 local bx = drawX + 54 - math.floor(img.width  * 0.5)
                                 local by = drawY + 54 - math.floor(img.height * 0.5)
 
                                 Graphics.drawBox{
-                                    texture = img,
+                                    texture  = img,
                                     x = bx, y = by,
                                     width = img.width, height = img.height,
-                                    color = Color(1,1,1, alpha),     -- <- fade-in here
+                                    color = Color(1,1,1, alpha),
                                     priority = 5.2,
                                 }
                             end
                         end
-                    end 
-                end 
-                -- owner outline (P1 red / P2 blue)
+
+                    else
+                        -- non-leaders: unchanged unit sprite + stance badge
+                        local def = cell.cardId and cardGameFortune.db[cell.cardId]
+                        if def and def.icon then
+                            local itex = tex(def.icon)
+                            if itex then Graphics.drawImageWP(itex, drawX, drawY, 5.0) end
+                            drawSummonFX(cell, c, r, drawX, drawY)
+                            cardGameFortune.drawHitFX(cell, drawX, drawY)
+                            drawDeathFX()
+
+                            -- stat badge bottom-left (leaders and non-leaders)
+                            do
+                                local trend = cardGameFortune.unitStatTrend(cell, c, r)
+                                local img   = (trend == 1) and BADGE_UP or (trend == -1) and BADGE_DOWN or nil
+                                if img then
+                                    local fadeFrames = 10
+                                    local alpha = 1.0
+                                    local fx = cell._fx
+                                    if fx and fx.kind == "summon" and fx.t < fadeFrames then
+                                        local t = fx.t / fadeFrames
+                                        t = t * t * (3 - 2 * t)
+                                        alpha = t
+                                    end
+
+                                    local CELL   = (CFG and CFG.CELL) or 32
+                                    local margin = 2
+                                    local bx = drawX + margin
+                                    local by = drawY + CELL - img.height - margin
+
+                                    Graphics.drawBox{
+                                        texture  = img,
+                                        x = bx, y = by,
+                                        width = img.width, height = img.height,
+                                        color = Color(1,1,1, alpha),
+                                        priority = 5.2,
+                                    }
+                                end
+                            end
+
+                            -- stance badge (unchanged)
+                            do
+                                local isDef = (cell.pos == "defense")
+                                local img   = isDef and BADGE_DEF or BADGE_ATK
+                                if img then
+                                    local fadeFrames = 10
+                                    local alpha = 1.0
+                                    local fx = cell._fx
+                                    if fx and fx.kind == "summon" and fx.t < fadeFrames then
+                                        local t = fx.t / fadeFrames
+                                        t = t * t * (3 - 2 * t)
+                                        alpha = t
+                                    end
+
+                                    local bx = drawX + 54 - math.floor(img.width  * 0.5)
+                                    local by = drawY + 54 - math.floor(img.height * 0.5)
+
+                                    Graphics.drawBox{
+                                        texture = img,
+                                        x = bx, y = by,
+                                        width = img.width, height = img.height,
+                                        color = Color(1,1,1, alpha),
+                                        priority = 5.2,
+                                    }
+                                end
+                            end
+                        end
+                    end
                 outlineCell(c, r, (cell.owner==1) and "red" or "blue", 5.1, 3)
             end 
         end 
@@ -1893,6 +1984,20 @@ function onHUDDraw()
         fillCell(cursor.c, cursor.r, col, 5.2)
     end
 
+    -- ensure a selected hand index whenever focus is "hand"
+    do
+        local s = cardGameFortune.peek()
+        local hand = (s and s.hands and s.hands[1]) or {}
+        if focus == "hand" then
+            if (not selectedHandIndex) or (not hand[selectedHandIndex]) then
+                selectedHandIndex = nil
+                for i=1,5 do
+                    if hand[i] then selectedHandIndex = i; break end
+                end
+            end
+        end
+    end
+
     -- hand panel
     Graphics.drawBox{
         x=handX-8, y=handY+22, width=(CARD_W+CARD_GAP)*6 - CARD_GAP + 16, height=CARD_H+20,
@@ -1961,12 +2066,43 @@ function onHUDDraw()
     local yy    = hoverY + 30
     local shown = false
 
+    -- Hand hover (when in hand focus)
+    if (not shown) and focus == "hand" and selectedHandIndex then
+        local hand = (s.hands and s.hands[1]) or {}
+        local cid  = hand[selectedHandIndex]
+        if cid then
+            local def = cardGameFortune.db[cid]
+            Graphics.drawBox{ x=hoverX, y=hoverY, width=HOVER_W, height=HOVER_H, color=Color(0,0,0,0.35), priority=4.97 }
+            yy = drawCardInfo(def, hoverX, yy, HOVER_W, nil, nil, function(y)
+                return y
+            end)
+            shown = true
+        end
+    end
+
     -- leader info (under cursor)
     do
         local cell = s.board[cursor.r][cursor.c]
         if cell and cell.isLeader then
-            local who = (cell.owner==1) and "P1 Leader" or "P2 Leader"
+            local function opponentName()
+                local id = (STATE and STATE.npcDeckID) or (s and s.npcDeckID)
+                if id then
+                    -- try a fast map if you have one
+                    if cardGameFortune._challengerByDeck and cardGameFortune._challengerByDeck[id] then
+                        return cardGameFortune._challengerByDeck[id].name or "P2 Leader"
+                    end
+                    -- fallback: scan the registry
+                    for _,ch in pairs(cardGameFortune.challengers or {}) do
+                        if ch.deckId == id then return ch.name or "P2 Leader" end
+                    end
+                end
+                return "P2 Leader"
+            end
+
+            local who = (cell.owner==1) and "Mario" or opponentName()
+
             label(who, hoverX+8, yy, 5, COL_NAME); yy = yy + MF_LINE
+            label("Board Leader", hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
             label("HP: "..tostring(cell.hp or 0), hoverX+8, yy, 5, COL_LABEL); yy = yy + MF_LINE
             shown = true
 
@@ -1993,7 +2129,6 @@ function onHUDDraw()
                     label(def.name or "Unknown", rightPanelX+12, rightPanelY+8,  9.9, COL_NAME)
                     label(("ATK: %d"):format(def.atk or 0), rightPanelX+12, rightPanelY+48, 9.9, COL_ATK)
                     label(("DEF: %d"):format(def.def or 0), rightPanelX+12, rightPanelY+80, 9.9, COL_DEF)
-                    label(((side==1) and "From: Player 1" or "From: Player 2"), rightPanelX+12, rightPanelY+112, 9.9, COL_LABEL)
                     graveTakesHover = true
                 end
             end
@@ -2086,8 +2221,7 @@ function onHUDDraw()
             if cell and cell.cardId then
                 local def = cardGameFortune.db[cell.cardId]
                 yy = drawCardInfo(def, hoverX, yy, HOVER_W, {c=cursor.c, r=cursor.r}, summonPos, function(y)
-                    label("POS: "..(cell.pos or "attack"), hoverX+8, y, 5, COL_LABEL)
-                    return y + MF_LINE
+                    return y
                 end)
                 shown = true
             end
@@ -2112,21 +2246,8 @@ function onHUDDraw()
 
             -- header with terrain name
             local tname = cardGameFortune.terrainNameAt and cardGameFortune.terrainNameAt(cc, rr) or "Terrain"
-            label(tname .. " • Summon Preview", hoverX+8, yy, 5, COL_NAME)
+            label(tname, hoverX+8, yy, 5, COL_NAME)
             yy = yy + MF_LINE
-        end
-
-        if (not shown) and focus == "aim" and selectedHandIndex ~= nil then
-            local cardId = (s.hands[1] or {})[selectedHandIndex]
-            if cardId then
-                local def = cardGameFortune.db[cardId]
-                yy = drawCardInfo(def, hoverX, yy, HOVER_W, {c=cursor.c, r=cursor.r}, summonPos, function(y)
-                    label("PLACE AS: "..((summonPos=="defense") and "DEFENSE" or "ATTACK"),
-                        hoverX+8, y, 5, COL_LABEL)
-                    return y + MF_LINE
-                end)
-                shown = true
-                end
             end
         end
     end
