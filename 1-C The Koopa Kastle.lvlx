@@ -5134,7 +5134,7 @@ ID:301;X:-178400;Y:-180256;D:-1;
 ID:271;X:-178752;Y:-180384;D:-1;
 ID:271;X:-178368;Y:-180448;D:-1;
 ID:101;X:-179855;Y:-180380;D:-1;MG:"<boxStyle ml><speakerName \"Luigi\">Hey bro. I see you've found the room.<page>Cool\, cool. I hope you get that coin. ";FD:1;
-ID:164;X:-199869;Y:-200218;D:-1;MG:"<boxStyle ml><speakerName \"Mega Mole\">Listen here\, you little shit. This is a kaizo level. <page>Y'know what that means? No babies. No chumps. Nada. And I'm not Albert freakin' Einstein or anything\, but YOU? You probably couldn't beat this course in 100 years. Gutless sack of shit stache.";FD:1;NM:1;
+ID:164;X:-199869;Y:-200218;D:-1;MG:"<boxStyle ml><speakerName \"Mega Mole\">This is it... the final standard level of the demo. Thanks for playing. <page>Maybe one day I will complete it... The goal was 6 worlds\, with 2 challenges per level extra on the map\, as well as 3 town levels where you dueled friendlies in card games.<page>You may have already come across one of the hard challenge types\, the hard boss variant.<page>But you see what I'm going for\, right? 36 standard levels\, 16 bonus world levels\, 60 challenge levels\, 18 card levels (54 duels)\, and 6 penultimate levels hidden behind collection requirements.<page>This was just the beginning. It would take a year or so. But it's sick\, right?";FD:1;NM:1;
 ID:993;X:-139616;Y:-140160;D:-1;XTRA:"{\n    \"waypoint\"\: \"1\"\n}\n";
 ID:354;X:-139616;Y:-140352;D:-1;LR:"BossWin";
 ID:310;X:-199548;Y:-200568;D:-1;S1:1;

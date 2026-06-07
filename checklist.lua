@@ -29,9 +29,12 @@ local levels2 = {
 	{"1-2 Cavern Depths.lvlx",false,true,true}, -- Cavern Depths
     {"1-3 Dolphin Ride.lvlx",true,false,true}, -- Dolphin Ride
     {"1-4 Barrels of Fun.lvlx", true,true,true}, -- Barrels of Fun
+    {"1-5 Future City.lvlx", false,false,false}, -- Future City
 	{"1-C The Koopa Kastle.lvlx",true,true,false}, -- Koopa Kastle
     {"1-B8 Queen B (Hard Mode).lvlx",true,false,false}, -- Bonus 8: Queen B Hard Mode
-    {"1-B12 Kore (Hard Mode).lvlx",true,false,false} -- Bonus 12: Kore Hard Mode
+    {"1-B12 Kore (Hard Mode).lvlx",true,false,false}, -- Bonus 12: Kore Hard Mode
+    {"W0-2 First Duel.lvlx",false,false,false}, --Card Game Test
+    {"DRex.lvlx",false,false,false} -- End of demo joke
 	
 }
 

@@ -8,13 +8,17 @@ BLOCK
 ID:758;X:-199712;Y:-200384;W:64;H:64;
 ID:758;X:-198960;Y:-200528;W:64;H:64;
 ID:758;X:-199104;Y:-200320;W:64;H:64;
+ID:752;X:-198944;Y:-200160;W:32;H:32;
+ID:752;X:-198752;Y:-200336;W:32;H:32;
+ID:752;X:-198848;Y:-200544;W:32;H:32;
+ID:752;X:-199104;Y:-200544;W:32;H:32;
+ID:752;X:-198720;Y:-200160;W:32;H:32;
+ID:752;X:-198704;Y:-200480;W:32;H:32;
 BLOCK_END
 NPC
-ID:813;X:-199776;Y:-200416;D:-1;XTRA:"{\n    \"destroyAfterWin\"\: true\,\n    \"levelFilename\"\: \"1-C The Koopa Kastle.lvlx\"\,\n    \"levelTitle\"\: \"1-C The Koopa Kastle\"\,\n    \"path_down\"\: \"tohome2\"\,\n    \"path_left\"\: \"tolock\"\,\n    \"path_right\"\: \"tomap\"\,\n    \"path_up\"\: \"tohome\"\,\n    \"unlock_down\"\: 0\,\n    \"unlock_right\"\: 2\,\n    \"unlock_up\"\: 0\n}\n";
 ID:753;X:-200000;Y:-200608;D:-1;XTRA:"{\n    \"customMusicPath\"\: \"music/Tifa.spc\"\,\n    \"music\"\: 2\,\n    \"restrictCamera\"\: true\n}\n";
-ID:751;X:-199776;Y:-200416;D:-1;LR:"Top";LA:"Top";
 ID:752;X:-199744;Y:-200416;D:-1;XTRA:"{\n    \"name\"\: \"tomap\"\,\n    \"points\"\: \"-32\,0\, 676\,-32\"\,\n    \"smoothness\"\: 0.5\n}\n";
-ID:753;X:-199200;Y:-200608;D:-1;XTRA:"{\n    \"backgroundName\"\: \"sky\"\,\n    \"customMusicPath\"\: \"music/04 Streets of New York.spc\"\,\n    \"music\"\: 2\,\n    \"restrictCamera\"\: true\n}\n";
+ID:753;X:-199200;Y:-200608;D:-1;XTRA:"{\n    \"backgroundName\"\: \"sky\"\,\n    \"customMusicPath\"\: \"music/07 Snakey Chantey.spc\"\,\n    \"music\"\: 2\,\n    \"restrictCamera\"\: true\n}\n";
 ID:752;X:-199808;Y:-200416;D:-1;XTRA:"{\n    \"name\"\: \"tolock\"\,\n    \"points\"\: \"32\,0\, -98\,0\"\,\n    \"smoothness\"\: 0.5\n}\n";
 ID:752;X:-199904;Y:-200448;D:-1;XTRA:"{\n    \"hideIfLocked\"\: true\,\n    \"name\"\: \"tohome\"\,\n    \"points\"\: \"0\,32\, 0\,-32\, 64\,-64\, 130\,48\"\,\n    \"smoothness\"\: 0.5\n}\n";
 ID:978;X:-199904;Y:-200416;D:-1;XTRA:"{\n    \"alwaysVisible\"\: true\,\n    \"coins\"\: 0\,\n    \"dontRemoveCoins\"\: false\,\n    \"dontRemoveItems\"\: false\,\n    \"locked\"\: true\,\n    \"luigiCoins\"\: 0\,\n    \"path_down\"\: \"tolock2\"\,\n    \"path_right\"\: \"tolock\"\,\n    \"path_up\"\: \"tohome\"\,\n    \"requiredCoins\"\: 0\,\n    \"requiredLuigiCoins\"\: 0\,\n    \"roadTitle\"\: \"GreatLock\"\,\n    \"starCoins\"\: 1\,\n    \"stars\"\: 0\,\n    \"unlock_down\"\: true\,\n    \"unlock_left\"\: false\,\n    \"unlock_right\"\: true\,\n    \"unlock_up\"\: true\n}\n";
@@ -23,20 +27,35 @@ ID:978;X:-199904;Y:-200224;D:-1;XTRA:"{\n    \"alwaysVisible\"\: true\,\n    \"c
 ID:752;X:-199872;Y:-200224;D:-1;XTRA:"{\n    \"hideIfLocked\"\: false\,\n    \"name\"\: \"tohome2\"\,\n    \"points\"\: \"-32\,0\, 128\,0\, 108\,-195\"\,\n    \"smoothness\"\: 0.5\n}\n";
 ID:976;X:-199600;Y:-200528;D:-1;XTRA:"{\n    \"horiSpeed\"\: 0.5\,\n    \"turnTimer\"\: 16\,\n    \"vertiSpeed\"\: 13\n}\n";
 ID:954;X:-199704;Y:-200514;D:-1;
-ID:801;X:-199072;Y:-200448;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-1 Adventure Away.lvlx\"\,\n    \"levelTitle\"\: \"\[1-1\] Adventure Away\"\,\n    \"path_left\"\: \"tomap\"\,\n    \"path_right\"\: \"to1-2\"\n}\n";
 ID:762;X:-199840;Y:-200416;D:-1;
-ID:752;X:-199040;Y:-200448;D:-1;XTRA:"{\n    \"name\"\: \"to1-2\"\,\n    \"points\"\: \"-32\,0\, 34\,0\"\,\n    \"smoothness\"\: 0.5\n}\n";
-ID:801;X:-199008;Y:-200448;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-2 Cavern Depths.lvlx\"\,\n    \"levelTitle\"\: \"\[1-2\] Cavern Depths\"\,\n    \"path_down\"\: \"toCardtest\"\,\n    \"path_left\"\: \"to1-2\"\,\n    \"path_right\"\: \"to1-3\"\n}\n";
-ID:801;X:-198944;Y:-200448;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-3 Dolphin Ride.lvlx\"\,\n    \"levelTitle\"\: \"\[1-3\] Dolphin Ride\"\,\n    \"path_down\"\: \"to1-4\"\,\n    \"path_left\"\: \"to1-3\"\,\n    \"path_right\"\: \"toSpecialChallenge\"\n}\n";
-ID:752;X:-198976;Y:-200448;D:-1;XTRA:"{\n    \"name\"\: \"to1-3\"\,\n    \"points\"\: \"-32\,0\, 34\,0\"\,\n    \"smoothness\"\: 0.5\n}\n";
-ID:800;X:-198880;Y:-200448;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-B12 Kore (Hard Mode).lvlx\"\,\n    \"levelTitle\"\: \"Kore (Hard Mode)\"\,\n    \"path_down\"\: \"to1-B8\"\,\n    \"path_left\"\: \"toSpecialChallenge\"\n}\n";
-ID:752;X:-198912;Y:-200448;D:-1;XTRA:"{\n    \"name\"\: \"toSpecialChallenge\"\,\n    \"points\"\: \"-32\,0\, 34\,0\"\,\n    \"smoothness\"\: 0.5\n}\n";
-ID:752;X:-198944;Y:-200416;D:-1;XTRA:"{\n    \"name\"\: \"to1-4\"\,\n    \"points\"\: \"0\,-32\, 0\,34\"\,\n    \"smoothness\"\: 0.5\n}\n";
-ID:801;X:-198944;Y:-200384;D:-1;XTRA:"{\n    \"alwaysVisible\"\: false\,\n    \"levelFilename\"\: \"1-4 Barrels of Fun.lvlx\"\,\n    \"levelTitle\"\: \"\[1-4\] Barrels of Fun\"\,\n    \"path_left\"\: \"\"\,\n    \"path_right\"\: \"\"\,\n    \"path_up\"\: \"to1-4\"\n}\n";
-ID:752;X:-198880;Y:-200416;D:-1;XTRA:"{\n    \"name\"\: \"to1-B8\"\,\n    \"points\"\: \"0\,-32\, 0\,34\"\,\n    \"smoothness\"\: 0.5\n}\n";
-ID:800;X:-198880;Y:-200384;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-B8 Queen B (Hard Mode).lvlx\"\,\n    \"levelTitle\"\: \"Queen B (Hard Mode)\"\,\n    \"path_down\"\: \"\"\,\n    \"path_left\"\: \"toSpecialChallenge\"\,\n    \"path_up\"\: \"to1-B8\"\n}\n";
+ID:752;X:-199040;Y:-200448;D:-1;XTRA:"{\n    \"name\"\: \"to1-3\"\,\n    \"points\"\: \"-32\,0\, 34\,0\"\,\n    \"smoothness\"\: 0.5\n}\n";
+ID:752;X:-198976;Y:-200448;D:-1;XTRA:"{\n    \"name\"\: \"to1-4\"\,\n    \"points\"\: \"-32\,0\, 34\,0\"\,\n    \"smoothness\"\: 0.5\n}\n";
+ID:752;X:-198912;Y:-200448;D:-1;XTRA:"{\n    \"name\"\: \"to1-5\"\,\n    \"points\"\: \"-32\,0\, 34\,0\"\,\n    \"smoothness\"\: 0.5\n}\n";
+ID:752;X:-198944;Y:-200416;D:-1;XTRA:"{\n    \"name\"\: \"toHardBoss1\"\,\n    \"points\"\: \"0\,-32\, 0\,34\"\,\n    \"smoothness\"\: 0.5\n}\n";
 ID:752;X:-199008;Y:-200416;D:-1;XTRA:"{\n    \"name\"\: \"toCardtest\"\,\n    \"points\"\: \"0\,-32\, 0\,34\"\,\n    \"smoothness\"\: 0.5\n}\n";
-ID:801;X:-199008;Y:-200384;D:-1;XTRA:"{\n    \"levelFilename\"\: \"W0-2 First Duel.lvlx\"\,\n    \"levelTitle\"\: \"\[0-2\] First Duel\"\,\n    \"path_down\"\: \"\"\,\n    \"path_left\"\: \"to1-2\"\,\n    \"path_right\"\: \"\"\,\n    \"path_up\"\: \"toCardtest\"\n}\n";
+ID:814;X:-199008;Y:-200384;D:-1;XTRA:"{\n    \"alwaysVisible\"\: true\,\n    \"levelFilename\"\: \"W0-2 First Duel.lvlx\"\,\n    \"levelTitle\"\: \"\[0-2\] First Duel\"\,\n    \"path_down\"\: \"\"\,\n    \"path_left\"\: \"\"\,\n    \"path_right\"\: \"\"\,\n    \"path_up\"\: \"toCardtest\"\n}\n";
+ID:952;X:-199672;Y:-200266;D:-1;
+ID:952;X:-199572;Y:-200284;D:-1;
+ID:952;X:-199644;Y:-200166;D:-1;
+ID:952;X:-199568;Y:-200196;D:-1;
+ID:956;X:-199616;Y:-200112;D:-1;
+ID:956;X:-198976;Y:-200336;D:-1;
+ID:956;X:-198896;Y:-200368;D:-1;
+ID:801;X:-199776;Y:-200416;D:-1;XTRA:"{\n    \"alwaysVisible\"\: true\,\n    \"levelFilename\"\: \"1-1 Adventure Away.lvlx\"\,\n    \"levelTitle\"\: \"\[1-1\] Adventure Away\"\,\n    \"path_down\"\: \"tohome2\"\,\n    \"path_left\"\: \"tolock\"\,\n    \"path_right\"\: \"tomap\"\,\n    \"path_up\"\: \"tohome\"\,\n    \"unlock_down\"\: 0\,\n    \"unlock_up\"\: 0\n}\n";
+ID:800;X:-198944;Y:-200384;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-B8 Queen B (Hard Mode).lvlx\"\,\n    \"levelTitle\"\: \"Queen B (Hard Mode)\"\,\n    \"path_down\"\: \"\"\,\n    \"path_left\"\: \"\"\,\n    \"path_up\"\: \"toHardBoss1\"\n}\n";
+ID:801;X:-199072;Y:-200448;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-2 Cavern Depths.lvlx\"\,\n    \"levelTitle\"\: \"\[1-2\] Cavern Depths\"\,\n    \"path_down\"\: \"\"\,\n    \"path_left\"\: \"tomap\"\,\n    \"path_right\"\: \"to1-3\"\n}\n";
+ID:801;X:-199008;Y:-200448;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-3 Dolphin Ride.lvlx\"\,\n    \"levelTitle\"\: \"\[1-3\] Dolphin Ride\"\,\n    \"path_down\"\: \"toCardtest\"\,\n    \"path_left\"\: \"to1-3\"\,\n    \"path_right\"\: \"to1-4\"\n}\n";
+ID:801;X:-198944;Y:-200448;D:-1;XTRA:"{\n    \"alwaysVisible\"\: false\,\n    \"levelFilename\"\: \"1-4 Barrels of Fun.lvlx\"\,\n    \"levelTitle\"\: \"\[1-4\] Barrels of Fun\"\,\n    \"path_down\"\: \"toHardBoss1\"\,\n    \"path_left\"\: \"to1-4\"\,\n    \"path_right\"\: \"to1-5\"\,\n    \"path_up\"\: \"\"\n}\n";
+ID:801;X:-198880;Y:-200448;D:-1;XTRA:"{\n    \"alwaysVisible\"\: false\,\n    \"levelFilename\"\: \"1-5 Future City.lvlx\"\,\n    \"levelTitle\"\: \"\[1-5\] Future City\"\,\n    \"path_left\"\: \"to1-5\"\,\n    \"path_right\"\: \"toCastle\"\,\n    \"path_up\"\: \"\"\n}\n";
+ID:752;X:-198848;Y:-200448;D:-1;XTRA:"{\n    \"name\"\: \"toCastle\"\,\n    \"points\"\: \"-32\,0\, 34\,-2\"\,\n    \"smoothness\"\: 0.5\n}\n";
+ID:800;X:-198816;Y:-200384;D:-1;XTRA:"{\n    \"levelFilename\"\: \"1-B12 Kore (Hard Mode).lvlx\"\,\n    \"levelTitle\"\: \"Kore (Hard Mode)\"\,\n    \"path_down\"\: \"toEnd\"\,\n    \"path_left\"\: \"\"\,\n    \"path_up\"\: \"toHardBoss2\"\n}\n";
+ID:752;X:-198816;Y:-200416;D:-1;XTRA:"{\n    \"name\"\: \"toHardBoss2\"\,\n    \"points\"\: \"0\,-32\, 0\,34\"\,\n    \"smoothness\"\: 0.5\n}\n";
+ID:959;X:-199824;Y:-200144;D:-1;
+ID:958;X:-199760;Y:-200112;D:-1;
+ID:752;X:-198816;Y:-200352;D:-1;XTRA:"{\n    \"name\"\: \"toEnd\"\,\n    \"points\"\: \"0\,-32\, 0\,34\"\,\n    \"smoothness\"\: 0.5\n}\n";
+ID:800;X:-198816;Y:-200320;D:-1;XTRA:"{\n    \"levelFilename\"\: \"DRex.lvlx\"\,\n    \"levelTitle\"\: \"YOU DID IT (end demo)\"\,\n    \"path_down\"\: \"\"\,\n    \"path_left\"\: \"\"\,\n    \"path_up\"\: \"toEnd\"\n}\n";
+ID:812;X:-198816;Y:-200448;D:-1;XTRA:"{\n    \"alwaysVisible\"\: true\,\n    \"destroyAfterWin\"\: true\,\n    \"levelFilename\"\: \"1-C The Koopa Kastle.lvlx\"\,\n    \"levelTitle\"\: \"\[1-C\] Kore's Kastle\"\,\n    \"path_down\"\: \"toHardBoss2\"\,\n    \"path_left\"\: \"toCastle\"\,\n    \"path_right\"\: \"\"\,\n    \"path_up\"\: \"\"\,\n    \"unlock_down\"\: 2\,\n    \"unlock_right\"\: 2\,\n    \"unlock_up\"\: 2\n}\n";
+ID:751;X:-199776;Y:-200416;D:-1;LR:"Top";LA:"Top";
 NPC_END
 LAYERS
 LR:"Default";

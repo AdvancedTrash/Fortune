@@ -11134,6 +11134,9 @@ ID:33;X:-159388;Y:-160576;D:-1;
 ID:33;X:-159356;Y:-160576;D:-1;
 ID:33;X:-159324;Y:-160576;D:-1;
 ID:33;X:-159292;Y:-160576;D:-1;
+ID:164;X:-199965;Y:-200186;D:-1;MG:"<boxStyle ml><speakerName \"Mega Mole\">Hey\, thanks for playing this old set of levels I made. <page>I recommend changing your buttons on your controller to be the most comfortable. You have run and jump and spinjump\, for sure...<page>But you also have wall jumps and mid-air twirls. The mid-air twirls give you some height and momentum control.<page>Play around with it! You have infinite lives. And don't worry too much about the timer\, its only for score purposes. Every 5 minutes is -1000 to your score. And every death is -20. Try to get the S ranks!";FD:1;NM:1;
+ID:164;X:-198317;Y:-200474;D:-1;MG:"<boxStyle ml><speakerName \"Mega Mole\">If the level had a Luigi Coin icon on it\, then there's always a secret pipe that leads to an optional challenge.<page>This area has one such bonus room in it... Can you find it on this section?";FD:1;NM:1;
+ID:164;X:-195725;Y:-200186;D:-1;MG:"<boxStyle ml><speakerName \"Mega Mole\">Before you go... Did you see the locked door back there? It means that somewhere on this section is a key\, and if you find it--<page>Well\, it'll lead you to a Star room. Not every level has them\, so always check the icons on the bottom right!<page>Bottom right of the map screen\, of course...";FD:1;NM:1;
 NPC_END
 PHYSICS
 ET:0;X:-200000;Y:-199816;W:9600;H:232;

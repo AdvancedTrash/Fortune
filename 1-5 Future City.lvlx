@@ -1,5 +1,5 @@
 HEAD
-TL:"1-5";CPID:"SMBX2";
+TL:"1-5\: Future City";XTRA:"{\n    \"timer\"\: {\n        \"enable\"\: true\,\n        \"result\"\: 1\,\n        \"time\"\: 300\n    }\n}\n";CPID:"SMBX2";
 HEAD_END
 SECTION
 SC:0;L:-200000;R:-187200;T:-203040;B:-200000;MZ:24;MF:"music/Metallic Madness (Past) (More SMW compatible).spc";BG:29;XTRA:"{\n    \"darkness\"\: {\n        \"playerlight\"\: {\n            \"color\"\: \"#ff0004ff\"\n        }\,\n        \"shadows\"\: 0\n    }\n}\n";

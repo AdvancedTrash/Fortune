@@ -2,7 +2,7 @@ HEAD
 TL:"DRex";CPID:"SMBX2";
 HEAD_END
 SECTION
-SC:0;L:-200000;R:-196800;T:-200600;B:-200000;MZ:24;MF:"music/15 Run\, Rambi! Run!.spc";BG:12;
+SC:0;L:-200000;R:-196800;T:-200600;B:-200000;MZ:24;MF:"music/15 Run\, Rambi! Run!.spc";BG:12;XTRA:"{\n    \"darkness\"\: {\n        \"ambient\"\: \"#ff0000ff\"\,\n        \"enableDarkness\"\: true\n    }\,\n    \"effects\"\: {\n        \"screenEffects\"\: 16\,\n        \"weather\"\: 3\n    }\n}\n";
 SECTION_END
 STARTPOINT
 ID:1;X:-199388;Y:-200118;D:1;

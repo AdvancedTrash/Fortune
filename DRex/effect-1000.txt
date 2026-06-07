@@ -1,4 +1,0 @@
-[1]
-frames=6
-framespeed=4
-lifetime=24

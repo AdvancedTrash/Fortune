@@ -4780,6 +4780,7 @@ ID:33;X:-192732;Y:-200576;D:-1;
 ID:33;X:-192700;Y:-200576;D:-1;
 ID:33;X:-192668;Y:-200576;D:-1;
 ID:258;X:-192700;Y:-200672;D:-1;
+ID:164;X:-197005;Y:-200762;D:-1;MG:"<boxStyle ml><speakerName \"Mega Mole\">Some sections have a hidden Star Coin!<page>They are hidden until a certain specific enemy is slain. So if you ever feel like you're missing something--<page>Try to kill enemies! This is one of those sections!";FD:1;NM:1;
 NPC_END
 DOORS
 IX:-196080;IY:-201088;OX:-179648;OY:-180096;DT:2;ID:1;OD:1;LC:1;TW:1;
